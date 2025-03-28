@@ -1,0 +1,40 @@
+{
+    "Comments": "This is a test workflow",
+    "NumTasks": 4,
+    "Task1": {
+        "EventsPerJob": 1000,
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el9_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    },
+    "Task2": {
+        "InputTask": "Task1",
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el9_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    },
+    "Task3": {
+        "InputTask": "Task2",
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el9_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    },
+    "Task4": {
+        "InputTask": "Task3",
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el9_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    }
+ }
