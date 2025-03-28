@@ -1,0 +1,31 @@
+{
+    "Comments": "This is a test workflow",
+    "Memory": 3000,
+    "SizePerEvent": 1,
+    "Step1": {
+        "EventsPerJob": 1000,
+        "Memory": 2000,
+        "Multicore": 1,
+        "ScramArch": ["slc7_amd64_gcc900"],
+        "TimePerEvent": 20
+    },
+    "Step2": {
+        "Memory": 8000,
+        "Multicore": 8,
+        "ScramArch": ["el8_amd64_gcc11"],
+        "TimePerEvent": 10
+    },
+    "Step3": {
+        "Memory": 12000,
+        "Multicore": 8,
+        "ScramArch": ["el8_amd64_gcc11"],
+        "TimePerEvent": 12
+    },
+    "Step4": {
+        "Memory": 8000,
+        "Multicore": 4,
+        "RequiresGPU": "required",
+        "ScramArch": ["el8_amd64_gcc11"],
+        "TimePerEvent": 5
+    }
+ }
