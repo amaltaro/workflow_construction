@@ -68,4 +68,4 @@ def test_workflow_from_json(json_template):
 if __name__ == "__main__":
     for json_template in os.listdir("/Users/amaltar2/Master/workflow_construction/tests/sequential/"):
         test_workflow_from_json(json_template) 
-    #test_workflow_from_json("3group_cpu.json")
+    #test_workflow_from_json("2group_cpu.json")
