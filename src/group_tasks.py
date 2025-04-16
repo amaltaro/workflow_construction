@@ -129,14 +129,28 @@ class TaskGrouper:
         return True
 
     def _check_dependency_chain(self, task1_id: str, task2_id: str) -> bool:
-        """Check if tasks have a valid dependency chain for grouping"""
-        # If tasks are independent, they must have a complete chain between them
-        if not nx.has_path(self.dag, task1_id, task2_id) and \
-           not nx.has_path(self.dag, task2_id, task1_id):
-            # Check if there's a common ancestor with complete chains
-            common_ancestors = nx.ancestors(self.dag, task1_id) & nx.ancestors(self.dag, task2_id)
-            if not common_ancestors:
-                return False
+        """Check if tasks have a valid dependency chain for grouping.
+
+        Tasks can only be grouped if there is a direct dependency path
+        between them in either direction.
+        """
+        return nx.has_path(self.dag, task1_id, task2_id) or \
+               nx.has_path(self.dag, task2_id, task1_id)
+
+    def _all_dependency_paths_within_group(self, group: Set[str]) -> bool:
+        """
+        For every pair of tasks in the group, if there is a path between them,
+        all tasks on that path must also be in the group.
+        """
+        for src in group:
+            for dst in group:
+                if src == dst:
+                    continue
+                if nx.has_path(self.dag, src, dst):
+                    # fetch all possible paths between src and dst
+                    for path in nx.all_simple_paths(self.dag, src, dst):
+                        if not all(node in group for node in path):
+                            return False
         return True
 
     def _calculate_group_score(self, tasks: List[Task]) -> GroupScore:
@@ -163,21 +177,6 @@ class TaskGrouper:
         score.accelerator_score = 1.0 if len(accelerators) <= 1 else 0.5
 
         return score
-
-    def _all_dependency_paths_within_group(self, group: Set[str]) -> bool:
-        """
-        For every pair of tasks in the group, if there is a path between them,
-        all tasks on that path must also be in the group.
-        """
-        for src in group:
-            for dst in group:
-                if src == dst:
-                    continue
-                if nx.has_path(self.dag, src, dst):
-                    for path in nx.all_simple_paths(self.dag, src, dst):
-                        if not all(node in group for node in path):
-                            return False
-        return True
 
     def group_tasks(self):
         """Main method to group tasks"""
@@ -233,8 +232,74 @@ class TaskGrouper:
 
         return self.groups
 
+    def _print_ascii_tree(self):
+        """Print DAG as an ASCII tree structure"""
+        logger.info("ASCII Tree representation:")
 
-def create_workflow_from_json(workflow_data: dict, min_group_score: float = 0.7) -> List[Set[str]]:
+        # Find root nodes (nodes with no predecessors)
+        roots = [n for n in self.dag.nodes() if not list(self.dag.predecessors(n))]
+
+        def print_node(node, prefix="", is_last=True):
+            # Print current node
+            connector = "|-- "
+            logger.info(f"{prefix}{connector}{node}")
+
+            # Get and sort children
+            children = sorted(self.dag.successors(node), key=lambda x: int(x[4:]))
+
+            # Print children
+            for i, child in enumerate(children):
+                new_prefix = prefix + ("    " if is_last else "|   ")
+                print_node(child, new_prefix, i == len(children) - 1)
+
+        # Print each root and its subtree
+        sorted_roots = sorted(roots, key=lambda x: int(x[4:]))
+        for i, root in enumerate(sorted_roots):
+            if i == 0:
+                logger.info(root)  # Root node
+            else:
+                logger.info("\n" + root)  # Add spacing between trees
+            children = sorted(self.dag.successors(root), key=lambda x: int(x[4:]))
+            for j, child in enumerate(children):
+                print_node(child, "", j == len(children) - 1)
+
+    def _print_mermaid(self):
+        """Print DAG as a Mermaid graph definition"""
+        logger.info("Mermaid graph definition:")
+        logger.info("```mermaid")
+        logger.info("graph TD")
+
+        # Print all edges in sorted order
+        edges = sorted(self.dag.edges(), key=lambda x: (int(x[0][4:]), int(x[1][4:])))
+        for src, dst in edges:
+            logger.info(f"    {src} --> {dst}")
+
+        # Print isolated nodes (if any)
+        isolated = [n for n in self.dag.nodes()
+                   if not list(self.dag.predecessors(n)) and not list(self.dag.successors(n))]
+        for node in sorted(isolated, key=lambda x: int(x[4:])):
+            logger.info(f"    {node}")
+
+        logger.info("```")
+
+    def print_dag_structure(self, format: str = "ascii"):
+        """Print the DAG structure showing task dependencies.
+
+        Args:
+            format: The output format for the DAG visualization.
+                   Supported values: "ascii" (default) or "mermaid"
+        """
+        logger.info("\nWorkflow DAG structure:")
+
+        if format.lower() == "ascii":
+            self._print_ascii_tree()
+        elif format.lower() == "mermaid":
+            self._print_mermaid()
+        else:
+            raise ValueError(f"Unsupported format: {format}. Use 'ascii' or 'mermaid'")
+
+
+def create_workflow_from_json(workflow_data: dict, min_group_score: float = 0.7) -> Tuple[List[Set[str]], Dict[str, Task]]:
     """Create a workflow of tasks from JSON data and perform task grouping.
 
     Args:
@@ -242,7 +307,7 @@ def create_workflow_from_json(workflow_data: dict, min_group_score: float = 0.7)
         min_group_score: Minimum score required for grouping tasks (default: 0.7)
 
     Returns:
-        List of sets, where each set contains the task IDs for that group
+        Tuple of (List of sets, where each set contains the task IDs for that group, Dictionary of tasks)
     """
     # Create tasks dictionary
     tasks = {}
@@ -281,7 +346,11 @@ def create_workflow_from_json(workflow_data: dict, min_group_score: float = 0.7)
                 tasks[task.input_task].output_tasks = set()
             tasks[task.input_task].output_tasks.add(task_name)
 
-    # Create task grouper and perform grouping
+    # Create task grouper and print DAG structure
     grouper = TaskGrouper(tasks, min_group_score=min_group_score)
+    grouper.print_dag_structure(format="mermaid")
+    #grouper.print_dag_structure(format="ascii")
+
+    # Perform grouping
     return grouper.group_tasks(), tasks
 
