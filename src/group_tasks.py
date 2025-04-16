@@ -23,6 +23,9 @@ def extract_os_and_arch(scram_arch: List[str]) -> Tuple[str, str]:
 
 @dataclass
 class TaskResources:
+    """
+    Class to store the resources of a task
+    """
     os_version: str
     cpu_arch: str
     memory_mb: int
@@ -33,6 +36,9 @@ class TaskResources:
 
 @dataclass
 class Task:
+    """
+    Class to store the task resources and dependencies
+    """
     id: str
     resources: TaskResources
     input_task: Optional[str] = None
@@ -40,6 +46,9 @@ class Task:
 
 
 class GroupScore:
+    """
+    Class to calculate the score of a group of tasks
+    """
     def __init__(self):
         self.cpu_score: float = 0.0
         self.memory_score: float = 0.0
@@ -63,6 +72,9 @@ class GroupScore:
 
 
 class TaskGrouper:
+    """
+    Class to group tasks into groups based on their resources and dependencies
+    """
     def __init__(self, tasks: Dict[str, Task], min_group_score: float = 0.7):
         self.tasks = tasks
         self.min_group_score = min_group_score
@@ -127,6 +139,21 @@ class TaskGrouper:
 
         return score
 
+    def _all_dependency_paths_within_group(self, group: Set[str]) -> bool:
+        """
+        For every pair of tasks in the group, if there is a path between them,
+        all tasks on that path must also be in the group.
+        """
+        for src in group:
+            for dst in group:
+                if src == dst:
+                    continue
+                if nx.has_path(self.dag, src, dst):
+                    for path in nx.all_simple_paths(self.dag, src, dst):
+                        if not all(node in group for node in path):
+                            return False
+        return True
+
     def group_tasks(self):
         """Main method to group tasks"""
         ungrouped_tasks = set(self.tasks.keys())
@@ -157,7 +184,8 @@ class TaskGrouper:
                         [self.tasks[t] for t in potential_group]
                     )
                     
-                    if score.total_score() >= self.min_group_score:
+                    if (score.total_score() >= self.min_group_score and
+                        self._all_dependency_paths_within_group(potential_group)):
                         current_group.add(task_id)
                         ungrouped_tasks.remove(task_id)
             
