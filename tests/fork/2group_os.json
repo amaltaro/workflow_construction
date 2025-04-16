@@ -1,0 +1,49 @@
+{
+    "Comments": "Group 1: ['Task1', 'Task4', 'Task5'], Group 2: ['Task2', 'Task3']",
+    "NumTasks": 5,
+    "Task1": {
+        "EventsPerJob": 1000,
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el8_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    },
+    "Task2": {
+        "InputTask": "Task1",
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el9_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    },
+    "Task3": {
+        "InputTask": "Task2",
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el9_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    },
+    "Task4": {
+        "InputTask": "Task1",
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el8_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    },
+    "Task5": {
+        "InputTask": "Task4",
+        "Memory": 2000,
+        "Multicore": 4,
+        "RequiresGPU": "forbidden",
+        "ScramArch": ["el8_amd64_gcc11"],
+        "SizePerEvent": 10,
+        "TimePerEvent": 10
+    }
+ }
