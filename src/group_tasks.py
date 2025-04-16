@@ -49,26 +49,37 @@ class GroupScore:
     """
     Class to calculate the score of a group of tasks
     """
-    def __init__(self):
+    ALLOWED_KEYS = {'cpu', 'memory', 'throughput', 'accelerator'}
+
+    def __init__(self, weights: Optional[Dict[str, float]] = None):
+        # Ensure only supported weight parameters are provided
+        weights = weights or {}
+        if weights:
+            invalid_keys = set(weights.keys()) - self.ALLOWED_KEYS
+            if invalid_keys:
+                raise ValueError(f"Invalid weight keys: {invalid_keys}. Allowed keys are: {self.ALLOWED_KEYS}")
+
+        # Set user weights, default to 1.0 if not provided
+        self.weights = {}
+        for param in self.ALLOWED_KEYS:
+            self.weights.setdefault(param, weights.get(param, 1.0))
+            if self.weights[param] <= 0.0:
+                raise ValueError(f"Weight for '{param}' must be > 0.0, got {self.weights[param]}")
+
         self.cpu_score: float = 0.0
         self.memory_score: float = 0.0
         self.throughput_score: float = 0.0
         self.accelerator_score: float = 0.0
     
     def total_score(self) -> float:
-        # Weights can be adjusted based on importance
-        weights = {
-            'cpu': 0.25,
-            'memory': 0.25,
-            'throughput': 0.25,
-            'accelerator': 0.25
-        }
-        return (
-            weights['cpu'] * self.cpu_score +
-            weights['memory'] * self.memory_score +
-            weights['throughput'] * self.throughput_score +
-            weights['accelerator'] * self.accelerator_score
+        weighted_sum = (
+            self.weights['cpu'] * self.cpu_score +
+            self.weights['memory'] * self.memory_score +
+            self.weights['throughput'] * self.throughput_score +
+            self.weights['accelerator'] * self.accelerator_score
         )
+        total_weight = sum(self.weights.values())
+        return weighted_sum / total_weight if total_weight > 0 else 0.0
 
 
 class TaskGrouper:
