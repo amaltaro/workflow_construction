@@ -233,3 +233,55 @@ class TaskGrouper:
 
         return self.groups
 
+
+def create_workflow_from_json(workflow_data: dict, min_group_score: float = 0.7) -> List[Set[str]]:
+    """Create a workflow of tasks from JSON data and perform task grouping.
+
+    Args:
+        workflow_data: Dictionary containing the workflow specification
+        min_group_score: Minimum score required for grouping tasks (default: 0.7)
+
+    Returns:
+        List of sets, where each set contains the task IDs for that group
+    """
+    # Create tasks dictionary
+    tasks = {}
+    for i in range(1, workflow_data["NumTasks"] + 1):
+        task_name = f"Task{i}"
+        task_data = workflow_data[task_name]
+
+        # Extract OS version and architecture from ScramArch
+        os_version, cpu_arch = extract_os_and_arch(task_data["ScramArch"])
+
+        # Calculate events per second from TimePerEvent
+        events_per_second = 1000 / task_data.get("TimePerEvent", 1)  # Default to 1 if not present
+
+        # Create TaskResources
+        resources = TaskResources(
+            os_version=os_version,
+            cpu_arch=cpu_arch,
+            memory_mb=task_data.get("Memory", 1000),  # Default to 1000 if not present
+            accelerator="GPU" if task_data.get("RequiresGPU") == "required" else None,
+            cpu_cores=task_data.get("Multicore", 1),  # Default to 1 if not present
+            events_per_second=events_per_second
+        )
+
+        # Create Task
+        tasks[task_name] = Task(
+            id=task_name,
+            resources=resources,
+            input_task=task_data.get("InputTask", None),
+            output_tasks=set()  # Will be populated later
+        )
+
+    # Add output tasks
+    for task_name, task in tasks.items():
+        if task.input_task:
+            if tasks[task.input_task].output_tasks is None:
+                tasks[task.input_task].output_tasks = set()
+            tasks[task.input_task].output_tasks.add(task_name)
+
+    # Create task grouper and perform grouping
+    grouper = TaskGrouper(tasks, min_group_score=min_group_score)
+    return grouper.group_tasks(), tasks
+
