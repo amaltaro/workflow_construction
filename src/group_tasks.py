@@ -1,7 +1,21 @@
+# Standard library imports
+import logging
+import sys
 from dataclasses import dataclass
-from typing import Dict, List, Set, Tuple, Optional
 from enum import Enum
+from typing import Dict, List, Optional, Set, Tuple
+
+# Third-party library imports
 import networkx as nx
+
+
+# Add this after the imports
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s',  # Keep it simple since we're just replacing print statements
+    stream=sys.stdout  # Ensure output goes to stdout
+)
+logger = logging.getLogger(__name__)
 
 
 def extract_os_and_arch(scram_arch: List[str]) -> Tuple[str, str]:
@@ -178,6 +192,7 @@ class TaskGrouper:
             
             # Create new group starting with this task
             current_group = {current_task}
+            logger.info(f"\nStarting new group with: {current_task}")
             ungrouped_tasks.remove(current_task)
             
             # Try to add compatible tasks to the group
@@ -195,11 +210,25 @@ class TaskGrouper:
                         [self.tasks[t] for t in potential_group]
                     )
                     
-                    if (score.total_score() >= self.min_group_score and
-                        self._all_dependency_paths_within_group(potential_group)):
-                        current_group.add(task_id)
-                        ungrouped_tasks.remove(task_id)
+                    logger.info(f"Considering adding '{task_id}' to group {sorted(current_group)}")
+                    logger.info(f"Scores for potential group {sorted(potential_group)}:")
+                    logger.debug(f"  CPU Score: {score.cpu_score:.2f}")
+                    logger.debug(f"  Memory Score: {score.memory_score:.2f}")
+                    logger.debug(f"  Throughput Score: {score.throughput_score:.2f}")
+                    logger.debug(f"  Accelerator Score: {score.accelerator_score:.2f}")
+                    logger.info(f"  Total Score: {score.total_score():.2f}")
+
+                    if score.total_score() >= self.min_group_score:
+                        if self._all_dependency_paths_within_group(potential_group):
+                            logger.info(f"[+] Adding {task_id} to group (score: {score.total_score():.2f})")
+                            current_group.add(task_id)
+                            ungrouped_tasks.remove(task_id)
+                        else:
+                            logger.info(f"[-] Cannot add {task_id} - dependency path constraint not met")
+                    else:
+                        logger.info(f"[-] Cannot add {task_id} - score too low ({score.total_score():.2f} < {self.min_group_score})")
             
+            logger.info(f"Finalized group: {sorted(current_group)}")
             self.groups.append(current_group)
 
         return self.groups
