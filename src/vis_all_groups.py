@@ -8,20 +8,21 @@ from pathlib import Path
 
 def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     """Plot resource utilization metrics for all groups"""
+    print(f"\nPlotting resource utilization for {len(groups)} groups")
     # Create output directory if it doesn't exist
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
     # Extract metrics
     group_ids = []
     cpu_efficiencies = []
-    memory_efficiencies = []
+    memory_occupancies = []
     resource_utilizations = []
     group_sizes = []
     
     for group in groups:
         group_ids.append(group["group_id"])
         cpu_efficiencies.append(group["resource_metrics"]["cpu"]["efficiency"])
-        memory_efficiencies.append(group["resource_metrics"]["memory"]["efficiency"])
+        memory_occupancies.append(group["resource_metrics"]["memory"]["occupancy"])
         resource_utilizations.append(group["utilization_metrics"]["resource_utilization"])
         group_sizes.append(len(group["task_ids"]))
     
@@ -36,11 +37,11 @@ def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     axes[0, 0].set_ylabel("CPU Efficiency")
     axes[0, 0].grid(True)
     
-    # Plot 2: Memory Efficiency vs Group Size
-    sns.scatterplot(x=group_sizes, y=memory_efficiencies, ax=axes[0, 1])
-    axes[0, 1].set_title("Memory Efficiency vs Group Size")
+    # Plot 2: Memory Occupancy vs Group Size
+    sns.scatterplot(x=group_sizes, y=memory_occupancies, ax=axes[0, 1])
+    axes[0, 1].set_title("Memory Occupancy vs Group Size")
     axes[0, 1].set_xlabel("Number of Tasks in Group")
-    axes[0, 1].set_ylabel("Memory Efficiency")
+    axes[0, 1].set_ylabel("Memory Occupancy")
     axes[0, 1].grid(True)
     
     # Plot 3: Overall Resource Utilization vs Group Size
@@ -50,12 +51,12 @@ def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     axes[1, 0].set_ylabel("Resource Utilization")
     axes[1, 0].grid(True)
     
-    # Plot 4: CPU vs Memory Efficiency
-    sns.scatterplot(x=cpu_efficiencies, y=memory_efficiencies, 
+    # Plot 4: CPU Efficiency vs Memory Occupancy
+    sns.scatterplot(x=cpu_efficiencies, y=memory_occupancies, 
                    size=group_sizes, sizes=(50, 200), ax=axes[1, 1])
-    axes[1, 1].set_title("CPU vs Memory Efficiency")
+    axes[1, 1].set_title("CPU Efficiency vs Memory Occupancy")
     axes[1, 1].set_xlabel("CPU Efficiency")
-    axes[1, 1].set_ylabel("Memory Efficiency")
+    axes[1, 1].set_ylabel("Memory Occupancy")
     axes[1, 1].grid(True)
     
     plt.tight_layout()
@@ -64,6 +65,7 @@ def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
 
 def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
     """Plot throughput and I/O metrics for all groups"""
+    print(f"Plotting throughput analysis for {len(groups)} groups")
     # Extract metrics
     group_sizes = []
     total_throughputs = []
@@ -121,6 +123,7 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
 
 def plot_dependency_analysis(groups: List[Dict], output_dir: str = "plots"):
     """Plot dependency-related metrics for all groups"""
+    print(f"Plotting dependency analysis for {len(groups)} groups")
     # Extract metrics
     group_sizes = []
     dependency_paths_counts = []
@@ -159,11 +162,12 @@ def plot_dependency_analysis(groups: List[Dict], output_dir: str = "plots"):
 
 def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
     """Create a heatmap comparing different metrics across groups"""
+    print(f"Plotting comparison heatmap for {len(groups)} groups")
     # Extract metrics
     metrics = {
         "Group Size": [],
         "CPU Efficiency": [],
-        "Memory Efficiency": [],
+        "Memory Occupancy": [],
         "Resource Utilization": [],
         "Total Throughput": [],
         "Total Output Size": [],
@@ -173,7 +177,7 @@ def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
     for group in groups:
         metrics["Group Size"].append(len(group["task_ids"]))
         metrics["CPU Efficiency"].append(group["resource_metrics"]["cpu"]["efficiency"])
-        metrics["Memory Efficiency"].append(group["resource_metrics"]["memory"]["efficiency"])
+        metrics["Memory Occupancy"].append(group["resource_metrics"]["memory"]["occupancy"])
         metrics["Resource Utilization"].append(group["utilization_metrics"]["resource_utilization"])
         metrics["Total Throughput"].append(group["resource_metrics"]["throughput"]["total_eps"])
         metrics["Total Output Size"].append(group["resource_metrics"]["io"]["total_output_mb"])
@@ -200,15 +204,18 @@ def visualize_groups(groups: List[Dict], output_dir: str = "plots"):
     plot_comparison_heatmap(groups, output_dir)
     
     # Save raw data for further analysis
+    print(f"Saving raw data for {len(groups)} groups")
     with open(os.path.join(output_dir, "group_metrics.json"), "w") as f:
         json.dump(groups, f, indent=2)
 
 if __name__ == "__main__":
     import pandas as pd
-    from group_all_groups import create_workflow_from_json
+    from find_all_groups import create_workflow_from_json
     
     # Example usage
-    with open("tests/sequential/1group_perfect.json") as f:
+    template_name = "1group_perfect.json"
+    print(f"Parsing workflow data for template {template_name}")
+    with open(f"tests/sequential/{template_name}") as f:
         workflow_data = json.load(f)
     
     groups, tasks = create_workflow_from_json(workflow_data)
