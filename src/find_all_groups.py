@@ -3,6 +3,7 @@ import logging
 import sys
 from dataclasses import dataclass
 from enum import Enum
+from pprint import pformat
 from typing import Dict, List, Optional, Set, Tuple
 
 # Third-party library imports
@@ -46,6 +47,9 @@ class TaskResources:
     accelerator: Optional[str]
     cpu_cores: int
     events_per_second: float
+    time_per_event: float
+    size_per_event: float
+    input_events: int
 
 
 @dataclass
@@ -112,8 +116,7 @@ class GroupMetrics:
     total_memory_mb: int
     max_memory_mb: int
     min_memory_mb: int
-    memory_seconds: float  # Total memory-seconds required
-    memory_efficiency: float  # Ratio of actual memory usage to allocated memory-seconds
+    memory_occupancy: float  # Ratio of total memory used to max memory allocated
     # Throughput metrics
     total_throughput: float
     max_throughput: float
@@ -145,8 +148,7 @@ class GroupMetrics:
                     "total_mb": self.total_memory_mb,
                     "max_mb": self.max_memory_mb,
                     "min_mb": self.min_memory_mb,
-                    "memory_seconds": self.memory_seconds,
-                    "efficiency": self.memory_efficiency
+                    "occupancy": self.memory_occupancy
                 },
                 "throughput": {
                     "total_eps": self.total_throughput,
@@ -219,6 +221,7 @@ class TaskGrouper:
 
     def _calculate_group_metrics(self, group: Set[str]) -> GroupMetrics:
         """Calculate detailed metrics for a group of tasks"""
+        print(f"Calculating group metrics for {group}")
         tasks = [self.tasks[task_id] for task_id in group]
         
         # Calculate CPU metrics
@@ -229,8 +232,8 @@ class TaskGrouper:
         cpu_seconds = 0.0
         max_cpu_seconds = 0.0
         for task in tasks:
-            # Calculate task duration in seconds
-            task_duration = task.resources.events_per_second * task.resources.time_per_event
+            # Calculate task duration in seconds based on total events
+            task_duration = task.resources.input_events * task.resources.time_per_event
             # Add CPU-seconds for this task
             task_cpu_seconds = task.resources.cpu_cores * task_duration
             cpu_seconds += task_cpu_seconds
@@ -244,20 +247,30 @@ class TaskGrouper:
         max_memory = max(t.resources.memory_mb for t in tasks)
         min_memory = min(t.resources.memory_mb for t in tasks)
         
-        # Calculate memory-seconds and efficiency
-        memory_seconds = 0.0
-        max_memory_seconds = 0.0
+        # Calculate time-weighted memory occupancy
+        total_duration = 0.0
+        weighted_memory = 0.0
         for task in tasks:
-            task_duration = task.resources.events_per_second * task.resources.time_per_event
-            task_memory_seconds = task.resources.memory_mb * task_duration
-            memory_seconds += task_memory_seconds
-            max_memory_seconds = max(max_memory_seconds, task_memory_seconds)
+            task_duration = task.resources.input_events * task.resources.time_per_event
+            total_duration += task_duration
+            weighted_memory += task.resources.memory_mb * task_duration
         
-        # Memory efficiency is the ratio of actual memory usage to allocated memory-seconds
-        memory_efficiency = max_memory_seconds / memory_seconds if memory_seconds > 0 else 0.0
+        # Calculate time-weighted average memory
+        time_weighted_avg_memory = weighted_memory / total_duration if total_duration > 0 else 0.0
+        
+        # Memory occupancy is the ratio of time-weighted average memory to max memory
+        memory_occupancy = time_weighted_avg_memory / max_memory if max_memory > 0 else 0.0
 
         # Calculate throughput metrics
-        total_throughput = sum(t.resources.events_per_second for t in tasks)
+        total_duration = 0.0
+        weighted_throughput = 0.0
+        for task in tasks:
+            task_duration = task.resources.input_events * task.resources.time_per_event
+            total_duration += task_duration
+            weighted_throughput += task.resources.events_per_second * task_duration
+        
+        # Calculate time-weighted average throughput
+        total_throughput = weighted_throughput / total_duration if total_duration > 0 else 0.0
         max_throughput = max(t.resources.events_per_second for t in tasks)
         min_throughput = min(t.resources.events_per_second for t in tasks)
 
@@ -265,7 +278,8 @@ class TaskGrouper:
         total_output_size = 0.0
         max_output_size = 0.0
         for task in tasks:
-            task_output_size = task.resources.events_per_second * task.resources.size_per_event
+            # Convert KB to MB for consistency with other memory metrics
+            task_output_size = (task.resources.input_events * task.resources.size_per_event) / 1024.0
             total_output_size += task_output_size
             max_output_size = max(max_output_size, task_output_size)
 
@@ -282,7 +296,7 @@ class TaskGrouper:
 
         # Calculate overall resource utilization
         # This is a weighted average of CPU and memory efficiency
-        resource_utilization = (cpu_efficiency + memory_efficiency) / 2.0
+        resource_utilization = (cpu_efficiency + memory_occupancy) / 2.0
 
         # Calculate event throughput
         # This is the total number of events processed per second
@@ -298,8 +312,7 @@ class TaskGrouper:
             total_memory_mb=total_memory,
             max_memory_mb=max_memory,
             min_memory_mb=min_memory,
-            memory_seconds=memory_seconds,
-            memory_efficiency=memory_efficiency,
+            memory_occupancy=memory_occupancy,
             total_throughput=total_throughput,
             max_throughput=max_throughput,
             min_throughput=min_throughput,
@@ -311,35 +324,87 @@ class TaskGrouper:
             event_throughput=event_throughput
         )
 
-    def generate_all_possible_groups(self) -> List[GroupMetrics]:
-        """Generate all possible valid groups of tasks with their metrics"""
-        all_tasks = set(self.tasks.keys())
-        self.all_possible_groups = []
-
-        def generate_groups(current_group: Set[str], remaining_tasks: Set[str]):
-            if current_group:
+    def _generate_groups_recursive(self, current_group: Set[str],
+                                   remaining_tasks: Set[str],
+                                   seen_groups: Set[frozenset]) -> None:
+        """Recursively generate all possible valid groups of tasks.
+        
+        Args:
+            current_group: Set of tasks in the current group being built
+            remaining_tasks: Set of tasks that haven't been considered yet
+            seen_groups: Set of frozen sets tracking unique groups we've already processed
+        """
+        if current_group:
+            # Convert current group to frozen set for hashing
+            frozen_group = frozenset(current_group)
+            if frozen_group not in seen_groups:
+                seen_groups.add(frozen_group)
                 # Calculate metrics for current group
                 metrics = self._calculate_group_metrics(current_group)
                 self.all_possible_groups.append(metrics)
 
-            if not remaining_tasks:
-                return
+        if not remaining_tasks:
+            return
 
-            for task in remaining_tasks:
-                # Check if task can be added to current group
-                if not current_group or all(self._can_be_grouped(self.tasks[t], self.tasks[task]) 
-                                         for t in current_group):
-                    new_group = current_group | {task}
-                    if self._all_dependency_paths_within_group(new_group):
-                        new_remaining = remaining_tasks - {task}
-                        generate_groups(new_group, new_remaining)
+        for task in remaining_tasks:
+            # Check if task can be added to current group
+            if not current_group or all(self._can_be_grouped(self.tasks[t], self.tasks[task]) 
+                                     for t in current_group):
+                new_group = current_group | {task}
+                if self._all_dependency_paths_within_group(new_group):
+                    new_remaining = remaining_tasks - {task}
+                    self._generate_groups_recursive(new_group, new_remaining, seen_groups)
 
-        generate_groups(set(), all_tasks)
+    def generate_all_possible_groups(self) -> List[GroupMetrics]:
+        """Generate all possible valid groups of tasks with their metrics"""
+        all_tasks = set(self.tasks.keys())
+        self.all_possible_groups = []
+        seen_groups = set()  # Track unique groups using frozen sets
+
+        self._generate_groups_recursive(set(), all_tasks, seen_groups)
         return self.all_possible_groups
 
     def get_group_metrics(self) -> List[dict]:
         """Get all possible groups with their metrics in a format suitable for visualization"""
         return [metrics.to_dict() for metrics in self.all_possible_groups]
+
+
+def validate_task_parameters(task_data: dict, task_name: str) -> None:
+    """Validate that all required parameters are present in the task data.
+    
+    Args:
+        task_data: Dictionary containing the task specification
+        task_name: Name of the task being validated
+        
+    Raises:
+        ValueError: If any required parameter is missing
+    """
+    required_parameters = ["ScramArch", "TimePerEvent", "Memory", "Multicore", "SizePerEvent"]
+    missing_parameters = [param for param in required_parameters if param not in task_data]
+    
+    if missing_parameters:
+        raise ValueError(f"Missing required parameters for {task_name}: {', '.join(missing_parameters)}")
+
+
+def get_events_per_job(task_data: dict, tasks: Dict[str, Task], task_name: str) -> int:
+    """Recursively get EventsPerJob from task or its input task.
+    
+    Args:
+        task_data: Dictionary containing the task specification
+        tasks: Dictionary of already created tasks
+        task_name: Name of the current task
+        
+    Returns:
+        Number of events per job
+    """
+    if "EventsPerJob" in task_data:
+        return task_data["EventsPerJob"]
+    
+    input_task = task_data.get("InputTask")
+    if input_task and input_task in tasks:
+        return get_events_per_job(tasks[input_task].resources.__dict__, tasks, input_task)
+    
+    raise ValueError(f"No EventsPerJob found for {task_name} or any of its input tasks")
 
 
 def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str, Task]]:
@@ -357,20 +422,27 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         task_name = f"Task{i}"
         task_data = workflow_data[task_name]
 
+        # Validate required parameters
+        validate_task_parameters(task_data, task_name)
+
         # Extract OS version and architecture from ScramArch
         os_version, cpu_arch = extract_os_and_arch(task_data["ScramArch"])
 
         # Calculate events per second from TimePerEvent
-        events_per_second = 1000 / task_data.get("TimePerEvent", 1)  # Default to 1 if not present
+        time_per_event = task_data["TimePerEvent"]
+        events_per_second = 1 / time_per_event
 
         # Create TaskResources
         resources = TaskResources(
             os_version=os_version,
             cpu_arch=cpu_arch,
-            memory_mb=task_data.get("Memory", 1000),  # Default to 1000 if not present
+            memory_mb=task_data["Memory"],
             accelerator="GPU" if task_data.get("RequiresGPU") == "required" else None,
-            cpu_cores=task_data.get("Multicore", 1),  # Default to 1 if not present
-            events_per_second=events_per_second
+            cpu_cores=task_data["Multicore"],
+            events_per_second=events_per_second,
+            time_per_event=time_per_event,
+            size_per_event=task_data["SizePerEvent"],
+            input_events=task_data.get("EventsPerJob", None) 
         )
 
         # Create Task
@@ -381,12 +453,24 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             output_tasks=set()  # Will be populated later
         )
 
-    # Add output tasks
+    # Add output tasks and resolve input events
     for task_name, task in tasks.items():
+        # Handle output tasks
         if task.input_task:
             if tasks[task.input_task].output_tasks is None:
                 tasks[task.input_task].output_tasks = set()
             tasks[task.input_task].output_tasks.add(task_name)
+        
+        # Resolve input events
+        if task.resources.input_events is None and task.input_task:
+            input_task = tasks[task.input_task]
+            task.resources.input_events = input_task.resources.input_events
+            if task.resources.input_events is None:
+                raise ValueError(f"No EventsPerJob found for {task_name} or any of its input tasks")
+    
+    # Print content of each task
+    for task_name, task in tasks.items():
+        print(f"Final task creation for {task_name}:\n{pformat(task)}\n")
 
     # Create task grouper and generate all possible groups
     grouper = TaskGrouper(tasks)
