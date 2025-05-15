@@ -2,13 +2,14 @@
 import logging
 import sys
 from dataclasses import dataclass
-from enum import Enum
 from pprint import pformat
 from typing import Dict, List, Optional, Set, Tuple
 
 # Third-party library imports
 import networkx as nx
 
+# Global configuration
+TARGET_WALLCLOCK_TIME_HOURS = 12.0  # Target wallclock time in hours
 
 # Add this after the imports
 logging.basicConfig(
@@ -111,7 +112,7 @@ class GroupMetrics:
     total_cpu_cores: int
     max_cpu_cores: int
     cpu_seconds: float  # Total CPU-seconds required
-    cpu_efficiency: float  # Ratio of actual CPU usage to allocated CPU-seconds
+    cpu_utilization_ratio: float  # Ratio of CPU cores utilized to CPU cores allocated over time
     # Memory metrics
     total_memory_mb: int
     max_memory_mb: int
@@ -131,6 +132,8 @@ class GroupMetrics:
     # Resource utilization metrics
     resource_utilization: float  # Overall resource utilization efficiency
     event_throughput: float  # Events processed per second
+    # Events per job
+    events_per_job: int  # Number of events processed by each task in the group
 
     def to_dict(self) -> dict:
         """Convert metrics to a dictionary for easy serialization"""
@@ -142,7 +145,7 @@ class GroupMetrics:
                     "total_cores": self.total_cpu_cores,
                     "max_cores": self.max_cpu_cores,
                     "cpu_seconds": self.cpu_seconds,
-                    "efficiency": self.cpu_efficiency
+                    "utilization_ratio": self.cpu_utilization_ratio
                 },
                 "memory": {
                     "total_mb": self.total_memory_mb,
@@ -167,7 +170,8 @@ class GroupMetrics:
                 "resource_utilization": self.resource_utilization,
                 "event_throughput": self.event_throughput
             },
-            "dependency_paths": self.dependency_paths
+            "dependency_paths": self.dependency_paths,
+            "events_per_job": self.events_per_job
         }
 
 
@@ -224,29 +228,45 @@ class TaskGrouper:
         print(f"Calculating group metrics for {group}")
         tasks = [self.tasks[task_id] for task_id in group]
         
+        # Calculate total time per event for the entire group
+        # TimePerEvent should already account for the actual performance with the given number of cores
+        total_time_per_event = sum(task.resources.time_per_event for task in tasks)
+
+        # Calculate events per job based on total time per event for the group
+        target_wallclock_seconds = TARGET_WALLCLOCK_TIME_HOURS * 3600
+        events_per_job = int(target_wallclock_seconds / total_time_per_event)
+        events_per_job = max(1, events_per_job)
+
+        # Update events_per_job for all tasks in the group
+        for task in tasks:
+            task.resources.input_events = events_per_job
+
         # Calculate CPU metrics
         total_cores = sum(t.resources.cpu_cores for t in tasks)
         max_cores = max(t.resources.cpu_cores for t in tasks)
-        
-        # Calculate CPU-seconds and efficiency
-        cpu_seconds = 0.0
-        max_cpu_seconds = 0.0
+
+        # Calculate CPU utilization ratio
+        # For each task: (cores_used * duration) / (max_cores * total_duration)
+        total_duration = 0.0
+        weighted_cpu_utilization = 0.0
+
         for task in tasks:
-            # Calculate task duration in seconds based on total events
             task_duration = task.resources.input_events * task.resources.time_per_event
-            # Add CPU-seconds for this task
-            task_cpu_seconds = task.resources.cpu_cores * task_duration
-            cpu_seconds += task_cpu_seconds
-            max_cpu_seconds = max(max_cpu_seconds, task_cpu_seconds)
-        
-        # CPU efficiency is the ratio of actual CPU usage to allocated CPU-seconds
-        cpu_efficiency = max_cpu_seconds / cpu_seconds if cpu_seconds > 0 else 0.0
+            total_duration += task_duration
+            weighted_cpu_utilization += task.resources.cpu_cores * task_duration
+
+        # CPU utilization ratio is the ratio of weighted CPU utilization to maximum possible utilization
+        max_possible_utilization = max_cores * total_duration
+        cpu_utilization_ratio = weighted_cpu_utilization / max_possible_utilization if max_possible_utilization > 0 else 0.0
+
+        # Calculate CPU seconds (total CPU time used)
+        cpu_seconds = weighted_cpu_utilization
 
         # Calculate memory metrics
         total_memory = sum(t.resources.memory_mb for t in tasks)
         max_memory = max(t.resources.memory_mb for t in tasks)
         min_memory = min(t.resources.memory_mb for t in tasks)
-        
+
         # Calculate time-weighted memory occupancy
         total_duration = 0.0
         weighted_memory = 0.0
@@ -254,10 +274,10 @@ class TaskGrouper:
             task_duration = task.resources.input_events * task.resources.time_per_event
             total_duration += task_duration
             weighted_memory += task.resources.memory_mb * task_duration
-        
+
         # Calculate time-weighted average memory
         time_weighted_avg_memory = weighted_memory / total_duration if total_duration > 0 else 0.0
-        
+
         # Memory occupancy is the ratio of time-weighted average memory to max memory
         memory_occupancy = time_weighted_avg_memory / max_memory if max_memory > 0 else 0.0
 
@@ -268,7 +288,7 @@ class TaskGrouper:
             task_duration = task.resources.input_events * task.resources.time_per_event
             total_duration += task_duration
             weighted_throughput += task.resources.events_per_second * task_duration
-        
+
         # Calculate time-weighted average throughput
         total_throughput = weighted_throughput / total_duration if total_duration > 0 else 0.0
         max_throughput = max(t.resources.events_per_second for t in tasks)
@@ -296,7 +316,7 @@ class TaskGrouper:
 
         # Calculate overall resource utilization
         # This is a weighted average of CPU and memory efficiency
-        resource_utilization = (cpu_efficiency + memory_occupancy) / 2.0
+        resource_utilization = (cpu_utilization_ratio + memory_occupancy) / 2.0
 
         # Calculate event throughput
         # This is the total number of events processed per second
@@ -308,7 +328,7 @@ class TaskGrouper:
             total_cpu_cores=total_cores,
             max_cpu_cores=max_cores,
             cpu_seconds=cpu_seconds,
-            cpu_efficiency=cpu_efficiency,
+            cpu_utilization_ratio=cpu_utilization_ratio,
             total_memory_mb=total_memory,
             max_memory_mb=max_memory,
             min_memory_mb=min_memory,
@@ -321,7 +341,8 @@ class TaskGrouper:
             accelerator_types=accelerators,
             dependency_paths=dependency_paths,
             resource_utilization=resource_utilization,
-            event_throughput=event_throughput
+            event_throughput=event_throughput,
+            events_per_job=events_per_job
         )
 
     def _generate_groups_recursive(self, current_group: Set[str],
@@ -386,8 +407,8 @@ def validate_task_parameters(task_data: dict, task_name: str) -> None:
         raise ValueError(f"Missing required parameters for {task_name}: {', '.join(missing_parameters)}")
 
 
-def get_events_per_job(task_data: dict, tasks: Dict[str, Task], task_name: str) -> int:
-    """Recursively get EventsPerJob from task or its input task.
+def calculate_events_per_job(task_data: dict, tasks: Dict[str, Task], task_name: str) -> int:
+    """Calculate optimal events per job based on target wallclock time.
     
     Args:
         task_data: Dictionary containing the task specification
@@ -395,16 +416,19 @@ def get_events_per_job(task_data: dict, tasks: Dict[str, Task], task_name: str) 
         task_name: Name of the current task
         
     Returns:
-        Number of events per job
+        Number of events per job that would result in target wallclock time
     """
-    if "EventsPerJob" in task_data:
-        return task_data["EventsPerJob"]
+    # Convert target wallclock time to seconds
+    target_wallclock_seconds = TARGET_WALLCLOCK_TIME_HOURS * 3600
     
-    input_task = task_data.get("InputTask")
-    if input_task and input_task in tasks:
-        return get_events_per_job(tasks[input_task].resources.__dict__, tasks, input_task)
+    # Get time per event for this task
+    time_per_event = task_data["TimePerEvent"]
     
-    raise ValueError(f"No EventsPerJob found for {task_name} or any of its input tasks")
+    # Calculate events per job that would result in target wallclock time
+    events_per_job = int(target_wallclock_seconds / time_per_event)
+
+    # Ensure we have at least 1 event per job
+    return max(1, events_per_job)
 
 
 def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str, Task]]:
@@ -432,6 +456,9 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         time_per_event = task_data["TimePerEvent"]
         events_per_second = 1 / time_per_event
 
+        # Calculate events per job based on target wallclock time
+        events_per_job = calculate_events_per_job(task_data, tasks, task_name)
+
         # Create TaskResources
         resources = TaskResources(
             os_version=os_version,
@@ -442,7 +469,7 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             events_per_second=events_per_second,
             time_per_event=time_per_event,
             size_per_event=task_data["SizePerEvent"],
-            input_events=task_data.get("EventsPerJob", None) 
+            input_events=events_per_job
         )
 
         # Create Task
@@ -453,20 +480,12 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             output_tasks=set()  # Will be populated later
         )
 
-    # Add output tasks and resolve input events
+    # Add output tasks
     for task_name, task in tasks.items():
-        # Handle output tasks
         if task.input_task:
             if tasks[task.input_task].output_tasks is None:
                 tasks[task.input_task].output_tasks = set()
             tasks[task.input_task].output_tasks.add(task_name)
-        
-        # Resolve input events
-        if task.resources.input_events is None and task.input_task:
-            input_task = tasks[task.input_task]
-            task.resources.input_events = input_task.resources.input_events
-            if task.resources.input_events is None:
-                raise ValueError(f"No EventsPerJob found for {task_name} or any of its input tasks")
     
     # Print content of each task
     for task_name, task in tasks.items():

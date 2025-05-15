@@ -14,27 +14,29 @@ def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     
     # Extract metrics
     group_ids = []
-    cpu_efficiencies = []
+    cpu_utilization_ratios = []
     memory_occupancies = []
     resource_utilizations = []
     group_sizes = []
+    events_per_job = []
     
     for group in groups:
         group_ids.append(group["group_id"])
-        cpu_efficiencies.append(group["resource_metrics"]["cpu"]["efficiency"])
+        cpu_utilization_ratios.append(group["resource_metrics"]["cpu"]["utilization_ratio"])
         memory_occupancies.append(group["resource_metrics"]["memory"]["occupancy"])
         resource_utilizations.append(group["utilization_metrics"]["resource_utilization"])
         group_sizes.append(len(group["task_ids"]))
+        events_per_job.append(group["events_per_job"])
     
     # Create figure with subplots
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
     fig.suptitle("Resource Utilization Analysis", fontsize=16)
     
-    # Plot 1: CPU Efficiency vs Group Size
-    sns.scatterplot(x=group_sizes, y=cpu_efficiencies, ax=axes[0, 0])
-    axes[0, 0].set_title("CPU Efficiency vs Group Size")
+    # Plot 1: CPU Utilization Ratio vs Group Size
+    sns.scatterplot(x=group_sizes, y=cpu_utilization_ratios, ax=axes[0, 0])
+    axes[0, 0].set_title("CPU Utilization Ratio vs Group Size")
     axes[0, 0].set_xlabel("Number of Tasks in Group")
-    axes[0, 0].set_ylabel("CPU Efficiency")
+    axes[0, 0].set_ylabel("CPU Utilization Ratio")
     axes[0, 0].grid(True)
     
     # Plot 2: Memory Occupancy vs Group Size
@@ -51,11 +53,11 @@ def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     axes[1, 0].set_ylabel("Resource Utilization")
     axes[1, 0].grid(True)
     
-    # Plot 4: CPU Efficiency vs Memory Occupancy
-    sns.scatterplot(x=cpu_efficiencies, y=memory_occupancies, 
-                   size=group_sizes, sizes=(50, 200), ax=axes[1, 1])
-    axes[1, 1].set_title("CPU Efficiency vs Memory Occupancy")
-    axes[1, 1].set_xlabel("CPU Efficiency")
+    # Plot 4: CPU Utilization Ratio vs Memory Occupancy
+    sns.scatterplot(x=cpu_utilization_ratios, y=memory_occupancies, 
+                   size=events_per_job, sizes=(50, 200), ax=axes[1, 1])
+    axes[1, 1].set_title("CPU Utilization Ratio vs Memory Occupancy\n(size indicates events per job)")
+    axes[1, 1].set_xlabel("CPU Utilization Ratio")
     axes[1, 1].set_ylabel("Memory Occupancy")
     axes[1, 1].grid(True)
     
@@ -166,22 +168,24 @@ def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
     # Extract metrics
     metrics = {
         "Group Size": [],
-        "CPU Efficiency": [],
+        "CPU Utilization Ratio": [],
         "Memory Occupancy": [],
         "Resource Utilization": [],
         "Total Throughput": [],
         "Total Output Size": [],
+        "Events per Job": [],
         "Dependency Paths": []
     }
     
     for group in groups:
         metrics["Group Size"].append(len(group["task_ids"]))
-        metrics["CPU Efficiency"].append(group["resource_metrics"]["cpu"]["efficiency"])
+        metrics["CPU Utilization Ratio"].append(group["resource_metrics"]["cpu"]["utilization_ratio"])
         metrics["Memory Occupancy"].append(group["resource_metrics"]["memory"]["occupancy"])
         metrics["Resource Utilization"].append(group["utilization_metrics"]["resource_utilization"])
         metrics["Total Throughput"].append(group["resource_metrics"]["throughput"]["total_eps"])
         metrics["Total Output Size"].append(group["resource_metrics"]["io"]["total_output_mb"])
         metrics["Dependency Paths"].append(len(group["dependency_paths"]))
+        metrics["Events per Job"].append(group["events_per_job"])
     
     # Create correlation matrix
     df = pd.DataFrame(metrics)
