@@ -14,11 +14,9 @@ def parse_metrics(json_file):
         row = {
             'group_id': group['group_id'],
             'task_ids': ', '.join(group['task_ids']),
-            'cpu_total_cores': group['resource_metrics']['cpu']['total_cores'],
             'cpu_max_cores': group['resource_metrics']['cpu']['max_cores'],
             'cpu_utilization_ratio': group['resource_metrics']['cpu']['utilization_ratio'],
             'cpu_seconds': group['resource_metrics']['cpu']['cpu_seconds'],
-            'memory_total_mb': group['resource_metrics']['memory']['total_mb'],
             'memory_max_mb': group['resource_metrics']['memory']['max_mb'],
             'memory_min_mb': group['resource_metrics']['memory']['min_mb'],
             'memory_occupancy': group['resource_metrics']['memory']['occupancy'],

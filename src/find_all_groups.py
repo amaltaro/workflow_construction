@@ -109,12 +109,10 @@ class GroupMetrics:
     group_id: str
     task_ids: Set[str]
     # CPU metrics
-    total_cpu_cores: int
     max_cpu_cores: int
     cpu_seconds: float  # Total CPU-seconds required
     cpu_utilization_ratio: float  # Ratio of CPU cores utilized to CPU cores allocated over time
     # Memory metrics
-    total_memory_mb: int
     max_memory_mb: int
     min_memory_mb: int
     memory_occupancy: float  # Ratio of total memory used to max memory allocated
@@ -142,13 +140,11 @@ class GroupMetrics:
             "task_ids": sorted(list(self.task_ids)),
             "resource_metrics": {
                 "cpu": {
-                    "total_cores": self.total_cpu_cores,
                     "max_cores": self.max_cpu_cores,
                     "cpu_seconds": self.cpu_seconds,
                     "utilization_ratio": self.cpu_utilization_ratio
                 },
                 "memory": {
-                    "total_mb": self.total_memory_mb,
                     "max_mb": self.max_memory_mb,
                     "min_mb": self.min_memory_mb,
                     "occupancy": self.memory_occupancy
@@ -242,7 +238,6 @@ class TaskGrouper:
             task.resources.input_events = events_per_job
 
         # Calculate CPU metrics
-        total_cores = sum(t.resources.cpu_cores for t in tasks)
         max_cores = max(t.resources.cpu_cores for t in tasks)
 
         # Calculate CPU utilization ratio
@@ -263,7 +258,6 @@ class TaskGrouper:
         cpu_seconds = weighted_cpu_utilization
 
         # Calculate memory metrics
-        total_memory = sum(t.resources.memory_mb for t in tasks)
         max_memory = max(t.resources.memory_mb for t in tasks)
         min_memory = min(t.resources.memory_mb for t in tasks)
 
@@ -325,11 +319,9 @@ class TaskGrouper:
         return GroupMetrics(
             group_id=f"group_{len(self.all_possible_groups)}",
             task_ids=group,
-            total_cpu_cores=total_cores,
             max_cpu_cores=max_cores,
             cpu_seconds=cpu_seconds,
             cpu_utilization_ratio=cpu_utilization_ratio,
-            total_memory_mb=total_memory,
             max_memory_mb=max_memory,
             min_memory_mb=min_memory,
             memory_occupancy=memory_occupancy,
