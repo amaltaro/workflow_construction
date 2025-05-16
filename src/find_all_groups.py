@@ -278,17 +278,18 @@ class TaskGrouper:
         memory_occupancy = time_weighted_avg_memory / max_memory if max_memory > 0 else 0.0
 
         # Calculate throughput metrics
-        total_duration = 0.0
-        weighted_throughput = 0.0
-        for task in tasks:
-            task_duration = task.resources.input_events * task.resources.time_per_event
-            total_duration += task_duration
-            weighted_throughput += task.resources.events_per_second * task_duration
+        total_events = sum(task.resources.input_events for task in tasks)
+        total_throughput = total_events / cpu_seconds if cpu_seconds > 0 else 0.0
 
-        # Calculate time-weighted average throughput
-        total_throughput = weighted_throughput / total_duration if total_duration > 0 else 0.0
-        max_throughput = max(t.resources.events_per_second for t in tasks)
-        min_throughput = min(t.resources.events_per_second for t in tasks)
+        # For individual task throughput
+        task_throughputs = []
+        for task in tasks:
+            task_cpu_seconds = task.resources.cpu_cores * task.resources.time_per_event * task.resources.input_events
+            task_throughput = task.resources.input_events / task_cpu_seconds if task_cpu_seconds > 0 else 0.0
+            task_throughputs.append(task_throughput)
+
+        max_throughput = max(task_throughputs)
+        min_throughput = min(task_throughputs)
 
         # Calculate I/O metrics with storage rules
         total_output_size = 0.0
