@@ -2,29 +2,32 @@
     "Comments": "Group 1: ['Task1', 'Task2']",
     "NumTasks": 3,
     "Task1": {
+        "KeepOutput": false,
         "Memory": 2000,
         "Multicore": 1,
         "RequiresGPU": "forbidden",
         "ScramArch": ["el9_amd64_gcc11"],
-        "SizePerEvent": 10,
+        "SizePerEvent": 200,
         "TimePerEvent": 10
     },
     "Task2": {
+        "KeepOutput": false,
         "InputTask": "Task1",
-        "Memory": 3000,
+        "Memory": 4000,
         "Multicore": 2,
         "RequiresGPU": "forbidden",
         "ScramArch": ["el9_amd64_gcc11"],
-        "SizePerEvent": 15,
+        "SizePerEvent": 300,
         "TimePerEvent": 20
     },
     "Task3": {
+        "KeepOutput": true,
         "InputTask": "Task2",
         "Memory": 3000,
         "Multicore": 2,
         "RequiresGPU": "forbidden",
         "ScramArch": ["el9_amd64_gcc11"],
-        "SizePerEvent": 10,
+        "SizePerEvent": 50,
         "TimePerEvent": 10
     }
  }
