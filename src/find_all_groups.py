@@ -51,6 +51,7 @@ class TaskResources:
     time_per_event: float
     size_per_event: float
     input_events: int
+    keep_output: bool  # Whether the task's output needs to be kept in shared storage
 
 
 @dataclass
@@ -62,6 +63,7 @@ class Task:
     resources: TaskResources
     input_task: Optional[str] = None
     output_tasks: Set[str] = None
+    order: int = 0  # Order of the task in the workflow
 
 
 class GroupScore:
@@ -288,14 +290,26 @@ class TaskGrouper:
         max_throughput = max(t.resources.events_per_second for t in tasks)
         min_throughput = min(t.resources.events_per_second for t in tasks)
 
-        # Calculate I/O metrics
+        # Calculate I/O metrics with storage rules
         total_output_size = 0.0
         max_output_size = 0.0
-        for task in tasks:
+        is_single_task = len(tasks) == 1
+
+        # Calculate output sizes based on storage rules
+        for i, task in enumerate(tasks):
             # Convert KB to MB for consistency with other memory metrics
             task_output_size = (task.resources.input_events * task.resources.size_per_event) / 1024.0
-            total_output_size += task_output_size
-            max_output_size = max(max_output_size, task_output_size)
+
+            # Add to total if:
+            # * it is a single task
+            # * it has to save the output to the storage
+            # * it is the last task
+            if is_single_task or task.resources.keep_output:
+                total_output_size += task_output_size
+                max_output_size = max(max_output_size, task_output_size)
+            elif i + 1 == len(tasks): # is it the last task?
+                total_output_size += task_output_size
+                max_output_size = max(max_output_size, task_output_size)
 
         # Calculate accelerator metrics
         accelerators = set(t.resources.accelerator for t in tasks if t.resources.accelerator)
@@ -359,6 +373,19 @@ class TaskGrouper:
         if not remaining_tasks:
             return
 
+        # First, generate all single-task groups in order
+        if not current_group:  # Only do this at the root level
+            # Sort tasks by their order
+            sorted_tasks = sorted(remaining_tasks, key=lambda t: self.tasks[t].order)
+            for task in sorted_tasks:
+                single_group = {task}
+                frozen_group = frozenset(single_group)
+                if frozen_group not in seen_groups:
+                    seen_groups.add(frozen_group)
+                    metrics = self._calculate_group_metrics(single_group)
+                    self.all_possible_groups.append(metrics)
+
+        # Then proceed with multi-task groups
         for task in remaining_tasks:
             # Check if task can be added to current group
             if not current_group or all(self._can_be_grouped(self.tasks[t], self.tasks[task]) 
@@ -461,15 +488,17 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             events_per_second=events_per_second,
             time_per_event=time_per_event,
             size_per_event=task_data["SizePerEvent"],
-            input_events=events_per_job
+            input_events=events_per_job,
+            keep_output=task_data.get("KeepOutput", True)  # Default to True if not specified
         )
 
-        # Create Task
+        # Create Task with order information
         tasks[task_name] = Task(
             id=task_name,
             resources=resources,
             input_task=task_data.get("InputTask", None),
-            output_tasks=set()  # Will be populated later
+            output_tasks=set(),  # Will be populated later
+            order=i  # Store the order based on task number
         )
 
     # Add output tasks
