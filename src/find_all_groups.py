@@ -223,7 +223,8 @@ class TaskGrouper:
 
     def _calculate_group_metrics(self, group: Set[str]) -> GroupMetrics:
         """Calculate detailed metrics for a group of tasks"""
-        print(f"Calculating group metrics for {group}")
+        group_id = f"group_{len(self.all_possible_groups)}"
+        print(f"Calculating group metrics for {group_id} with tasks {group}")
         tasks = [self.tasks[task_id] for task_id in group]
         
         # Calculate total time per event for the entire group
@@ -332,7 +333,7 @@ class TaskGrouper:
         event_throughput = total_throughput
 
         return GroupMetrics(
-            group_id=f"group_{len(self.all_possible_groups)}",
+            group_id=group_id,
             task_ids=group,
             max_cpu_cores=max_cores,
             cpu_seconds=cpu_seconds,
@@ -389,7 +390,7 @@ class TaskGrouper:
         # Then proceed with multi-task groups
         for task in remaining_tasks:
             # Check if task can be added to current group
-            if not current_group or all(self._can_be_grouped(self.tasks[t], self.tasks[task]) 
+            if not current_group or all(self._can_be_grouped(self.tasks[t], self.tasks[task])
                                      for t in current_group):
                 new_group = current_group | {task}
                 if self._all_dependency_paths_within_group(new_group):
@@ -451,14 +452,148 @@ def calculate_events_per_job(task_data: dict, tasks: Dict[str, Task], task_name:
     return max(1, events_per_job)
 
 
-def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str, Task]]:
+def find_all_workflow_constructions(grouper: TaskGrouper) -> List[List[GroupMetrics]]:
+    """Find all possible ways to run the workflow using the given groups.
+
+    Args:
+        grouper: TaskGrouper instance containing the DAG and groups
+
+    Returns:
+        List of lists, where each inner list represents a valid workflow construction
+        (a set of groups that together contain all tasks, respecting dependencies)
+    """
+    # Get all unique task IDs from all groups
+    all_tasks = set()
+    for group in grouper.all_possible_groups:
+        all_tasks.update(group.task_ids)
+
+    # print(f"\nAll tasks that need to be covered: {all_tasks}")
+
+    # Get topologically sorted tasks
+    sorted_tasks = list(nx.topological_sort(grouper.dag))
+    print(f"Topologically sorted tasks: {sorted_tasks}")
+
+    # Find all possible combinations of groups that cover all tasks
+    valid_constructions = []
+
+    def get_available_tasks(construction: List[GroupMetrics]) -> Set[str]:
+        """Get tasks that are available to be added to the construction.
+        A task is available if all its dependencies are already in the construction.
+        """
+        # Get all tasks already in the construction
+        tasks_in_construction = set()
+        for group in construction:
+            tasks_in_construction.update(group.task_ids)
+
+        # Find tasks whose dependencies are all satisfied
+        available_tasks = set()
+        for task in all_tasks - tasks_in_construction:
+            predecessors = set(nx.ancestors(grouper.dag, task))
+            if predecessors.issubset(tasks_in_construction):
+                available_tasks.add(task)
+
+        return available_tasks
+
+    def get_valid_groups(construction: List[GroupMetrics], available_tasks: Set[str]) -> List[GroupMetrics]:
+        """Get all groups that could be added to the construction.
+        A group is valid if:
+        1. It contains at least one available task
+        2. It doesn't contain any task already in the construction
+        """
+        tasks_in_construction = set()
+        for group in construction:
+            tasks_in_construction.update(group.task_ids)
+
+        valid_groups = []
+        for group in grouper.all_possible_groups:
+            # Check if group contains any available task and doesn't overlap with current construction
+            if group.task_ids & available_tasks and not (group.task_ids & tasks_in_construction):
+                valid_groups.append(group)
+
+        return valid_groups
+
+    def find_constructions(current_construction: List[GroupMetrics],
+                          start_idx: int) -> None:
+        """Recursively find all valid workflow constructions.
+
+        Args:
+            current_construction: Current partial construction being built
+            start_idx: Index to start looking for next group from
+        """
+        # Get tasks already in the construction
+        tasks_in_construction = set()
+        for group in current_construction:
+            tasks_in_construction.update(group.task_ids)
+
+        # If all tasks are covered, we have a valid construction
+        if tasks_in_construction == all_tasks:
+            # print(f"Valid construction found: {[g.group_id for g in current_construction]}")
+            valid_constructions.append(current_construction.copy())
+            return
+
+        # Get tasks that are available to be added
+        available_tasks = get_available_tasks(current_construction)
+        if not available_tasks:
+            return
+
+        # Get all valid groups that could be added
+        valid_groups = get_valid_groups(current_construction, available_tasks)
+
+        # Try adding each valid group
+        for group in valid_groups:
+            current_construction.append(group)
+            find_constructions(current_construction, start_idx + 1)
+            current_construction.pop()
+
+    # Start the recursive search
+    find_constructions([], 0)
+
+    # Sort constructions by number of groups (ascending) and then by event throughput (descending)
+    valid_constructions.sort(key=lambda x: (len(x), -sum(g.event_throughput for g in x)))
+
+    print(f"\nFound {len(valid_constructions)} valid constructions:")
+    for i, construction in enumerate(valid_constructions, 1):
+        print(f"Construction {i}: {[g.group_id for g in construction]}")
+        # Print tasks in each group for verification
+        for group in construction:
+            print(f"  {group.group_id}: {group.task_ids}")
+
+    return valid_constructions
+
+
+def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
+    """Calculate overall workflow metrics for a given construction.
+
+    Args:
+        construction: List of groups representing a workflow construction
+
+    Returns:
+        Dictionary containing workflow metrics
+    """
+    # Calculate total events and total CPU time
+    total_events = sum(group.events_per_job for group in construction)
+    total_cpu_time = sum(group.cpu_seconds for group in construction)
+
+    # Calculate overall event throughput
+    event_throughput = total_events / total_cpu_time if total_cpu_time > 0 else 0.0
+
+    return {
+        "total_events": total_events,
+        "total_cpu_time": total_cpu_time,
+        "event_throughput": event_throughput,
+        "num_groups": len(construction),
+        "groups": [group.group_id for group in construction]
+    }
+
+
+def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str, Task], List[dict]]:
     """Create a workflow of tasks from JSON data and generate all possible task groups with metrics.
 
     Args:
         workflow_data: Dictionary containing the workflow specification
 
     Returns:
-        Tuple of (List of group metrics dictionaries, Dictionary of tasks)
+        Tuple of (List of group metrics dictionaries, Dictionary of tasks, List of construction metrics)
     """
     # Create tasks dictionary
     tasks = {}
@@ -516,7 +651,22 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
     # Create task grouper and generate all possible groups
     grouper = TaskGrouper(tasks)
     grouper.generate_all_possible_groups()
-    
-    # Return group metrics and tasks
-    return grouper.get_group_metrics(), tasks
+
+    # Find all possible workflow constructions
+    all_constructions = find_all_workflow_constructions(grouper)
+
+    # Calculate metrics for each construction
+    construction_metrics = [calculate_workflow_metrics(construction) for construction in all_constructions]
+
+    # Print the results
+    print("\nPossible workflow constructions and their metrics:")
+    for i, metrics in enumerate(construction_metrics, 1):
+        print(f"\nConstruction {i}:")
+        print(f"  Groups: {metrics['groups']}")
+        print(f"  Total Events: {metrics['total_events']}")
+        print(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds")
+        print(f"  Event Throughput: {metrics['event_throughput']:.2f} events/second")
+
+    # Return group metrics, tasks, and construction metrics
+    return grouper.get_group_metrics(), tasks, construction_metrics
 
