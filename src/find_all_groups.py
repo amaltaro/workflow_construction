@@ -471,7 +471,7 @@ def find_all_workflow_constructions(grouper: TaskGrouper) -> List[List[GroupMetr
 
     # Get topologically sorted tasks
     sorted_tasks = list(nx.topological_sort(grouper.dag))
-    print(f"Topologically sorted tasks: {sorted_tasks}")
+    print(f"\nTopologically sorted tasks: {sorted_tasks}")
 
     # Find all possible combinations of groups that cover all tasks
     valid_constructions = []
@@ -551,7 +551,7 @@ def find_all_workflow_constructions(grouper: TaskGrouper) -> List[List[GroupMetr
     # Sort constructions by number of groups (ascending) and then by event throughput (descending)
     valid_constructions.sort(key=lambda x: (len(x), -sum(g.event_throughput for g in x)))
 
-    print(f"\nFound {len(valid_constructions)} valid constructions:")
+    print(f"Found {len(valid_constructions)} valid constructions:")
     for i, construction in enumerate(valid_constructions, 1):
         print(f"Construction {i}: {[g.group_id for g in construction]}")
         # Print tasks in each group for verification
@@ -571,18 +571,31 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
         Dictionary containing workflow metrics
     """
     # Calculate total events and total CPU time
-    total_events = sum(group.events_per_job for group in construction)
+    # Each task in a group processes the same number of events
+    total_events = sum(len(group.task_ids) * group.events_per_job for group in construction)
     total_cpu_time = sum(group.cpu_seconds for group in construction)
 
     # Calculate overall event throughput
     event_throughput = total_events / total_cpu_time if total_cpu_time > 0 else 0.0
+
+    # Create detailed group information
+    group_details = []
+    for group in construction:
+        group_details.append({
+            "group_id": group.group_id,
+            "tasks": sorted(list(group.task_ids)),
+            "events_per_task": group.events_per_job,
+            "total_events": len(group.task_ids) * group.events_per_job,
+            "cpu_seconds": group.cpu_seconds
+        })
 
     return {
         "total_events": total_events,
         "total_cpu_time": total_cpu_time,
         "event_throughput": event_throughput,
         "num_groups": len(construction),
-        "groups": [group.group_id for group in construction]
+        "groups": [group.group_id for group in construction],
+        "group_details": group_details
     }
 
 
@@ -666,6 +679,13 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Total Events: {metrics['total_events']}")
         print(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds")
         print(f"  Event Throughput: {metrics['event_throughput']:.2f} events/second")
+        print("  Group Details:")
+        for group in metrics['group_details']:
+            print(f"    {group['group_id']}:")
+            print(f"      Tasks: {group['tasks']}")
+            print(f"      Events per Task: {group['events_per_task']}")
+            print(f"      Total Events: {group['total_events']}")
+            print(f"      CPU Time: {group['cpu_seconds']:.2f} seconds")
 
     # Return group metrics, tasks, and construction metrics
     return grouper.get_group_metrics(), tasks, construction_metrics
