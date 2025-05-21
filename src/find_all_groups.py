@@ -635,6 +635,32 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
     # Calculate overall event throughput
     event_throughput = total_events / total_cpu_time if total_cpu_time > 0 else 0.0
 
+    # Calculate total data volumes
+    total_input_data = sum(group.input_data_mb for group in construction)
+    total_output_data = sum(group.output_data_mb for group in construction)
+    total_stored_data = sum(group.stored_data_mb for group in construction)
+
+    # Find the entry point group in the construction
+    # The entry point group is the one that contains the entry point task of the first group
+    # (since the first group's entry point task is the DAG's entry point)
+    entry_point_group = next((group for group in construction
+                            if construction[0].entry_point_task in group.task_ids), None)
+
+    # Get initial input events from the entry point group
+    initial_input_events = entry_point_group.events_per_job if entry_point_group else 0
+
+    # Calculate stored data per event ratio based on initial input events
+    # For each group, we need to scale its stored data based on the ratio of its events to initial input events
+    scaled_stored_data = 0.0
+    for group in construction:
+        # Calculate how many times this group's events need to be scaled to match initial input events
+        scale_factor = initial_input_events / group.events_per_job if group.events_per_job > 0 else 0
+        # Scale the group's stored data accordingly
+        scaled_stored_data += group.stored_data_mb * scale_factor
+
+    # Calculate final stored data per event ratio
+    stored_data_per_event = scaled_stored_data / initial_input_events if initial_input_events > 0 else 0.0
+
     # Create detailed group information
     group_details = []
     for group in construction:
@@ -643,13 +669,21 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
             "tasks": sorted(list(group.task_ids)),
             "events_per_task": group.events_per_job,
             "total_events": len(group.task_ids) * group.events_per_job,
-            "cpu_seconds": group.cpu_seconds
+            "cpu_seconds": group.cpu_seconds,
+            "input_data_mb": group.input_data_mb,
+            "output_data_mb": group.output_data_mb,
+            "stored_data_mb": group.stored_data_mb
         })
 
     return {
         "total_events": total_events,
         "total_cpu_time": total_cpu_time,
         "event_throughput": event_throughput,
+        "total_input_data_mb": total_input_data,
+        "total_output_data_mb": total_output_data,
+        "total_stored_data_mb": total_stored_data,
+        "stored_data_per_event_mb": stored_data_per_event,
+        "initial_input_events": initial_input_events,  # Add this for reference
         "num_groups": len(construction),
         "groups": [group.group_id for group in construction],
         "group_details": group_details
@@ -736,6 +770,10 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Total Events: {metrics['total_events']}")
         print(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds")
         print(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second")
+        print(f"  Total Input Data: {metrics['total_input_data_mb']:.2f} MB")
+        print(f"  Total Output Data: {metrics['total_output_data_mb']:.2f} MB")
+        print(f"  Total Stored Data: {metrics['total_stored_data_mb']:.2f} MB")
+        print(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event")
         print("  Group Details:")
         for group in metrics['group_details']:
             print(f"    {group['group_id']}:")
@@ -743,6 +781,9 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             print(f"      Events per Task: {group['events_per_task']}")
             print(f"      Total Events: {group['total_events']}")
             print(f"      CPU Time: {group['cpu_seconds']:.2f} seconds")
+            print(f"      Input Data: {group['input_data_mb']:.2f} MB")
+            print(f"      Output Data: {group['output_data_mb']:.2f} MB")
+            print(f"      Stored Data: {group['stored_data_mb']:.2f} MB")
 
     # Return group metrics, tasks, and construction metrics
     return grouper.get_group_metrics(), tasks, construction_metrics

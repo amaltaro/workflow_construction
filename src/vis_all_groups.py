@@ -207,6 +207,61 @@ def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
     plt.savefig(os.path.join(output_dir, "metric_correlation.png"))
     plt.close()
 
+def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = "plots"):
+    """Plot storage efficiency metrics for workflow constructions"""
+    print(f"Plotting storage efficiency analysis for {len(construction_metrics)} constructions")
+
+    # Extract metrics
+    num_groups = []
+    event_throughputs = []
+    stored_data_per_event = []
+    total_stored_data = []
+    total_events = []
+
+    for metrics in construction_metrics:
+        num_groups.append(metrics["num_groups"])
+        event_throughputs.append(metrics["event_throughput"])
+        stored_data_per_event.append(metrics["stored_data_per_event_mb"])
+        total_stored_data.append(metrics["total_stored_data_mb"])
+        total_events.append(metrics["total_events"])
+
+    # Create figure with subplots
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig.suptitle("Storage Efficiency Analysis", fontsize=16)
+
+    # Plot 1: Stored Data per Event vs Number of Groups
+    sns.scatterplot(x=num_groups, y=stored_data_per_event, ax=axes[0, 0])
+    axes[0, 0].set_title("Storage Efficiency vs Number of Groups")
+    axes[0, 0].set_xlabel("Number of Groups")
+    axes[0, 0].set_ylabel("Stored Data per Event (MB)")
+    axes[0, 0].grid(True)
+
+    # Plot 2: Stored Data per Event vs Event Throughput
+    sns.scatterplot(x=event_throughputs, y=stored_data_per_event, ax=axes[0, 1])
+    axes[0, 1].set_title("Storage Efficiency vs Event Throughput")
+    axes[0, 1].set_xlabel("Event Throughput (events/second)")
+    axes[0, 1].set_ylabel("Stored Data per Event (MB)")
+    axes[0, 1].grid(True)
+
+    # Plot 3: Total Stored Data vs Total Events
+    sns.scatterplot(x=total_events, y=total_stored_data,
+                   size=num_groups, sizes=(50, 200), ax=axes[1, 0])
+    axes[1, 0].set_title("Total Stored Data vs Total Events\n(size indicates number of groups)")
+    axes[1, 0].set_xlabel("Total Events")
+    axes[1, 0].set_ylabel("Total Stored Data (MB)")
+    axes[1, 0].grid(True)
+
+    # Plot 4: Stored Data per Event Distribution
+    sns.histplot(stored_data_per_event, bins=20, ax=axes[1, 1])
+    axes[1, 1].set_title("Stored Data per Event Distribution")
+    axes[1, 1].set_xlabel("Stored Data per Event (MB)")
+    axes[1, 1].set_ylabel("Count")
+    axes[1, 1].grid(True)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "storage_efficiency.png"))
+    plt.close()
+
 def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: str = "plots"):
     """Plot metrics for different workflow constructions"""
     print(f"Plotting workflow construction analysis for {len(construction_metrics)} constructions")
@@ -216,6 +271,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     event_throughputs = []
     total_events = []
     total_cpu_times = []
+    stored_data_per_event = []
     group_combinations = []
 
     for metrics in construction_metrics:
@@ -223,6 +279,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
         event_throughputs.append(metrics["event_throughput"])
         total_events.append(metrics["total_events"])
         total_cpu_times.append(metrics["total_cpu_time"])
+        stored_data_per_event.append(metrics["stored_data_per_event_mb"])
         group_combinations.append(" + ".join(metrics["groups"]))
 
     # Create figure with subplots
@@ -238,8 +295,8 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
 
     # Plot 2: Total Events vs Total CPU Time
     sns.scatterplot(x=total_cpu_times, y=total_events,
-                   size=num_groups, sizes=(50, 200), ax=axes[0, 1])
-    axes[0, 1].set_title("Total Events vs Total CPU Time\n(size indicates number of groups)")
+                   size=stored_data_per_event, sizes=(50, 200), ax=axes[0, 1])
+    axes[0, 1].set_title("Total Events vs Total CPU Time\n(size indicates stored data per event)")
     axes[0, 1].set_xlabel("Total CPU Time (seconds)")
     axes[0, 1].set_ylabel("Total Events")
     axes[0, 1].grid(True)
@@ -251,11 +308,12 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     axes[1, 0].set_ylabel("Count")
     axes[1, 0].grid(True)
 
-    # Plot 4: Group Size Distribution
-    sns.histplot(num_groups, bins=range(min(num_groups), max(num_groups) + 2), ax=axes[1, 1])
-    axes[1, 1].set_title("Number of Groups Distribution")
-    axes[1, 1].set_xlabel("Number of Groups")
-    axes[1, 1].set_ylabel("Count")
+    # Plot 4: Stored Data per Event vs Event Throughput
+    sns.scatterplot(x=event_throughputs, y=stored_data_per_event,
+                   size=num_groups, sizes=(50, 200), ax=axes[1, 1])
+    axes[1, 1].set_title("Storage Efficiency vs Event Throughput\n(size indicates number of groups)")
+    axes[1, 1].set_xlabel("Event Throughput (events/second)")
+    axes[1, 1].set_ylabel("Stored Data per Event (MB)")
     axes[1, 1].grid(True)
 
     plt.tight_layout()
@@ -276,7 +334,8 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
             f.write(f"  Total Events: {metrics['total_events']}\n")
             f.write(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
-            f.write(f"  Event Throughput: {metrics['event_throughput']:.2f} events/second\n\n")
+            f.write(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second\n")
+            f.write(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event\n\n")
 
 def visualize_groups(groups: List[Dict], construction_metrics: List[Dict], output_dir: str = "plots"):
     """Generate all visualizations for the task groups and workflow constructions"""
@@ -288,6 +347,7 @@ def visualize_groups(groups: List[Dict], construction_metrics: List[Dict], outpu
 
     # Create plots for workflow constructions
     plot_workflow_constructions(construction_metrics, output_dir)
+    plot_storage_efficiency(construction_metrics, output_dir)
 
     # Save raw data for further analysis
     print(f"Saving raw data for {len(groups)} groups and {len(construction_metrics)} constructions")
