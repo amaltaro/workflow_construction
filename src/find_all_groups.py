@@ -110,6 +110,8 @@ class GroupMetrics:
     """
     group_id: str
     task_ids: Set[str]
+    entry_point_task: str  # The first task to be executed in the group
+    exit_point_task: str   # The last task to be executed in the group
     # CPU metrics
     max_cpu_cores: int
     cpu_seconds: float  # Total CPU-seconds required
@@ -123,8 +125,9 @@ class GroupMetrics:
     max_throughput: float
     min_throughput: float
     # I/O metrics
-    total_output_size_mb: float
-    max_output_size_mb: float
+    input_data_mb: float  # Total input data volume in MB
+    output_data_mb: float  # Total output data volume in MB
+    stored_data_mb: float  # Total data volume that needs to be stored
     # Accelerator metrics
     accelerator_types: Set[str]
     # Dependency metrics
@@ -140,6 +143,8 @@ class GroupMetrics:
         return {
             "group_id": self.group_id,
             "task_ids": sorted(list(self.task_ids)),
+            "entry_point_task": self.entry_point_task,
+            "exit_point_task": self.exit_point_task,
             "resource_metrics": {
                 "cpu": {
                     "max_cores": self.max_cpu_cores,
@@ -157,8 +162,9 @@ class GroupMetrics:
                     "min_eps": self.min_throughput
                 },
                 "io": {
-                    "total_output_mb": self.total_output_size_mb,
-                    "max_output_mb": self.max_output_size_mb
+                    "input_data_mb": self.input_data_mb,
+                    "output_data_mb": self.output_data_mb,
+                    "stored_data_mb": self.stored_data_mb
                 },
                 "accelerator": {
                     "types": list(self.accelerator_types)
@@ -221,12 +227,61 @@ class TaskGrouper:
                             return False
         return True
 
+    def _find_entry_point_task(self, tasks: List[Task]) -> str:
+        """Find the entry point task in a group of tasks.
+
+        The entry point task is the first task to be executed in the group.
+        It is identified as a task that either:
+        - Has no input task, or
+        - Has an input task that is not in the current group
+
+        Args:
+            tasks: List of tasks in the group
+
+        Returns:
+            ID of the entry point task
+
+        Raises:
+            ValueError: If no entry point task is found (should never happen in a valid DAG)
+        """
+        for task in tasks:
+            if not task.input_task or task.input_task not in {t.id for t in tasks}:
+                return task.id
+        raise ValueError("No entry point task found in the group")
+
+    def _find_exit_point_task(self, tasks: List[Task]) -> str:
+        """Find the exit point task in a group of tasks.
+
+        The exit point task is the last task to be executed in the group.
+        It is identified as a task that either:
+        - Has no output tasks, or
+        - Has output tasks that are all outside the current group
+
+        Args:
+            tasks: List of tasks in the group
+
+        Returns:
+            ID of the exit point task
+
+        Raises:
+            ValueError: If no exit point task is found (should never happen in a valid DAG)
+        """
+        task_ids = {t.id for t in tasks}
+        for task in tasks:
+            if not task.output_tasks or all(output_task not in task_ids for output_task in task.output_tasks):
+                return task.id
+        raise ValueError("No exit point task found in the group")
+
     def _calculate_group_metrics(self, group: Set[str]) -> GroupMetrics:
         """Calculate detailed metrics for a group of tasks"""
         group_id = f"group_{len(self.all_possible_groups)}"
         print(f"Calculating group metrics for {group_id} with tasks {group}")
         tasks = [self.tasks[task_id] for task_id in group]
         
+        # Find entry and exit point tasks
+        entry_point_task = self._find_entry_point_task(tasks)
+        exit_point_task = self._find_exit_point_task(tasks)
+
         # Calculate total time per event for the entire group
         # TimePerEvent should already account for the actual performance with the given number of cores
         total_time_per_event = sum(task.resources.time_per_event for task in tasks)
@@ -293,25 +348,24 @@ class TaskGrouper:
         min_throughput = min(task_throughputs)
 
         # Calculate I/O metrics with storage rules
-        total_output_size = 0.0
-        max_output_size = 0.0
-        is_single_task = len(tasks) == 1
-
+        input_data_mb = 0.0
+        output_data_mb = 0.0
+        stored_data_mb = 0.0
+        # Calculate input data volume based on entry point task's input task
+        if self.tasks[entry_point_task].input_task:
+            input_task = self.tasks[self.tasks[entry_point_task].input_task]
+            input_data_mb = (input_task.resources.input_events * input_task.resources.size_per_event) / 1024.0
         # Calculate output sizes based on storage rules
-        for i, task in enumerate(tasks):
+        for task in tasks:
             # Convert KB to MB for consistency with other memory metrics
             task_output_size = (task.resources.input_events * task.resources.size_per_event) / 1024.0
+            output_data_mb += task_output_size
 
-            # Add to total if:
-            # * it is a single task
+            # Add to stored data if:
             # * it has to save the output to the storage
-            # * it is the last task
-            if is_single_task or task.resources.keep_output:
-                total_output_size += task_output_size
-                max_output_size = max(max_output_size, task_output_size)
-            elif i + 1 == len(tasks): # is it the last task?
-                total_output_size += task_output_size
-                max_output_size = max(max_output_size, task_output_size)
+            # * it is the exit point task of the group
+            if task.resources.keep_output or task.id == exit_point_task:
+                stored_data_mb += task_output_size
 
         # Calculate accelerator metrics
         accelerators = set(t.resources.accelerator for t in tasks if t.resources.accelerator)
@@ -335,6 +389,8 @@ class TaskGrouper:
         return GroupMetrics(
             group_id=group_id,
             task_ids=group,
+            entry_point_task=entry_point_task,
+            exit_point_task=exit_point_task,
             max_cpu_cores=max_cores,
             cpu_seconds=cpu_seconds,
             cpu_utilization_ratio=cpu_utilization_ratio,
@@ -344,8 +400,9 @@ class TaskGrouper:
             total_throughput=total_throughput,
             max_throughput=max_throughput,
             min_throughput=min_throughput,
-            total_output_size_mb=total_output_size,
-            max_output_size_mb=max_output_size,
+            input_data_mb=input_data_mb,
+            output_data_mb=output_data_mb,
+            stored_data_mb=stored_data_mb,
             accelerator_types=accelerators,
             dependency_paths=dependency_paths,
             resource_utilization=resource_utilization,
@@ -678,7 +735,7 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Groups: {metrics['groups']}")
         print(f"  Total Events: {metrics['total_events']}")
         print(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds")
-        print(f"  Event Throughput: {metrics['event_throughput']:.2f} events/second")
+        print(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second")
         print("  Group Details:")
         for group in metrics['group_details']:
             print(f"    {group['group_id']}:")

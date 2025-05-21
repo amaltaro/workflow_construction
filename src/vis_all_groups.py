@@ -72,16 +72,18 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
     total_throughputs = []
     max_throughputs = []
     min_throughputs = []
-    total_output_sizes = []
-    max_output_sizes = []
+    input_data_sizes = []
+    output_data_sizes = []
+    stored_data_sizes = []
 
     for group in groups:
         group_sizes.append(len(group["task_ids"]))
         total_throughputs.append(group["resource_metrics"]["throughput"]["total_eps"])
         max_throughputs.append(group["resource_metrics"]["throughput"]["max_eps"])
         min_throughputs.append(group["resource_metrics"]["throughput"]["min_eps"])
-        total_output_sizes.append(group["resource_metrics"]["io"]["total_output_mb"])
-        max_output_sizes.append(group["resource_metrics"]["io"]["max_output_mb"])
+        input_data_sizes.append(group["resource_metrics"]["io"]["input_data_mb"])
+        output_data_sizes.append(group["resource_metrics"]["io"]["output_data_mb"])
+        stored_data_sizes.append(group["resource_metrics"]["io"]["stored_data_mb"])
 
     # Create figure with subplots
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
@@ -103,19 +105,22 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
     axes[0, 1].legend()
     axes[0, 1].grid(True)
 
-    # Plot 3: Output Size vs Group Size
-    sns.scatterplot(x=group_sizes, y=total_output_sizes, ax=axes[1, 0])
-    axes[1, 0].set_title("Total Output Size vs Group Size")
+    # Plot 3: Data Size vs Group Size
+    axes[1, 0].scatter(group_sizes, input_data_sizes, label="Input Data", alpha=0.6)
+    axes[1, 0].scatter(group_sizes, output_data_sizes, label="Output Data", alpha=0.6)
+    axes[1, 0].scatter(group_sizes, stored_data_sizes, label="Stored Data", alpha=0.6)
+    axes[1, 0].set_title("Data Size vs Group Size")
     axes[1, 0].set_xlabel("Number of Tasks in Group")
-    axes[1, 0].set_ylabel("Total Output Size (MB)")
+    axes[1, 0].set_ylabel("Data Size (MB)")
+    axes[1, 0].legend()
     axes[1, 0].grid(True)
 
-    # Plot 4: Throughput vs Output Size
-    sns.scatterplot(x=total_throughputs, y=total_output_sizes, 
+    # Plot 4: Throughput vs Data Size
+    sns.scatterplot(x=total_throughputs, y=stored_data_sizes,
                    size=group_sizes, sizes=(50, 200), ax=axes[1, 1])
-    axes[1, 1].set_title("Throughput vs Output Size")
+    axes[1, 1].set_title("Throughput vs Stored Data Size")
     axes[1, 1].set_xlabel("Total Events per Second")
-    axes[1, 1].set_ylabel("Total Output Size (MB)")
+    axes[1, 1].set_ylabel("Stored Data Size (MB)")
     axes[1, 1].grid(True)
 
     plt.tight_layout()
@@ -171,7 +176,9 @@ def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
         "Memory Occupancy": [],
         "Resource Utilization": [],
         "Total Throughput": [],
-        "Total Output Size": [],
+        "Input Data Size": [],
+        "Output Data Size": [],
+        "Stored Data Size": [],
         "Events per Job": [],
         "Dependency Paths": []
     }
@@ -182,7 +189,9 @@ def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
         metrics["Memory Occupancy"].append(group["resource_metrics"]["memory"]["occupancy"])
         metrics["Resource Utilization"].append(group["utilization_metrics"]["resource_utilization"])
         metrics["Total Throughput"].append(group["resource_metrics"]["throughput"]["total_eps"])
-        metrics["Total Output Size"].append(group["resource_metrics"]["io"]["total_output_mb"])
+        metrics["Input Data Size"].append(group["resource_metrics"]["io"]["input_data_mb"])
+        metrics["Output Data Size"].append(group["resource_metrics"]["io"]["output_data_mb"])
+        metrics["Stored Data Size"].append(group["resource_metrics"]["io"]["stored_data_mb"])
         metrics["Dependency Paths"].append(len(group["dependency_paths"]))
         metrics["Events per Job"].append(group["events_per_job"])
 
