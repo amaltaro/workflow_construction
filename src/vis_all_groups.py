@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import numpy as np
+from vis_constructions import plot_workflow_topology
 
 def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     """Plot resource utilization metrics for all groups"""
@@ -607,6 +608,7 @@ def visualize_groups(groups: List[Dict], construction_metrics: List[Dict], outpu
     plot_workflow_constructions(construction_metrics, output_dir)
     plot_storage_efficiency(construction_metrics, output_dir)
     plot_workflow_comparison(construction_metrics, output_dir)
+    plot_workflow_topology(construction_metrics, output_dir)
 
     # Save raw data for further analysis
     print(f"Saving raw data for {len(groups)} groups and {len(construction_metrics)} constructions")
