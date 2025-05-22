@@ -382,14 +382,26 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
 
     # 1. Performance vs Storage Efficiency
     ax1 = fig.add_subplot(gs[0, 0])
+
+    # Create a discrete colormap for number of groups
+    unique_groups = np.unique(num_groups)
+    n_groups = len(unique_groups)
+    cmap = plt.colormaps['viridis'].resampled(n_groups)
+
+    # Create scatter plot with discrete colors
     scatter = ax1.scatter(event_throughputs, stored_data_per_event,
-                         c=num_groups, cmap='viridis',
+                         c=num_groups, cmap=cmap,
                          s=total_cpu_times/1000, alpha=0.6)
+
+    # Add colorbar with discrete ticks
+    cbar = plt.colorbar(scatter, ax=ax1, label="Number of Groups")
+    cbar.set_ticks(unique_groups)
+    cbar.set_ticklabels([f"{int(x)}" for x in unique_groups])
+
     ax1.set_xlabel("Event Throughput (events/second)")
     ax1.set_ylabel("Stored Data per Event (MB)")
     ax1.set_title("Performance vs Storage Efficiency\n(size=CPU time, color=num groups)")
     ax1.grid(True)
-    plt.colorbar(scatter, ax=ax1, label="Number of Groups")
 
     # 2. Data Flow Analysis
     ax2 = fig.add_subplot(gs[0, 1])
