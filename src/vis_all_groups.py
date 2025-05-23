@@ -380,8 +380,22 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     fig = plt.figure(figsize=(20, 20))
     gs = fig.add_gridspec(5, 2)
 
-    # 1. Performance vs Storage Efficiency
-    ax1 = fig.add_subplot(gs[0, 0])
+    # 1. Group Size Distribution (moved to top)
+    ax3 = fig.add_subplot(gs[0, :])
+    group_sizes = []
+    for metrics in construction_metrics:
+        sizes = [len(group["tasks"]) for group in metrics["group_details"]]
+        group_sizes.append(sizes)
+
+    # Create a box plot for group sizes
+    ax3.boxplot(group_sizes, tick_labels=[f"Const {i+1}" for i in range(len(construction_metrics))])
+    ax3.set_xlabel("Workflow Construction")
+    ax3.set_ylabel("Number of Tasks per Group")
+    ax3.set_title("Group Size Distribution")
+    ax3.grid(True)
+
+    # 2. Performance vs Storage Efficiency
+    ax1 = fig.add_subplot(gs[1, 0])
 
     # Create a discrete colormap for number of groups
     unique_groups = np.unique(num_groups)
@@ -403,13 +417,13 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax1.set_title("Performance vs Storage Efficiency\n(size=CPU time, color=num groups)")
     ax1.grid(True)
 
-    # 2. Data Flow Analysis
-    ax2 = fig.add_subplot(gs[0, 1])
+    # 3. Data Flow Analysis
+    ax2 = fig.add_subplot(gs[1, 1])
     x = np.arange(len(construction_metrics))
     width = 0.25
     ax2.bar(x - width, total_input_data, width, label='Input Data')
-    ax2.bar(x, total_stored_data, width, label='Stored Data')
-    ax2.bar(x + width, total_output_data, width, label='Output Data')
+    ax2.bar(x, total_output_data, width, label='Output Data')
+    ax2.bar(x + width, total_stored_data, width, label='Stored Data')
     ax2.set_xlabel("Workflow Construction")
     ax2.set_ylabel("Data Volume (MB)")
     ax2.set_title("Data Flow Analysis")
@@ -418,32 +432,23 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax2.legend()
     ax2.grid(True)
 
-    # 3. Group Composition Analysis
-    ax3 = fig.add_subplot(gs[1, :])
-    group_sizes = []
-    for metrics in construction_metrics:
-        sizes = [len(group["tasks"]) for group in metrics["group_details"]]
-        group_sizes.append(sizes)
-
-    # Create a box plot for group sizes
-    ax3.boxplot(group_sizes, tick_labels=[f"Const {i+1}" for i in range(len(construction_metrics))])
-    ax3.set_xlabel("Workflow Construction")
-    ax3.set_ylabel("Number of Tasks per Group")
-    ax3.set_title("Group Size Distribution")
-    ax3.grid(True)
-
-    # 4. Resource Utilization Analysis
+    # 4. CPU Utilization Analysis
     ax4 = fig.add_subplot(gs[2, 0])
     cpu_utilization = []
     for metrics in construction_metrics:
-        util = [group["cpu_seconds"] / metrics["total_cpu_time"]
-                for group in metrics["group_details"]]
+        # Get CPU utilization ratio for each group from the original groups data
+        util = []
+        for group_id in metrics["groups"]:
+            # Find the corresponding group in the original groups data
+            group_data = next((g for g in groups if g["group_id"] == group_id), None)
+            if group_data:
+                util.append(group_data["resource_metrics"]["cpu"]["utilization_ratio"])
         cpu_utilization.append(util)
 
     ax4.boxplot(cpu_utilization, tick_labels=[f"Const {i+1}" for i in range(len(construction_metrics))])
     ax4.set_xlabel("Workflow Construction")
-    ax4.set_ylabel("CPU Time Fraction")
-    ax4.set_title("CPU Utilization Distribution")
+    ax4.set_ylabel("CPU Utilization Ratio")
+    ax4.set_title("CPU Utilization Analysis\n(Actual CPU Usage / Allocated CPU)")
     ax4.grid(True)
 
     # 5. Event Processing Analysis
