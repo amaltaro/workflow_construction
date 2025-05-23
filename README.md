@@ -157,6 +157,48 @@ pip install matplotlib seaborn pandas
    - Shows correlations between all metrics
    - Helps identify relationships between different aspects of the grouping
 
+5. **Workflow Construction Analysis** (`workflow_comparison.png`):
+   - Group Size Distribution: Shows the distribution of tasks per group in each construction
+   - Performance vs Storage Efficiency: Scatter plot showing the trade-off between event throughput and stored data per event
+   - Data Flow Analysis: Bar plot comparing input, output, and stored data volumes across constructions
+   - Network Transfer Analysis: Shows the total data transferred between groups in each construction
+   - CPU Utilization Analysis: Box plot showing the distribution of CPU utilization ratios across groups
+   - Memory Utilization Analysis: Bar plot with error bars showing average memory occupancy and its variation
+   - Event Processing Distribution: Box plot showing the distribution of events processed per group
+   - Parallel Execution Analysis: Shows the parallel efficiency of each construction based on DAG dependencies
+
+6. **Storage Efficiency Analysis** (`storage_efficiency.png`):
+   - Storage Efficiency vs Number of Groups
+   - Storage Efficiency vs Event Throughput
+   - Total Stored Data vs Total Events
+   - Stored Data per Event Distribution
+
+7. **Workflow Constructions Analysis** (`workflow_constructions.png`):
+   - Event Throughput vs Number of Groups
+   - Total Events vs Total CPU Time
+   - Event Throughput Distribution
+   - Storage Efficiency vs Event Throughput
+
+8. **Workflow Topology** (`workflow_topology.png`):
+   - Visual representation of the DAG structure for each construction
+   - Shows task dependencies and grouping relationships
+
+Each visualization provides unique insights into different aspects of the workflow constructions:
+- Resource utilization and efficiency
+- Data flow and storage patterns
+- Parallel execution potential
+- Performance characteristics
+- Group size distributions
+- Network transfer requirements
+
+The visualizations help in:
+1. Comparing different workflow construction strategies
+2. Identifying optimal group sizes and compositions
+3. Understanding resource utilization patterns
+4. Analyzing data flow and storage requirements
+5. Evaluating parallel execution potential
+6. Making informed decisions about workflow optimization
+
 ### Metrics Tracked
 
 The visualization tool tracks and analyzes the following metrics:
@@ -191,6 +233,63 @@ The visualization tool tracks and analyzes the following metrics:
 #### Resource Utilization Metrics
 - Overall resource utilization efficiency
 - Event throughput
+
+#### Workflow Construction Metrics
+For each workflow construction, the following metrics are calculated and analyzed:
+
+1. **Group Composition Metrics**
+   - Number of groups in the construction
+   - Tasks per group distribution
+   - Group size statistics (min, max, average)
+
+2. **Performance Metrics**
+   - Event throughput (events processed per second)
+   - Total CPU time across all groups
+   - Parallel execution efficiency (ratio of sequential to parallel execution time)
+   - Critical path length (longest path in terms of CPU time)
+
+3. **Data Flow Metrics**
+   - Total input data volume (MB)
+   - Total output data volume (MB)
+   - Total stored data volume (MB)
+   - Stored data per event ratio
+   - Network transfer volume (sum of input and output data)
+
+4. **Resource Utilization Metrics**
+   - CPU utilization ratio per group (actual CPU usage / allocated CPU)
+   - Memory occupancy per group (actual memory usage / allocated memory)
+   - Average resource utilization across groups
+   - Standard deviation of resource utilization
+
+5. **Event Processing Metrics**
+   - Events per group distribution
+   - Total events processed
+   - Events per task statistics
+   - Event processing efficiency
+
+6. **Storage Efficiency Metrics**
+   - Storage efficiency (stored data per event)
+   - Storage utilization ratio
+   - Data retention patterns
+
+7. **Network Transfer Metrics**
+   - Total data transferred between groups
+   - Input/output data ratios
+   - Network transfer efficiency
+
+8. **Parallel Execution Metrics**
+   - Maximum parallel groups possible
+   - Sequential execution time
+   - Parallel execution time
+   - Parallel efficiency ratio
+
+These metrics help in:
+1. Evaluating the efficiency of different workflow constructions
+2. Identifying bottlenecks in resource utilization
+3. Understanding data flow patterns
+4. Optimizing group compositions
+5. Balancing performance and resource usage
+6. Making informed decisions about workflow optimization
 
 ### Usage
 
