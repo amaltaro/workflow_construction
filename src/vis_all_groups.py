@@ -381,7 +381,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     gs = fig.add_gridspec(5, 2)
 
     # 1. Group Size Distribution (moved to top)
-    ax3 = fig.add_subplot(gs[0, :])
+    ax3 = fig.add_subplot(gs[0, 0])
     group_sizes = []
     for metrics in construction_metrics:
         sizes = [len(group["tasks"]) for group in metrics["group_details"]]
@@ -395,7 +395,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax3.grid(True)
 
     # 2. Performance vs Storage Efficiency
-    ax1 = fig.add_subplot(gs[1, 0])
+    ax1 = fig.add_subplot(gs[0, 1])
 
     # Create a discrete colormap for number of groups
     unique_groups = np.unique(num_groups)
@@ -418,7 +418,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax1.grid(True)
 
     # 3. Data Flow Analysis
-    ax2 = fig.add_subplot(gs[1, 1])
+    ax2 = fig.add_subplot(gs[1, 0])
     x = np.arange(len(construction_metrics))
     width = 0.25
     ax2.bar(x - width, total_input_data, width, label='Input Data')
@@ -432,7 +432,23 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax2.legend()
     ax2.grid(True)
 
-    # 4. CPU Utilization Analysis
+    # 4. Network Transfer Analysis
+    ax7 = fig.add_subplot(gs[1, 1])
+    network_transfer = []
+    for metrics in construction_metrics:
+        # Calculate network transfer as sum of input and output data
+        transfer = metrics["total_input_data_mb"] + metrics["total_output_data_mb"]
+        network_transfer.append(transfer)
+
+    ax7.bar(range(len(construction_metrics)), network_transfer)
+    ax7.set_xlabel("Workflow Construction")
+    ax7.set_ylabel("Network Transfer (MB)")
+    ax7.set_title("Network Transfer Analysis")
+    ax7.set_xticks(range(len(construction_metrics)))
+    ax7.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax7.grid(True)
+
+    # 5. CPU Utilization Analysis
     ax4 = fig.add_subplot(gs[2, 0])
     cpu_utilization = []
     for metrics in construction_metrics:
@@ -451,8 +467,40 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax4.set_title("CPU Utilization Analysis\n(Actual CPU Usage / Allocated CPU)")
     ax4.grid(True)
 
-    # 5. Event Processing Analysis
-    ax5 = fig.add_subplot(gs[2, 1])
+    # 6. Memory Utilization Analysis
+    ax6 = fig.add_subplot(gs[2, 1])
+    memory_utilization = []
+    memory_std = []  # Store standard deviations
+    for metrics in construction_metrics:
+        # Get memory occupancy for each group from the original groups data
+        occupancies = []
+        for group_id in metrics["groups"]:
+            # Find the corresponding group in the original groups data
+            group_data = next((g for g in groups if g["group_id"] == group_id), None)
+            if group_data:
+                occupancies.append(group_data["resource_metrics"]["memory"]["occupancy"])
+        # Calculate average and standard deviation of memory occupancy
+        if occupancies:
+            avg_occupancy = sum(occupancies) / len(occupancies)
+            std_occupancy = np.std(occupancies)
+            memory_utilization.append(avg_occupancy)
+            memory_std.append(std_occupancy)
+        else:
+            memory_utilization.append(0)
+            memory_std.append(0)
+
+    # Create bar plot with error bars
+    x = range(len(construction_metrics))
+    ax6.bar(x, memory_utilization, yerr=memory_std, capsize=5)
+    ax6.set_xlabel("Workflow Construction")
+    ax6.set_ylabel("Memory Utilization Ratio")
+    ax6.set_title("Memory Utilization Analysis\n(Average Memory Occupancy ± Std Dev)")
+    ax6.set_xticks(x)
+    ax6.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax6.grid(True)
+
+    # 7. Event Processing Analysis
+    ax5 = fig.add_subplot(gs[3, 0])
     events_per_group = []
     for metrics in construction_metrics:
         events = [group["total_events"] for group in metrics["group_details"]]
@@ -464,41 +512,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax5.set_title("Event Processing Distribution")
     ax5.grid(True)
 
-    # 6. Memory Utilization Analysis
-    ax6 = fig.add_subplot(gs[3, 0])
-    memory_utilization = []
-    for metrics in construction_metrics:
-        # Calculate memory utilization as (total memory used) / (max memory available)
-        total_memory = sum(group["cpu_seconds"] * group.get("max_memory_mb", 0)
-                          for group in metrics["group_details"])
-        max_memory = max(group.get("max_memory_mb", 0) for group in metrics["group_details"])
-        memory_utilization.append(total_memory / max_memory if max_memory > 0 else 0)
-
-    ax6.bar(range(len(construction_metrics)), memory_utilization)
-    ax6.set_xlabel("Workflow Construction")
-    ax6.set_ylabel("Memory Utilization Ratio")
-    ax6.set_title("Memory Utilization Analysis")
-    ax6.set_xticks(range(len(construction_metrics)))
-    ax6.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
-    ax6.grid(True)
-
-    # 7. Network Transfer Analysis
-    ax7 = fig.add_subplot(gs[3, 1])
-    network_transfer = []
-    for metrics in construction_metrics:
-        # Calculate network transfer as sum of input and output data
-        transfer = metrics["total_input_data_mb"] + metrics["total_output_data_mb"]
-        network_transfer.append(transfer)
-
-    ax7.bar(range(len(construction_metrics)), network_transfer)
-    ax7.set_xlabel("Workflow Construction")
-    ax7.set_ylabel("Network Transfer (MB)")
-    ax7.set_title("Network Transfer Analysis")
-    ax7.set_xticks(range(len(construction_metrics)))
-    ax7.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
-    ax7.grid(True)
-
     # 8. Cost Analysis
+    """
     ax8 = fig.add_subplot(gs[4, 0])
     # Assuming cost factors (these can be adjusted based on actual pricing)
     CPU_COST_PER_HOUR = 0.1  # $ per CPU hour
@@ -523,50 +538,65 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax8.set_xticks(range(len(construction_metrics)))
     ax8.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax8.grid(True)
+    """
 
     # 9. Parallelism Analysis
-    ax9 = fig.add_subplot(gs[4, 1])
+    ax9 = fig.add_subplot(gs[3, 1])  # Moved up one row
     parallelism_metrics = []
 
     for metrics in construction_metrics:
         # Calculate metrics for parallel execution analysis
         group_details = metrics["group_details"]
-
-        # Calculate the critical path length (longest path in terms of CPU time)
-        critical_path_length = 0
-        max_parallel_groups = 0
-        current_parallel_groups = 0
-
-        # For each group, calculate its contribution to parallel execution
+        
+        # Calculate sequential execution time (sum of all CPU times)
+        sequential_time = sum(group["cpu_seconds"] for group in group_details)
+        
+        # Calculate parallel execution time by following the DAG dependencies
+        parallel_time = 0
+        
+        # Create a mapping of group dependencies
+        group_deps = {}
         for i, group in enumerate(group_details):
-            # Check if this group can run in parallel with previous groups
-            # by analyzing its input dependencies
-            can_run_in_parallel = True
-            for prev_group in group_details[:i]:
-                # If this group depends on the previous group's output
+            deps = []
+            for j, prev_group in enumerate(group_details[:i]):
+                # If this group needs input from a previous group
                 if group["input_data_mb"] > 0 and prev_group["output_data_mb"] > 0:
-                    can_run_in_parallel = False
-                    break
-
-            if can_run_in_parallel:
-                current_parallel_groups += 1
-                max_parallel_groups = max(max_parallel_groups, current_parallel_groups)
-            else:
-                current_parallel_groups = 1
-
-            # Update critical path length
-            critical_path_length = max(critical_path_length, group["cpu_seconds"])
-
-        # Calculate parallel efficiency metrics
-        total_cpu_time = metrics["total_cpu_time"]
-        theoretical_min_time = total_cpu_time / max_parallel_groups if max_parallel_groups > 0 else total_cpu_time
-
+                    deps.append(j)
+            group_deps[i] = deps
+        
+        # Calculate the longest path through the DAG
+        def get_longest_path(group_idx, visited=None):
+            if visited is None:
+                visited = set()
+            if group_idx in visited:
+                return 0
+            visited.add(group_idx)
+            
+            # Get all dependent groups
+            next_groups = [i for i, deps in group_deps.items() if group_idx in deps]
+            if not next_groups:
+                return group_details[group_idx]["cpu_seconds"]
+            
+            # Recursively find the longest path
+            max_path = 0
+            for next_group in next_groups:
+                path_length = get_longest_path(next_group, visited.copy())
+                max_path = max(max_path, path_length)
+            
+            return group_details[group_idx]["cpu_seconds"] + max_path
+        
+        # Find the longest path starting from each group
+        parallel_time = max(get_longest_path(i) for i in range(len(group_details)))
+        
+        # Calculate parallel efficiency as ratio of sequential to parallel time
+        # Higher ratio means better parallelization
+        parallel_efficiency = sequential_time / parallel_time if parallel_time > 0 else 1.0
+        
         # Store metrics
         parallelism_metrics.append({
-            "max_parallel_groups": max_parallel_groups,
-            "critical_path_length": critical_path_length,
-            "theoretical_min_time": theoretical_min_time,
-            "parallel_efficiency": theoretical_min_time / total_cpu_time if total_cpu_time > 0 else 0
+            "sequential_time": sequential_time,
+            "parallel_time": parallel_time,
+            "parallel_efficiency": parallel_efficiency
         })
 
     # Plot parallel efficiency
@@ -574,7 +604,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax9.bar(range(len(construction_metrics)), parallel_efficiency)
     ax9.set_xlabel("Workflow Construction")
     ax9.set_ylabel("Parallel Efficiency")
-    ax9.set_title("Parallel Execution Analysis\n(Efficiency = Theoretical Min Time / Actual Time)")
+    ax9.set_title("Parallel Execution Analysis\n(Efficiency = Sequential Time / Parallel Time)")
     ax9.set_xticks(range(len(construction_metrics)))
     ax9.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax9.grid(True)
@@ -598,11 +628,10 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             f.write(f"  Total Stored Data: {metrics['total_stored_data_mb']:.2f} MB\n")
             f.write(f"  Memory Utilization: {memory_utilization[i-1]:.2f}\n")
             f.write(f"  Network Transfer: {network_transfer[i-1]:.2f} MB\n")
-            f.write(f"  Estimated Cost: ${costs[i-1]:.2f}\n")
+           # f.write(f"  Estimated Cost: ${costs[i-1]:.2f}\n")
             f.write(f"  Parallel Execution Metrics:\n")
-            f.write(f"    Max Parallel Groups: {parallelism_metrics[i-1]['max_parallel_groups']}\n")
-            f.write(f"    Critical Path Length: {parallelism_metrics[i-1]['critical_path_length']:.2f} seconds\n")
-            f.write(f"    Theoretical Min Time: {parallelism_metrics[i-1]['theoretical_min_time']:.2f} seconds\n")
+            f.write(f"    Sequential Time: {parallelism_metrics[i-1]['sequential_time']:.2f} seconds\n")
+            f.write(f"    Parallel Time: {parallelism_metrics[i-1]['parallel_time']:.2f} seconds\n")
             f.write(f"    Parallel Efficiency: {parallelism_metrics[i-1]['parallel_efficiency']:.3f}\n")
             f.write("  Group Details:\n")
             for group in metrics["group_details"]:
