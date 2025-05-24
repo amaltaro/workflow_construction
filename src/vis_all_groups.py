@@ -353,8 +353,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     total_cpu_times = []
     stored_data_per_event = []
     total_stored_data = []
-    total_input_data = []
-    total_output_data = []
+    input_data_per_event = []
+    output_data_per_event = []
     group_combinations = []
 
     for metrics in construction_metrics:
@@ -363,8 +363,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
         total_cpu_times.append(metrics["total_cpu_time"])
         stored_data_per_event.append(metrics["stored_data_per_event_mb"])
         total_stored_data.append(metrics["total_stored_data_mb"])
-        total_input_data.append(metrics["total_input_data_mb"])
-        total_output_data.append(metrics["total_output_data_mb"])
+        input_data_per_event.append(metrics["input_data_per_event_mb"])
+        output_data_per_event.append(metrics["output_data_per_event_mb"])
         group_combinations.append(" + ".join(metrics["groups"]))
 
     # Convert lists to numpy arrays for numerical operations
@@ -373,8 +373,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     total_cpu_times = np.array(total_cpu_times)
     stored_data_per_event = np.array(stored_data_per_event)
     total_stored_data = np.array(total_stored_data)
-    total_input_data = np.array(total_input_data)
-    total_output_data = np.array(total_output_data)
+    input_data_per_event = np.array(input_data_per_event)
+    output_data_per_event = np.array(output_data_per_event)
 
     # Create a figure with multiple subplots
     fig = plt.figure(figsize=(20, 20))
@@ -417,27 +417,59 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax1.set_title("Performance vs Storage Efficiency\n(size=CPU time, color=num groups)")
     ax1.grid(True)
 
-    # 3. Data Flow Analysis
+    # 3. Data Flow Analysis (Updated to use per-event metrics)
     ax2 = fig.add_subplot(gs[1, 0])
     x = np.arange(len(construction_metrics))
     width = 0.25
-    ax2.bar(x - width, total_input_data, width, label='Input Data')
-    ax2.bar(x, total_output_data, width, label='Output Data')
-    ax2.bar(x + width, total_stored_data, width, label='Stored Data')
+    ax2.bar(x - width, input_data_per_event, width, label='Input Data/Event')
+    ax2.bar(x, output_data_per_event, width, label='Output Data/Event')
+    ax2.bar(x + width, stored_data_per_event, width, label='Stored Data/Event')
     ax2.set_xlabel("Workflow Construction")
-    ax2.set_ylabel("Data Volume (MB)")
-    ax2.set_title("Data Flow Analysis")
+    ax2.set_ylabel("Data Volume per Event (MB)")
+    ax2.set_title("Data Flow Analysis\n(Per-Event Data Volumes)")
     ax2.set_xticks(x)
     ax2.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax2.legend()
     ax2.grid(True)
 
-    # 4. Network Transfer Analysis
-    ax7 = fig.add_subplot(gs[1, 1])
+    # 4. Total Data Volume Analysis (Stacked Bar)
+    ax10 = fig.add_subplot(gs[1, 1])
+    x = np.arange(len(construction_metrics))
+    width = 0.6
+    bottom = np.zeros(len(construction_metrics))
+
+    # Plot each data type as a layer in the stack
+    ax10.bar(x, [m["total_input_data_mb"] for m in construction_metrics], width,
+            label='Input Data', bottom=bottom)
+    bottom += [m["total_input_data_mb"] for m in construction_metrics]
+
+    ax10.bar(x, [m["total_output_data_mb"] for m in construction_metrics], width,
+            label='Output Data', bottom=bottom)
+    bottom += [m["total_output_data_mb"] for m in construction_metrics]
+
+    ax10.bar(x, [m["total_stored_data_mb"] for m in construction_metrics], width,
+            label='Stored Data', bottom=bottom)
+
+    # Add total value labels on top of each bar
+    totals = [m["total_input_data_mb"] + m["total_output_data_mb"] + m["total_stored_data_mb"]
+             for m in construction_metrics]
+    for i, total in enumerate(totals):
+        ax10.text(i, total, f'{total:.1f}', ha='center', va='bottom')
+
+    ax10.set_xlabel("Workflow Construction")
+    ax10.set_ylabel("Total Data Volume (MB)")
+    ax10.set_title("Total Data Volume Analysis\n(Aggregated Data Volumes for one job of each group)")
+    ax10.set_xticks(x)
+    ax10.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax10.legend()
+    ax10.grid(True)
+
+    # 5. Network Transfer Analysis
+    ax7 = fig.add_subplot(gs[2, 0])
     network_transfer = []
     for metrics in construction_metrics:
         # Calculate network transfer as sum of input and output data
-        transfer = metrics["total_input_data_mb"] + metrics["total_output_data_mb"]
+        transfer = metrics["input_data_per_event_mb"] + metrics["output_data_per_event_mb"]
         network_transfer.append(transfer)
 
     ax7.bar(range(len(construction_metrics)), network_transfer)
@@ -448,8 +480,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax7.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax7.grid(True)
 
-    # 5. CPU Utilization Analysis
-    ax4 = fig.add_subplot(gs[2, 0])
+    # 6. CPU Utilization Analysis
+    ax4 = fig.add_subplot(gs[2, 1])
     cpu_utilization = []
     for metrics in construction_metrics:
         # Get CPU utilization ratio for each group from the original groups data
@@ -467,8 +499,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax4.set_title("CPU Utilization Analysis\n(Actual CPU Usage / Allocated CPU)")
     ax4.grid(True)
 
-    # 6. Memory Utilization Analysis
-    ax6 = fig.add_subplot(gs[2, 1])
+    # 7. Memory Utilization Analysis
+    ax6 = fig.add_subplot(gs[3, 0])
     memory_utilization = []
     memory_std = []  # Store standard deviations
     for metrics in construction_metrics:
@@ -499,8 +531,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax6.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax6.grid(True)
 
-    # 7. Event Processing Analysis
-    ax5 = fig.add_subplot(gs[3, 0])
+    # 8. Event Processing Analysis
+    ax5 = fig.add_subplot(gs[3, 1])
     events_per_group = []
     for metrics in construction_metrics:
         events = [group["total_events"] for group in metrics["group_details"]]
@@ -512,48 +544,20 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax5.set_title("Event Processing Distribution")
     ax5.grid(True)
 
-    # 8. Cost Analysis
-    """
-    ax8 = fig.add_subplot(gs[4, 0])
-    # Assuming cost factors (these can be adjusted based on actual pricing)
-    CPU_COST_PER_HOUR = 0.1  # $ per CPU hour
-    MEMORY_COST_PER_GB_HOUR = 0.05  # $ per GB-hour
-    STORAGE_COST_PER_GB = 0.02  # $ per GB
-
-    costs = []
-    for metrics in construction_metrics:
-        # Calculate costs
-        cpu_cost = (metrics["total_cpu_time"] / 3600) * CPU_COST_PER_HOUR
-        memory_cost = (sum(group.get("max_memory_mb", 0) for group in metrics["group_details"]) / 1024) * \
-                     (metrics["total_cpu_time"] / 3600) * MEMORY_COST_PER_GB_HOUR
-        storage_cost = (metrics["total_stored_data_mb"] / 1024) * STORAGE_COST_PER_GB
-
-        total_cost = cpu_cost + memory_cost + storage_cost
-        costs.append(total_cost)
-
-    ax8.bar(range(len(construction_metrics)), costs)
-    ax8.set_xlabel("Workflow Construction")
-    ax8.set_ylabel("Estimated Cost ($)")
-    ax8.set_title("Cost Analysis\n(CPU + Memory + Storage)")
-    ax8.set_xticks(range(len(construction_metrics)))
-    ax8.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
-    ax8.grid(True)
-    """
-
     # 9. Parallelism Analysis
-    ax9 = fig.add_subplot(gs[3, 1])  # Moved up one row
+    ax9 = fig.add_subplot(gs[4, 0])
     parallelism_metrics = []
 
     for metrics in construction_metrics:
         # Calculate metrics for parallel execution analysis
         group_details = metrics["group_details"]
-        
+
         # Calculate sequential execution time (sum of all CPU times)
         sequential_time = sum(group["cpu_seconds"] for group in group_details)
-        
+
         # Calculate parallel execution time by following the DAG dependencies
         parallel_time = 0
-        
+
         # Create a mapping of group dependencies
         group_deps = {}
         for i, group in enumerate(group_details):
@@ -563,7 +567,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
                 if group["input_data_mb"] > 0 and prev_group["output_data_mb"] > 0:
                     deps.append(j)
             group_deps[i] = deps
-        
+
         # Calculate the longest path through the DAG
         def get_longest_path(group_idx, visited=None):
             if visited is None:
@@ -571,27 +575,27 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             if group_idx in visited:
                 return 0
             visited.add(group_idx)
-            
+
             # Get all dependent groups
             next_groups = [i for i, deps in group_deps.items() if group_idx in deps]
             if not next_groups:
                 return group_details[group_idx]["cpu_seconds"]
-            
+
             # Recursively find the longest path
             max_path = 0
             for next_group in next_groups:
                 path_length = get_longest_path(next_group, visited.copy())
                 max_path = max(max_path, path_length)
-            
+
             return group_details[group_idx]["cpu_seconds"] + max_path
-        
+
         # Find the longest path starting from each group
         parallel_time = max(get_longest_path(i) for i in range(len(group_details)))
-        
+
         # Calculate parallel efficiency as ratio of sequential to parallel time
         # Higher ratio means better parallelization
         parallel_efficiency = sequential_time / parallel_time if parallel_time > 0 else 1.0
-        
+
         # Store metrics
         parallelism_metrics.append({
             "sequential_time": sequential_time,
@@ -624,8 +628,14 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
             f.write(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second\n")
             f.write(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
-            f.write(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event\n")
-            f.write(f"  Total Stored Data: {metrics['total_stored_data_mb']:.2f} MB\n")
+            f.write(f"  Total Data Volumes for one job of each group:\n")
+            f.write(f"    Input Data: {metrics['total_input_data_mb']:.2f} MB\n")
+            f.write(f"    Output Data: {metrics['total_output_data_mb']:.2f} MB\n")
+            f.write(f"    Stored Data: {metrics['total_stored_data_mb']:.2f} MB\n")
+            f.write(f"  Data Flow Metrics (per event):\n")
+            f.write(f"    Input Data: {metrics['input_data_per_event_mb']:.3f} MB/event\n")
+            f.write(f"    Output Data: {metrics['output_data_per_event_mb']:.3f} MB/event\n")
+            f.write(f"    Stored Data: {metrics['stored_data_per_event_mb']:.3f} MB/event\n")
             f.write(f"  Memory Utilization: {memory_utilization[i-1]:.2f}\n")
             f.write(f"  Network Transfer: {network_transfer[i-1]:.2f} MB\n")
            # f.write(f"  Estimated Cost: ${costs[i-1]:.2f}\n")
@@ -639,7 +649,10 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
                 f.write(f"      Tasks: {group['tasks']}\n")
                 f.write(f"      Events per Task: {group['events_per_task']}\n")
                 f.write(f"      CPU Time: {group['cpu_seconds']:.2f} seconds\n")
-                f.write(f"      Stored Data: {group['stored_data_mb']:.2f} MB\n")
+                f.write(f"      Data Flow (per event):\n")
+                f.write(f"        Input: {group['input_data_per_event_mb']:.3f} MB/event\n")
+                f.write(f"        Output: {group['output_data_per_event_mb']:.3f} MB/event\n")
+                f.write(f"        Stored: {group['stored_data_per_event_mb']:.3f} MB/event\n")
             f.write("\n")
 
 def visualize_groups(groups: List[Dict], construction_metrics: List[Dict], output_dir: str = "plots"):

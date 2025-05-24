@@ -128,6 +128,9 @@ class GroupMetrics:
     input_data_mb: float  # Total input data volume in MB
     output_data_mb: float  # Total output data volume in MB
     stored_data_mb: float  # Total data volume that needs to be stored
+    input_data_per_event_mb: float  # Input data per event in MB
+    output_data_per_event_mb: float  # Output data per event in MB
+    stored_data_per_event_mb: float  # Stored data per event in MB
     # Accelerator metrics
     accelerator_types: Set[str]
     # Dependency metrics
@@ -164,7 +167,10 @@ class GroupMetrics:
                 "io": {
                     "input_data_mb": self.input_data_mb,
                     "output_data_mb": self.output_data_mb,
-                    "stored_data_mb": self.stored_data_mb
+                    "stored_data_mb": self.stored_data_mb,
+                    "input_data_per_event_mb": self.input_data_per_event_mb,
+                    "output_data_per_event_mb": self.output_data_per_event_mb,
+                    "stored_data_per_event_mb": self.stored_data_per_event_mb
                 },
                 "accelerator": {
                     "types": list(self.accelerator_types)
@@ -347,15 +353,24 @@ class TaskGrouper:
         max_throughput = max(task_throughputs)
         min_throughput = min(task_throughputs)
 
-        # Calculate I/O metrics with storage rules
+        ### Calculate I/O metrics with storage rules
+        # Calculate input data volume based on:
+        # - input events for the entry point task (using events_per_job)
+        # - size per event of the parent task that feeds into the entry point task
         input_data_mb = 0.0
+        entry_task = self.tasks[entry_point_task]
+        if entry_task.input_task and entry_task.input_task in self.tasks:
+            # Get the parent task that feeds into this group's entry point
+            parent_task = self.tasks[entry_task.input_task]
+            # Input data is based on the entry point task's events in this group
+            # and the parent task's size per event
+            input_data_mb = (events_per_job * parent_task.resources.size_per_event) / 1024.0
+        # normalize the data volume per event
+        input_data_per_event_mb = input_data_mb / events_per_job if events_per_job > 0 else 0.0
+
+        # Calculate output sizes of all tasks in the group based on storage rules
         output_data_mb = 0.0
         stored_data_mb = 0.0
-        # Calculate input data volume based on entry point task's input task
-        if self.tasks[entry_point_task].input_task:
-            input_task = self.tasks[self.tasks[entry_point_task].input_task]
-            input_data_mb = (input_task.resources.input_events * input_task.resources.size_per_event) / 1024.0
-        # Calculate output sizes based on storage rules
         for task in tasks:
             # Convert KB to MB for consistency with other memory metrics
             task_output_size = (task.resources.input_events * task.resources.size_per_event) / 1024.0
@@ -366,6 +381,9 @@ class TaskGrouper:
             # * it is the exit point task of the group
             if task.resources.keep_output or task.id == exit_point_task:
                 stored_data_mb += task_output_size
+        # normalize the output and stored data volume per event
+        output_data_per_event_mb = output_data_mb / total_events if total_events > 0 else 0.0
+        stored_data_per_event_mb = stored_data_mb / total_events if total_events > 0 else 0.0
 
         # Calculate accelerator metrics
         accelerators = set(t.resources.accelerator for t in tasks if t.resources.accelerator)
@@ -403,6 +421,9 @@ class TaskGrouper:
             input_data_mb=input_data_mb,
             output_data_mb=output_data_mb,
             stored_data_mb=stored_data_mb,
+            input_data_per_event_mb=input_data_per_event_mb,
+            output_data_per_event_mb=output_data_per_event_mb,
+            stored_data_per_event_mb=stored_data_per_event_mb,
             accelerator_types=accelerators,
             dependency_paths=dependency_paths,
             resource_utilization=resource_utilization,
@@ -640,26 +661,10 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
     total_output_data = sum(group.output_data_mb for group in construction)
     total_stored_data = sum(group.stored_data_mb for group in construction)
 
-    # Find the entry point group in the construction
-    # The entry point group is the one that contains the entry point task of the first group
-    # (since the first group's entry point task is the DAG's entry point)
-    entry_point_group = next((group for group in construction
-                            if construction[0].entry_point_task in group.task_ids), None)
-
-    # Get initial input events from the entry point group
-    initial_input_events = entry_point_group.events_per_job if entry_point_group else 0
-
-    # Calculate stored data per event ratio based on initial input events
-    # For each group, we need to scale its stored data based on the ratio of its events to initial input events
-    scaled_stored_data = 0.0
-    for group in construction:
-        # Calculate how many times this group's events need to be scaled to match initial input events
-        scale_factor = initial_input_events / group.events_per_job if group.events_per_job > 0 else 0
-        # Scale the group's stored data accordingly
-        scaled_stored_data += group.stored_data_mb * scale_factor
-
-    # Calculate final stored data per event ratio
-    stored_data_per_event = scaled_stored_data / initial_input_events if initial_input_events > 0 else 0.0
+    # Calculate per-event metrics by summing up each group's per-event metrics
+    input_data_per_event = sum(group.input_data_per_event_mb for group in construction)
+    output_data_per_event = sum(group.output_data_per_event_mb for group in construction)
+    stored_data_per_event = sum(group.stored_data_per_event_mb for group in construction)
 
     # Create detailed group information
     group_details = []
@@ -672,7 +677,10 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
             "cpu_seconds": group.cpu_seconds,
             "input_data_mb": group.input_data_mb,
             "output_data_mb": group.output_data_mb,
-            "stored_data_mb": group.stored_data_mb
+            "stored_data_mb": group.stored_data_mb,
+            "input_data_per_event_mb": group.input_data_per_event_mb,
+            "output_data_per_event_mb": group.output_data_per_event_mb,
+            "stored_data_per_event_mb": group.stored_data_per_event_mb
         })
 
     return {
@@ -682,8 +690,10 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
         "total_input_data_mb": total_input_data,
         "total_output_data_mb": total_output_data,
         "total_stored_data_mb": total_stored_data,
+        "input_data_per_event_mb": input_data_per_event,
+        "output_data_per_event_mb": output_data_per_event,
         "stored_data_per_event_mb": stored_data_per_event,
-        "initial_input_events": initial_input_events,  # Add this for reference
+        "initial_input_events": construction[0].events_per_job if construction else 0,
         "num_groups": len(construction),
         "groups": [group.group_id for group in construction],
         "group_details": group_details
@@ -773,6 +783,8 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Total Input Data: {metrics['total_input_data_mb']:.2f} MB")
         print(f"  Total Output Data: {metrics['total_output_data_mb']:.2f} MB")
         print(f"  Total Stored Data: {metrics['total_stored_data_mb']:.2f} MB")
+        print(f"  Input Data per Event: {metrics['input_data_per_event_mb']:.3f} MB/event")
+        print(f"  Output Data per Event: {metrics['output_data_per_event_mb']:.3f} MB/event")
         print(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event")
         print("  Group Details:")
         for group in metrics['group_details']:
