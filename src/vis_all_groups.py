@@ -393,29 +393,61 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax3.set_ylabel("Number of Tasks per Group")
     ax3.set_title("Group Size Distribution")
     ax3.grid(True)
+    ax3.set_ylim(bottom=0)  # Set y-axis to start at 0
 
-    # 2. Performance vs Storage Efficiency
-    ax1 = fig.add_subplot(gs[0, 1])
+    # 2. Group-level Data Volume Analysis
+    ax11 = fig.add_subplot(gs[0, 1])
 
-    # Create a discrete colormap for number of groups
-    unique_groups = np.unique(num_groups)
-    n_groups = len(unique_groups)
-    cmap = plt.colormaps['viridis'].resampled(n_groups)
+    # Calculate positions for each group in each construction
+    group_positions = []
+    group_labels = []
+    current_pos = 0
 
-    # Create scatter plot with discrete colors
-    scatter = ax1.scatter(event_throughputs, stored_data_per_event,
-                         c=num_groups, cmap=cmap,
-                         s=total_cpu_times/1000, alpha=0.6)
+    for i, metrics in enumerate(construction_metrics):
+        groups_in_construction = len(metrics["group_details"])
+        # Create positions for this construction's groups
+        positions = np.arange(current_pos, current_pos + groups_in_construction)
+        group_positions.extend(positions)
+        # Create labels for each group
+        group_labels.extend([f"Const {i+1}\nGroup {j+1}" for j in range(groups_in_construction)])
+        current_pos += groups_in_construction + 1  # Add 1 for spacing between constructions
 
-    # Add colorbar with discrete ticks
-    cbar = plt.colorbar(scatter, ax=ax1, label="Number of Groups")
-    cbar.set_ticks(unique_groups)
-    cbar.set_ticklabels([f"{int(x)}" for x in unique_groups])
+    # Plot stacked bars for each group
+    width = 0.8
+    bottom = np.zeros(len(group_positions))
 
-    ax1.set_xlabel("Event Throughput (events/second)")
-    ax1.set_ylabel("Stored Data per Event (MB)")
-    ax1.set_title("Performance vs Storage Efficiency\n(size=CPU time, color=num groups)")
-    ax1.grid(True)
+    # Plot input data
+    input_data = [group["input_data_mb"] for metrics in construction_metrics
+                 for group in metrics["group_details"]]
+    ax11.bar(group_positions, input_data, width, label='Input Data', bottom=bottom)
+    bottom += input_data
+
+    # Plot output data
+    output_data = [group["output_data_mb"] for metrics in construction_metrics
+                  for group in metrics["group_details"]]
+    ax11.bar(group_positions, output_data, width, label='Output Data', bottom=bottom)
+    bottom += output_data
+
+    # Plot stored data
+    stored_data = [group["stored_data_mb"] for metrics in construction_metrics
+                  for group in metrics["group_details"]]
+    ax11.bar(group_positions, stored_data, width, label='Stored Data', bottom=bottom)
+
+    # Add vertical lines to separate constructions
+    for i in range(len(construction_metrics) - 1):
+        sep_pos = group_positions[sum(len(metrics["group_details"])
+                                    for metrics in construction_metrics[:i+1])] + 0.5
+        ax11.axvline(x=sep_pos, color='gray', linestyle='--', alpha=0.5)
+
+    ax11.set_xlabel("Workflow Construction and Groups")
+    ax11.set_ylabel("Total Data Volume (MB)")
+    ax11.set_title("Group-level Data Volume Analysis\n(Data Volumes per Group)")
+    ax11.set_xticks(group_positions)
+    ax11.set_xticklabels(group_labels, rotation=45, ha='right')
+    ax11.legend()
+    ax11.grid(True)
+    ax11.set_ylim(bottom=0)  # Start y-axis at 0
+
 
     # 3. Data Flow Analysis (Updated to use per-event metrics)
     ax2 = fig.add_subplot(gs[1, 0])
@@ -464,8 +496,33 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax10.legend()
     ax10.grid(True)
 
-    # 5. Network Transfer Analysis
-    ax7 = fig.add_subplot(gs[2, 0])
+    # 5. Performance vs Storage Efficiency
+    ax1 = fig.add_subplot(gs[2, 0])
+
+    # Create a discrete colormap for number of groups
+    unique_groups = np.unique(num_groups)
+    n_groups = len(unique_groups)
+    cmap = plt.colormaps['viridis'].resampled(n_groups)
+
+    # Create scatter plot with discrete colors
+    scatter = ax1.scatter(event_throughputs, stored_data_per_event,
+                         c=num_groups,  # This is already a numpy array of the right size
+                         cmap=cmap,
+                         s=total_cpu_times/1000, alpha=0.6)
+
+    # Add colorbar with discrete ticks
+    cbar = plt.colorbar(scatter, ax=ax1, label="Number of Groups")
+    cbar.set_ticks(unique_groups)
+    cbar.set_ticklabels([f"{int(x)}" for x in unique_groups])
+
+    ax1.set_xlabel("Event Throughput (events/second)")
+    ax1.set_ylabel("Stored Data per Event (MB)")
+    ax1.set_title("Performance vs Storage Efficiency\n(size=CPU time, color=num groups)")
+    ax1.grid(True)
+    ax1.set_xlim(left=0)  # Set x-axis to start at 0
+
+    # 6. Network Transfer Analysis
+    ax7 = fig.add_subplot(gs[2, 1])
     network_transfer = []
     for metrics in construction_metrics:
         # Calculate network transfer as sum of input and output data
@@ -480,8 +537,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax7.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax7.grid(True)
 
-    # 6. CPU Utilization Analysis
-    ax4 = fig.add_subplot(gs[2, 1])
+    # 7. CPU Utilization Analysis
+    ax4 = fig.add_subplot(gs[3, 0])
     cpu_utilization = []
     for metrics in construction_metrics:
         # Get CPU utilization ratio for each group from the original groups data
@@ -499,8 +556,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax4.set_title("CPU Utilization Analysis\n(Actual CPU Usage / Allocated CPU)")
     ax4.grid(True)
 
-    # 7. Memory Utilization Analysis
-    ax6 = fig.add_subplot(gs[3, 0])
+    # 8. Memory Utilization Analysis
+    ax6 = fig.add_subplot(gs[3, 1])
     memory_utilization = []
     memory_std = []  # Store standard deviations
     for metrics in construction_metrics:
@@ -531,8 +588,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax6.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax6.grid(True)
 
-    # 8. Event Processing Analysis
-    ax5 = fig.add_subplot(gs[3, 1])
+    # 9. Event Processing Analysis
+    ax5 = fig.add_subplot(gs[4, 0])
     events_per_group = []
     for metrics in construction_metrics:
         events = [group["total_events"] for group in metrics["group_details"]]
@@ -544,8 +601,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax5.set_title("Event Processing Distribution")
     ax5.grid(True)
 
-    # 9. Parallelism Analysis
-    ax9 = fig.add_subplot(gs[4, 0])
+    # 10. Parallelism Analysis
+    ax9 = fig.add_subplot(gs[4, 1])
     parallelism_metrics = []
 
     for metrics in construction_metrics:
