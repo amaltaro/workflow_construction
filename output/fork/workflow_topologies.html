@@ -1,0 +1,199 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Workflow Construction Topologies - tests/fork/1group_perfect.json</title>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        <style>
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                padding: 20px;
+            }
+            .construction {
+                flex: 1 1 23%;
+                min-width: 300px;
+                margin-bottom: 15px;
+            }
+            .mermaid {
+                margin: 10px 0;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            .construction-title {
+                font-size: 1.1em;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+            .legend {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            .legend-item {
+                display: flex;
+                align-items: center;
+                margin: 5px 0;
+            }
+            .legend-color {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                border: 1px solid #333;
+            }
+            .group-composition {
+                margin: 20px;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 5px;
+                font-size: 0.9em;
+                line-height: 1.4;
+            }
+            .group-composition h3 {
+                margin: 0 0 10px 0;
+            }
+            .group-composition ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            .group-composition li {
+                margin: 2px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Workflow Construction Topologies - tests/fork/1group_perfect.json</h1>
+        
+        <!-- Group Composition -->
+        <div class="group-composition">
+            <h3>Group/Task Composition:</h3>
+            <ul>
+    <li>Group group_0: Task1</li>
+<li>Group group_1: Task2</li>
+<li>Group group_2: Task3</li>
+<li>Group group_3: Task1, Task3</li>
+<li>Group group_4: Task1, Task2</li>
+
+            </ul>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Groups</h3>
+    
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #FF6B6B"></div>
+                <span>Group group_0</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #4ECDC4"></div>
+                <span>Group group_1</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #45B7D1"></div>
+                <span>Group group_2</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #96CEB4"></div>
+                <span>Group group_3</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #FFEEAD"></div>
+                <span>Group group_4</span>
+            </div>
+        
+        </div>
+        
+        <!-- Diagrams Container -->
+        <div class="container">
+    
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 1</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_3
+    Task3["Task3"]:::groupgroup_3
+    Task1 --> Task3
+    Task2["Task2"]:::groupgroup_1
+    Task3 --> Task2
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_3 fill:#96CEB4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 2</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_4
+    Task2["Task2"]:::groupgroup_4
+    Task1 --> Task2
+    Task3["Task3"]:::groupgroup_2
+    Task2 --> Task3
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_4 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_2 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 3</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_1
+    Task3["Task3"]:::groupgroup_2
+    Task1 --> Task2
+    Task2 --> Task3
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_2 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 4</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task3["Task3"]:::groupgroup_2
+    Task2["Task2"]:::groupgroup_1
+    Task1 --> Task3
+    Task3 --> Task2
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_2 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        </div>
+        <script>
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: false,
+                    htmlLabels: true,
+                    curve: 'basis'
+                }
+            });
+        </script>
+    </body>
+    </html>
+    
