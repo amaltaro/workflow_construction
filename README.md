@@ -297,12 +297,26 @@ These metrics help in:
 from vis_all_groups import visualize_groups
 
 # After getting groups from create_workflow_from_json
-visualize_groups(groups, output_dir="my_plots")
+visualize_groups(groups, construction_metrics, tmpl_dir="sequential", output_dir="output")
 ```
 
-Or run directly:
+Or run directly from command line:
 ```bash
-python src/vis_all_groups.py
+# Basic usage with default output directory
+python src/vis_all_groups.py tests/sequential/1group_perfect.json
+
+# With a custom output directory
+python src/vis_all_groups.py tests/sequential/1group_perfect.json --output-dir custom_output
+```
+
+The script will:
+1. Automatically detect the template directory name (e.g., "sequential" or "fork") from the input file path
+2. Create the appropriate output directory structure (e.g., `output/sequential/` or `custom_output/sequential/`)
+3. Save all visualizations and data files in that directory
+
+You can get help on the command line arguments by running:
+```bash
+python src/vis_all_groups.py --help
 ```
 
 The tool saves both the visualizations and the raw metrics data in JSON format for further analysis.
