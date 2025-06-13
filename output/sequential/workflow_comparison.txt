@@ -31,7 +31,7 @@ Construction 1:
         Stored: 0.016 MB/event
 
 Construction 2:
-  Groups: ['group_0', 'group_5']
+  Groups: ['group_0', 'group_3']
   Number of Groups: 2
   Event Throughput: 0.056 events/second
   Total CPU Time: 129600.00 seconds
@@ -58,7 +58,7 @@ Construction 2:
         Input: 0.000 MB/event
         Output: 0.195 MB/event
         Stored: 0.195 MB/event
-    group_5:
+    group_3:
       Tasks: ['Task2', 'Task3']
       Events per Task: 1440
       CPU Time: 86400.00 seconds
@@ -68,7 +68,7 @@ Construction 2:
         Stored: 0.024 MB/event
 
 Construction 3:
-  Groups: ['group_3', 'group_2']
+  Groups: ['group_5', 'group_2']
   Number of Groups: 2
   Event Throughput: 0.045 events/second
   Total CPU Time: 158400.00 seconds
@@ -87,7 +87,7 @@ Construction 3:
     Parallel Time: 158400.00 seconds
     Parallel Efficiency: 1.000
   Group Details:
-    group_3:
+    group_5:
       Tasks: ['Task1', 'Task2']
       Events per Task: 1440
       CPU Time: 72000.00 seconds

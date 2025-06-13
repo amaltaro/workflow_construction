@@ -2,7 +2,7 @@
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Workflow Construction Topologies</title>
+        <title>Workflow Construction Topologies - tests/sequential/1group_perfect.json</title>
         <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
         <style>
             .container {
@@ -71,7 +71,7 @@
         </style>
     </head>
     <body>
-        <h1>Workflow Construction Topologies</h1>
+        <h1>Workflow Construction Topologies - tests/sequential/1group_perfect.json</h1>
         
         <!-- Group Composition -->
         <div class="group-composition">
@@ -80,9 +80,9 @@
     <li>Group group_0: Task1</li>
 <li>Group group_1: Task2</li>
 <li>Group group_2: Task3</li>
-<li>Group group_3: Task1, Task2</li>
+<li>Group group_3: Task2, Task3</li>
 <li>Group group_4: Task1, Task2, Task3</li>
-<li>Group group_5: Task2, Task3</li>
+<li>Group group_5: Task1, Task2</li>
 
             </ul>
         </div>
@@ -145,28 +145,28 @@
             <div class="mermaid">
             graph TD
             Task1["Task1"]:::groupgroup_0
-    Task2["Task2"]:::groupgroup_5
-    Task3["Task3"]:::groupgroup_5
+    Task2["Task2"]:::groupgroup_3
+    Task3["Task3"]:::groupgroup_3
     Task2 --> Task3
     Task1 --> Task2
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
-    classDef groupgroup_5 fill:#D4A5A5,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_3 fill:#96CEB4,stroke:#333,stroke-width:2px,color:white;
 </div></div>
 
         <div class="construction">
             <div class="construction-title">Workflow Construction 3</div>
             <div class="mermaid">
             graph TD
-            Task1["Task1"]:::groupgroup_3
-    Task2["Task2"]:::groupgroup_3
+            Task1["Task1"]:::groupgroup_5
+    Task2["Task2"]:::groupgroup_5
     Task1 --> Task2
     Task3["Task3"]:::groupgroup_2
     Task2 --> Task3
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef groupgroup_3 fill:#96CEB4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_5 fill:#D4A5A5,stroke:#333,stroke-width:2px,color:white;
     classDef groupgroup_2 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
 </div></div>
 
