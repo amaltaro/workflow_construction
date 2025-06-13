@@ -1,11 +1,16 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
-from typing import List, Dict
+import argparse
 import json
 import os
-from pathlib import Path
+from typing import List, Dict
+
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import seaborn as sns
+from pathlib import Path
 from vis_constructions import plot_workflow_topology
+from find_all_groups import create_workflow_from_json
+
 
 def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     """Plot resource utilization metrics for all groups"""
@@ -685,18 +690,18 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
             f.write(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second\n")
             f.write(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
-            f.write(f"  Total Data Volumes for one job of each group:\n")
+            f.write("  Total Data Volumes for one job of each group:\n")
             f.write(f"    Input Data: {metrics['total_input_data_mb']:.2f} MB\n")
             f.write(f"    Output Data: {metrics['total_output_data_mb']:.2f} MB\n")
             f.write(f"    Stored Data: {metrics['total_stored_data_mb']:.2f} MB\n")
-            f.write(f"  Data Flow Metrics (per event):\n")
+            f.write("  Data Flow Metrics (per event):\n")
             f.write(f"    Input Data: {metrics['input_data_per_event_mb']:.3f} MB/event\n")
             f.write(f"    Output Data: {metrics['output_data_per_event_mb']:.3f} MB/event\n")
             f.write(f"    Stored Data: {metrics['stored_data_per_event_mb']:.3f} MB/event\n")
             f.write(f"  Memory Utilization: {memory_utilization[i-1]:.2f}\n")
             f.write(f"  Network Transfer: {network_transfer[i-1]:.2f} MB\n")
            # f.write(f"  Estimated Cost: ${costs[i-1]:.2f}\n")
-            f.write(f"  Parallel Execution Metrics:\n")
+            f.write("  Parallel Execution Metrics:\n")
             f.write(f"    Sequential Time: {parallelism_metrics[i-1]['sequential_time']:.2f} seconds\n")
             f.write(f"    Parallel Time: {parallelism_metrics[i-1]['parallel_time']:.2f} seconds\n")
             f.write(f"    Parallel Efficiency: {parallelism_metrics[i-1]['parallel_efficiency']:.3f}\n")
@@ -706,42 +711,65 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
                 f.write(f"      Tasks: {group['tasks']}\n")
                 f.write(f"      Events per Task: {group['events_per_task']}\n")
                 f.write(f"      CPU Time: {group['cpu_seconds']:.2f} seconds\n")
-                f.write(f"      Data Flow (per event):\n")
+                f.write("      Data Flow (per event):\n")
                 f.write(f"        Input: {group['input_data_per_event_mb']:.3f} MB/event\n")
                 f.write(f"        Output: {group['output_data_per_event_mb']:.3f} MB/event\n")
                 f.write(f"        Stored: {group['stored_data_per_event_mb']:.3f} MB/event\n")
             f.write("\n")
 
-def visualize_groups(groups: List[Dict], construction_metrics: List[Dict], output_dir: str = "plots"):
-    """Generate all visualizations for the task groups and workflow constructions"""
+def visualize_groups(groups: List[Dict],
+                     construction_metrics: List[Dict],
+                     tmpl_dir: str,
+                     output_dir: str = "output"):
+    """Generate all visualizations for the task groups and workflow constructions
+
+    Args:
+        groups: List of group metrics dictionaries
+        construction_metrics: List of construction metrics dictionaries
+        tmpl_dir: Template directory name (e.g., "sequential" or "fork")
+        output_dir: Base output directory (default: "output")
+    """
+    # Create output directory with template subdirectory
+    output_path = os.path.join(output_dir, tmpl_dir)
+    Path(output_path).mkdir(parents=True, exist_ok=True)
+
     # Create plots for individual groups
-    plot_resource_utilization(groups, output_dir)
-    plot_throughput_analysis(groups, output_dir)
-    plot_dependency_analysis(groups, output_dir)
-    plot_comparison_heatmap(groups, output_dir)
+    plot_resource_utilization(groups, output_path)
+    plot_throughput_analysis(groups, output_path)
+    plot_dependency_analysis(groups, output_path)
+    plot_comparison_heatmap(groups, output_path)
 
     # Create plots for workflow constructions
-    plot_workflow_constructions(construction_metrics, output_dir)
-    plot_storage_efficiency(construction_metrics, output_dir)
-    plot_workflow_comparison(construction_metrics, output_dir)
-    plot_workflow_topology(construction_metrics, output_dir)
+    plot_workflow_constructions(construction_metrics, output_path)
+    plot_storage_efficiency(construction_metrics, output_path)
+    plot_workflow_comparison(construction_metrics, output_path)
+    plot_workflow_topology(construction_metrics, output_path)
 
     # Save raw data for further analysis
     print(f"Saving raw data for {len(groups)} groups and {len(construction_metrics)} constructions")
-    with open(os.path.join(output_dir, "group_metrics.json"), "w") as f:
+    with open(os.path.join(output_path, "group_metrics.json"), "w") as f:
         json.dump(groups, f, indent=2)
-    with open(os.path.join(output_dir, "construction_metrics.json"), "w") as f:
+    with open(os.path.join(output_path, "construction_metrics.json"), "w") as f:
         json.dump(construction_metrics, f, indent=2)
 
 if __name__ == "__main__":
-    import pandas as pd
-    from find_all_groups import create_workflow_from_json
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Visualize workflow groups and constructions from a template file.')
+    parser.add_argument('template_file', type=str, help='Path to the template JSON file')
+    parser.add_argument('--output-dir', type=str, default='output',
+                       help='Base output directory (default: output)')
+    args = parser.parse_args()
 
-    # Example usage
-    template_name = "1group_perfect.json"
-    print(f"Parsing workflow data for template {template_name}")
-    with open(f"tests/sequential/{template_name}") as f:
+    # Convert template file path to Path object for easier manipulation
+    template_path = Path(args.template_file)
+
+    # Extract template directory name from the path
+    # This will get the parent directory name (e.g., "sequential" or "fork")
+    tmpl_dir = template_path.parent.name
+
+    print(f"Parsing workflow data from template: {template_path}")
+    with open(template_path) as f:
         workflow_data = json.load(f)
 
     groups, tasks, construction_metrics = create_workflow_from_json(workflow_data)
-    visualize_groups(groups, construction_metrics)
+    visualize_groups(groups, construction_metrics, tmpl_dir, args.output_dir)
