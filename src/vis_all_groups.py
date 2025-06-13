@@ -719,16 +719,19 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
 
 def visualize_groups(groups: List[Dict],
                      construction_metrics: List[Dict],
-                     tmpl_dir: str,
+                     template_path: str,
                      output_dir: str = "output"):
     """Generate all visualizations for the task groups and workflow constructions
 
     Args:
         groups: List of group metrics dictionaries
         construction_metrics: List of construction metrics dictionaries
-        tmpl_dir: Template directory name (e.g., "sequential" or "fork")
+        template_path: path to the JSON template
         output_dir: Base output directory (default: "output")
     """
+    # Extract template directory name from the path
+    # This will get the parent directory name (e.g., "sequential" or "fork")
+    tmpl_dir = template_path.parent.name
     # Create output directory with template subdirectory
     output_path = os.path.join(output_dir, tmpl_dir)
     Path(output_path).mkdir(parents=True, exist_ok=True)
@@ -743,7 +746,7 @@ def visualize_groups(groups: List[Dict],
     plot_workflow_constructions(construction_metrics, output_path)
     plot_storage_efficiency(construction_metrics, output_path)
     plot_workflow_comparison(construction_metrics, output_path)
-    plot_workflow_topology(construction_metrics, output_path)
+    plot_workflow_topology(construction_metrics, output_path, template_path)
 
     # Save raw data for further analysis
     print(f"Saving raw data for {len(groups)} groups and {len(construction_metrics)} constructions")
@@ -763,13 +766,9 @@ if __name__ == "__main__":
     # Convert template file path to Path object for easier manipulation
     template_path = Path(args.template_file)
 
-    # Extract template directory name from the path
-    # This will get the parent directory name (e.g., "sequential" or "fork")
-    tmpl_dir = template_path.parent.name
-
     print(f"Parsing workflow data from template: {template_path}")
     with open(template_path) as f:
         workflow_data = json.load(f)
 
     groups, tasks, construction_metrics = create_workflow_from_json(workflow_data)
-    visualize_groups(groups, construction_metrics, tmpl_dir, args.output_dir)
+    visualize_groups(groups, construction_metrics, template_path, args.output_dir)
