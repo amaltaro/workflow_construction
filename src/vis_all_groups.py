@@ -10,6 +10,7 @@ import seaborn as sns
 from pathlib import Path
 from vis_constructions import plot_workflow_topology
 from find_all_groups import create_workflow_from_json
+import networkx as nx
 
 
 def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
@@ -720,7 +721,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
 def visualize_groups(groups: List[Dict],
                      construction_metrics: List[Dict],
                      template_path: str,
-                     output_dir: str = "output"):
+                     output_dir: str = "output",
+                     dag: nx.DiGraph = None):
     """Generate all visualizations for the task groups and workflow constructions
 
     Args:
@@ -728,6 +730,7 @@ def visualize_groups(groups: List[Dict],
         construction_metrics: List of construction metrics dictionaries
         template_path: path to the JSON template
         output_dir: Base output directory (default: "output")
+        dag: The directed acyclic graph representing task dependencies
     """
     # Extract template directory name from the path
     # This will get the parent directory name (e.g., "sequential" or "fork")
@@ -746,7 +749,7 @@ def visualize_groups(groups: List[Dict],
     plot_workflow_constructions(construction_metrics, output_path)
     plot_storage_efficiency(construction_metrics, output_path)
     plot_workflow_comparison(construction_metrics, output_path)
-    plot_workflow_topology(construction_metrics, output_path, template_path)
+    plot_workflow_topology(construction_metrics, output_path, template_path, dag)
 
     # Save raw data for further analysis
     print(f"Saving raw data for {len(groups)} groups and {len(construction_metrics)} constructions")
@@ -770,5 +773,5 @@ if __name__ == "__main__":
     with open(template_path) as f:
         workflow_data = json.load(f)
 
-    groups, tasks, construction_metrics = create_workflow_from_json(workflow_data)
-    visualize_groups(groups, construction_metrics, template_path, args.output_dir)
+    groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_data)
+    visualize_groups(groups, construction_metrics, template_path, args.output_dir, dag)

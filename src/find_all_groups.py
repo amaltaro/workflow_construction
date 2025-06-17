@@ -553,6 +553,7 @@ def find_all_workflow_constructions(grouper: TaskGrouper) -> List[List[GroupMetr
 
     # Find all possible combinations of groups that cover all tasks
     valid_constructions = []
+    seen_constructions = set()  # Track unique constructions using frozen sets of group IDs
 
     def get_available_tasks(construction: List[GroupMetrics]) -> Set[str]:
         """Get tasks that are available to be added to the construction.
@@ -605,8 +606,11 @@ def find_all_workflow_constructions(grouper: TaskGrouper) -> List[List[GroupMetr
 
         # If all tasks are covered, we have a valid construction
         if tasks_in_construction == all_tasks:
-            # print(f"Valid construction found: {[g.group_id for g in current_construction]}")
-            valid_constructions.append(current_construction.copy())
+            # Create a frozen set of group IDs for uniqueness check
+            construction_key = frozenset(g.group_id for g in current_construction)
+            if construction_key not in seen_constructions:
+                seen_constructions.add(construction_key)
+                valid_constructions.append(current_construction.copy())
             return
 
         # Get tasks that are available to be added
@@ -700,14 +704,14 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
     }
 
 
-def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str, Task], List[dict]]:
+def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str, Task], List[dict], nx.DiGraph]:
     """Create a workflow of tasks from JSON data and generate all possible task groups with metrics.
 
     Args:
         workflow_data: Dictionary containing the workflow specification
 
     Returns:
-        Tuple of (List of group metrics dictionaries, Dictionary of tasks, List of construction metrics)
+        Tuple of (List of group metrics dictionaries, Dictionary of tasks, List of construction metrics, DAG)
     """
     # Create tasks dictionary
     tasks = {}
@@ -797,6 +801,6 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             print(f"      Output Data: {group['output_data_mb']:.2f} MB")
             print(f"      Stored Data: {group['stored_data_mb']:.2f} MB")
 
-    # Return group metrics, tasks, and construction metrics
-    return grouper.get_group_metrics(), tasks, construction_metrics
+    # Return group metrics, tasks, construction metrics, and the DAG
+    return grouper.get_group_metrics(), tasks, construction_metrics, grouper.dag
 

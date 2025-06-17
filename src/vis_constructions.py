@@ -2,9 +2,10 @@
 
 from typing import List, Dict
 import os
+import networkx as nx
 
 
-def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "output", template_name: str = None) -> None:
+def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "output", template_name: str = None, dag: nx.DiGraph = None) -> None:
     """Create topology visualization for each workflow construction using Mermaid diagrams.
     
     This function creates a single HTML file containing Mermaid diagrams for all workflow constructions
@@ -14,6 +15,7 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
         construction_metrics: List of dictionaries containing workflow construction metrics
         output_dir: Directory where the visualization will be saved
         template_name: Name of the template file being visualized
+        dag: The directed acyclic graph representing task dependencies
     """
     print(f"Creating Mermaid visualizations for {len(construction_metrics)} workflow constructions")
     
@@ -48,8 +50,7 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
     if template_name:
         title += f" - {template_name}"
 
-    html_content = f"""
-    <!DOCTYPE html>
+    html_content = f"""<!DOCTYPE html>
     <html>
     <head>
         <title>{title}</title>
@@ -180,24 +181,22 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
             graph TD
         """
         
-        # Add nodes and edges for each group
+        # Create a mapping of tasks to their groups
+        task_to_group = {}
         for group in metrics["group_details"]:
-            tasks = group["tasks"]
-            group_id = group["group_id"]
-            
-            # Add nodes for this group with color
-            for task in tasks:
-                mermaid_content += f'    {task}["{task}"]:::group{group_id}\n'
-            
-            # Add edges within the group
-            for j in range(len(tasks) - 1):
-                mermaid_content += f'    {tasks[j]} --> {tasks[j + 1]}\n'
+            for task in group["tasks"]:
+                task_to_group[task] = group["group_id"]
+
+        # Add nodes for all tasks with their group colors
+        for task in sorted(task_to_group.keys()):
+            group_id = task_to_group[task]
+            mermaid_content += f'    {task}["{task}"]:::group{group_id}\n'
         
-        # Add edges between groups
-        for j in range(len(metrics["group_details"]) - 1):
-            current_group = metrics["group_details"][j]
-            next_group = metrics["group_details"][j + 1]
-            mermaid_content += f'    {current_group["tasks"][-1]} --> {next_group["tasks"][0]}\n'
+        # Add edges based on the DAG
+        if dag is not None:
+            for edge in dag.edges():
+                source, target = edge
+                mermaid_content += f'    {source} --> {target}\n'
         
         # Add style definitions for each group
         mermaid_content += "\n    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;\n"
