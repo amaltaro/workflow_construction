@@ -1,5 +1,4 @@
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html>
     <head>
         <title>Workflow Construction Topologies - tests/sequential/1group_perfect.json</title>
@@ -147,8 +146,8 @@
             Task1["Task1"]:::groupgroup_0
     Task2["Task2"]:::groupgroup_3
     Task3["Task3"]:::groupgroup_3
-    Task2 --> Task3
     Task1 --> Task2
+    Task2 --> Task3
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
@@ -161,8 +160,8 @@
             graph TD
             Task1["Task1"]:::groupgroup_5
     Task2["Task2"]:::groupgroup_5
-    Task1 --> Task2
     Task3["Task3"]:::groupgroup_2
+    Task1 --> Task2
     Task2 --> Task3
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
