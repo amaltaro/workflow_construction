@@ -525,7 +525,9 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax1.set_ylabel("Stored Data per Event (MB)")
     ax1.set_title("Performance vs Storage Efficiency\n(size=CPU time, color=num groups)")
     ax1.grid(True)
-    ax1.set_xlim(left=0)  # Set x-axis to start at 0
+
+    # set x-axis to start at 0 and add 10% padding to the right
+    ax1.set_xlim(left=0, right=np.max(event_throughputs) * 1.1)
 
     # 6. Network Transfer Analysis
     ax7 = fig.add_subplot(gs[2, 1])
