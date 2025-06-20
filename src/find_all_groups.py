@@ -652,13 +652,36 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
     Returns:
         Dictionary containing workflow metrics
     """
+    if not construction:
+        raise RuntimeError("No construction provided")
+
     # Calculate total events and total CPU time
     # Each task in a group processes the same number of events
     total_events = sum(len(group.task_ids) * group.events_per_job for group in construction)
     total_cpu_time = sum(group.cpu_seconds for group in construction)
 
-    # Calculate overall event throughput
-    event_throughput = total_events / total_cpu_time if total_cpu_time > 0 else 0.0
+    # Calculate overall event throughput using the new approach:
+    # 1. Find the maximum events_per_job across all groups (this will be our common baseline)
+    # 2. Calculate how many jobs each group needs to run to process that many events
+    # 3. Calculate total CPU time across all jobs
+    # 4. Event throughput = common_events / total_cpu_time
+
+    # Find the maximum events_per_job (this becomes our common baseline)
+    max_events_per_job = max(group.events_per_job for group in construction)
+
+    # Calculate total CPU time across all jobs needed
+    total_cpu_time_all_jobs = 0.0
+    for group in construction:
+        # Calculate how many jobs this group needs to run
+        # If group processes 1440 events per job and we need 4320 events total,
+        # then we need 4320 / 1440 = 3 jobs
+        jobs_needed = max_events_per_job / group.events_per_job
+
+        # Add CPU time for all jobs of this group
+        total_cpu_time_all_jobs += group.cpu_seconds * jobs_needed
+
+    # Event throughput is the common number of events divided by total CPU time
+    event_throughput = max_events_per_job / total_cpu_time_all_jobs if total_cpu_time_all_jobs > 0 else 0.0
 
     # Calculate total data volumes
     total_input_data = sum(group.input_data_mb for group in construction)
@@ -697,7 +720,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
         "input_data_per_event_mb": input_data_per_event,
         "output_data_per_event_mb": output_data_per_event,
         "stored_data_per_event_mb": stored_data_per_event,
-        "initial_input_events": construction[0].events_per_job if construction else 0,
+        "initial_input_events": construction[0].events_per_job,
         "num_groups": len(construction),
         "groups": [group.group_id for group in construction],
         "group_details": group_details

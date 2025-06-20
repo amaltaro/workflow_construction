@@ -735,9 +735,12 @@ def visualize_groups(groups: List[Dict],
     # Extract template directory name from the path
     # This will get the parent directory name (e.g., "sequential" or "fork")
     tmpl_dir = template_path.parent.name
+    # extract file name without the extension
+    tmpl_name = template_path.stem
     # Create output directory with template subdirectory
-    output_path = os.path.join(output_dir, tmpl_dir)
+    output_path = os.path.join(output_dir, tmpl_dir, tmpl_name)
     Path(output_path).mkdir(parents=True, exist_ok=True)
+    print(f"\n*** Saving output data at: {output_path}")
 
     # Create plots for individual groups
     plot_resource_utilization(groups, output_path)
@@ -761,7 +764,7 @@ def visualize_groups(groups: List[Dict],
 if __name__ == "__main__":
     # Set up argument parser
     parser = argparse.ArgumentParser(description='Visualize workflow groups and constructions from a template file.')
-    parser.add_argument('template_file', type=str, help='Path to the template JSON file')
+    parser.add_argument('--template-file', type=str, help='Path to the template JSON file')
     parser.add_argument('--output-dir', type=str, default='output',
                        help='Base output directory (default: output)')
     args = parser.parse_args()
