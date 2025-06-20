@@ -48,7 +48,7 @@
     "num_groups": 2,
     "groups": [
       "group_0",
-      "group_3"
+      "group_5"
     ],
     "group_details": [
       {
@@ -67,7 +67,7 @@
         "stored_data_per_event_mb": 0.1953125
       },
       {
-        "group_id": "group_3",
+        "group_id": "group_5",
         "tasks": [
           "Task2",
           "Task3"
@@ -97,12 +97,12 @@
     "initial_input_events": 1440,
     "num_groups": 2,
     "groups": [
-      "group_5",
+      "group_3",
       "group_2"
     ],
     "group_details": [
       {
-        "group_id": "group_5",
+        "group_id": "group_3",
         "tasks": [
           "Task1",
           "Task2"

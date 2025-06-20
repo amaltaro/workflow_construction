@@ -1,7 +1,7 @@
 <!DOCTYPE html>
     <html>
     <head>
-        <title>Workflow Construction Topologies - tests/fork/1group_perfect.json</title>
+        <title>Workflow Construction Topologies - tests/fork/3tasks.json</title>
         <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
         <style>
             .container {
@@ -70,7 +70,7 @@
         </style>
     </head>
     <body>
-        <h1>Workflow Construction Topologies - tests/fork/1group_perfect.json</h1>
+        <h1>Workflow Construction Topologies - tests/fork/3tasks.json</h1>
         
         <!-- Group Composition -->
         <div class="group-composition">
@@ -79,8 +79,8 @@
     <li>Group group_0: Task1</li>
 <li>Group group_1: Task2</li>
 <li>Group group_2: Task3</li>
-<li>Group group_3: Task1, Task3</li>
-<li>Group group_4: Task1, Task2</li>
+<li>Group group_3: Task1, Task2</li>
+<li>Group group_4: Task1, Task3</li>
 
             </ul>
         </div>
@@ -123,14 +123,14 @@
             <div class="construction-title">Workflow Construction 1</div>
             <div class="mermaid">
             graph TD
-            Task1["Task1"]:::groupgroup_4
-    Task2["Task2"]:::groupgroup_4
+            Task1["Task1"]:::groupgroup_3
+    Task2["Task2"]:::groupgroup_3
     Task3["Task3"]:::groupgroup_2
     Task1 --> Task2
     Task1 --> Task3
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef groupgroup_4 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_3 fill:#96CEB4,stroke:#333,stroke-width:2px,color:white;
     classDef groupgroup_2 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
 </div></div>
 
@@ -138,14 +138,14 @@
             <div class="construction-title">Workflow Construction 2</div>
             <div class="mermaid">
             graph TD
-            Task1["Task1"]:::groupgroup_3
+            Task1["Task1"]:::groupgroup_4
     Task2["Task2"]:::groupgroup_1
-    Task3["Task3"]:::groupgroup_3
+    Task3["Task3"]:::groupgroup_4
     Task1 --> Task2
     Task1 --> Task3
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef groupgroup_3 fill:#96CEB4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
     classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
 </div></div>
 
