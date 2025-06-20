@@ -4,8 +4,8 @@ Workflow Construction Comparison
 Construction 1:
   Groups: ['group_4']
   Number of Groups: 1
-  Event Throughput: 0.014 events/second
-  Total CPU Time: 75600.00 seconds
+  Event Throughput: 0.013 events/second
+  Total CPU Time: 86400.00 seconds
   Total Data Volumes for one job of each group:
     Input Data: 0.00 MB
     Output Data: 580.08 MB
@@ -17,14 +17,14 @@ Construction 1:
   Memory Utilization: 0.81
   Network Transfer: 0.18 MB
   Parallel Execution Metrics:
-    Sequential Time: 75600.00 seconds
-    Parallel Time: 75600.00 seconds
+    Sequential Time: 86400.00 seconds
+    Parallel Time: 86400.00 seconds
     Parallel Efficiency: 1.000
   Group Details:
     group_4:
       Tasks: ['Task1', 'Task2', 'Task3']
       Events per Task: 1080
-      CPU Time: 75600.00 seconds
+      CPU Time: 86400.00 seconds
       Data Flow (per event):
         Input: 0.000 MB/event
         Output: 0.179 MB/event
@@ -70,8 +70,8 @@ Construction 2:
 Construction 3:
   Groups: ['group_5', 'group_2']
   Number of Groups: 2
-  Event Throughput: 0.014 events/second
-  Total CPU Time: 158400.00 seconds
+  Event Throughput: 0.013 events/second
+  Total CPU Time: 172800.00 seconds
   Total Data Volumes for one job of each group:
     Input Data: 1265.62 MB
     Output Data: 914.06 MB
@@ -83,14 +83,14 @@ Construction 3:
   Memory Utilization: 0.92
   Network Transfer: 0.59 MB
   Parallel Execution Metrics:
-    Sequential Time: 158400.00 seconds
-    Parallel Time: 158400.00 seconds
+    Sequential Time: 172800.00 seconds
+    Parallel Time: 172800.00 seconds
     Parallel Efficiency: 1.000
   Group Details:
     group_5:
       Tasks: ['Task1', 'Task2']
       Events per Task: 1440
-      CPU Time: 72000.00 seconds
+      CPU Time: 86400.00 seconds
       Data Flow (per event):
         Input: 0.000 MB/event
         Output: 0.244 MB/event

@@ -9,7 +9,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 1,
-        "cpu_seconds": 43200.0,
+        "cpu_seconds": 43200,
         "utilization_ratio": 1.0
       },
       "memory": {
@@ -51,7 +51,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
-        "cpu_seconds": 86400.0,
+        "cpu_seconds": 86400,
         "utilization_ratio": 1.0
       },
       "memory": {
@@ -93,7 +93,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
-        "cpu_seconds": 86400.0,
+        "cpu_seconds": 86400,
         "utilization_ratio": 1.0
       },
       "memory": {
@@ -136,7 +136,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
-        "cpu_seconds": 86400.0,
+        "cpu_seconds": 86400,
         "utilization_ratio": 1.0
       },
       "memory": {
@@ -185,7 +185,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
-        "cpu_seconds": 75600.0,
+        "cpu_seconds": 86400,
         "utilization_ratio": 0.875
       },
       "memory": {
@@ -194,7 +194,7 @@
         "occupancy": 0.8125
       },
       "throughput": {
-        "total_eps": 0.04285714285714286,
+        "total_eps": 0.0375,
         "max_eps": 0.1,
         "min_eps": 0.025
       },
@@ -212,7 +212,7 @@
     },
     "utilization_metrics": {
       "resource_utilization": 0.84375,
-      "event_throughput": 0.04285714285714286
+      "event_throughput": 0.0375
     },
     "dependency_paths": [
       [
@@ -221,12 +221,12 @@
       ],
       [
         "Task1",
-        "Task2",
-        "Task3"
+        "Task2"
       ],
       [
         "Task1",
-        "Task2"
+        "Task2",
+        "Task3"
       ]
     ],
     "events_per_job": 1080
@@ -242,7 +242,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
-        "cpu_seconds": 72000.0,
+        "cpu_seconds": 86400,
         "utilization_ratio": 0.8333333333333334
       },
       "memory": {
@@ -251,7 +251,7 @@
         "occupancy": 0.8333333333333334
       },
       "throughput": {
-        "total_eps": 0.04,
+        "total_eps": 0.03333333333333333,
         "max_eps": 0.1,
         "min_eps": 0.025
       },
@@ -269,7 +269,7 @@
     },
     "utilization_metrics": {
       "resource_utilization": 0.8333333333333334,
-      "event_throughput": 0.04
+      "event_throughput": 0.03333333333333333
     },
     "dependency_paths": [
       [
