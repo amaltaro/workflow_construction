@@ -308,7 +308,6 @@ class TaskGrouper:
         # For each task: (cores_used * duration) / (max_cores * total_duration)
         total_duration = 0.0
         weighted_cpu_utilization = 0.0
-
         for task in tasks:
             task_duration = task.resources.input_events * task.resources.time_per_event
             total_duration += task_duration
@@ -319,7 +318,9 @@ class TaskGrouper:
         cpu_utilization_ratio = weighted_cpu_utilization / max_possible_utilization if max_possible_utilization > 0 else 0.0
 
         # Calculate CPU seconds (total CPU time used)
-        cpu_seconds = weighted_cpu_utilization
+        # The group is allocated max_cores for the entire duration
+        total_wallclock_time = events_per_job * total_time_per_event
+        cpu_seconds = max_cores * total_wallclock_time
 
         # Calculate memory metrics
         max_memory = max(t.resources.memory_mb for t in tasks)
@@ -806,7 +807,7 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Groups: {metrics['groups']}")
         print(f"  Total Events: {metrics['total_events']}")
         print(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds")
-        print(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second")
+        print(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second")
         print(f"  Total Input Data: {metrics['total_input_data_mb']:.2f} MB")
         print(f"  Total Output Data: {metrics['total_output_data_mb']:.2f} MB")
         print(f"  Total Stored Data: {metrics['total_stored_data_mb']:.2f} MB")

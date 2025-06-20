@@ -342,7 +342,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
             f.write(f"  Total Events: {metrics['total_events']}\n")
             f.write(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
-            f.write(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second\n")
+            f.write(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second\n")
             f.write(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event\n\n")
 
 def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots"):
@@ -689,7 +689,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             f.write(f"Construction {i}:\n")
             f.write(f"  Groups: {metrics['groups']}\n")
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
-            f.write(f"  Event Throughput: {metrics['event_throughput']:.3f} events/second\n")
+            f.write(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second\n")
             f.write(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
             f.write("  Total Data Volumes for one job of each group:\n")
             f.write(f"    Input Data: {metrics['total_input_data_mb']:.2f} MB\n")
