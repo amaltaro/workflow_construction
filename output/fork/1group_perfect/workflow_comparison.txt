@@ -4,7 +4,7 @@ Workflow Construction Comparison
 Construction 1:
   Groups: ['group_4', 'group_2']
   Number of Groups: 2
-  Event Throughput: 0.013 events/second
+  Event Throughput: 0.0125 events/second
   Total CPU Time: 172800.00 seconds
   Total Data Volumes for one job of each group:
     Input Data: 843.75 MB
@@ -41,7 +41,7 @@ Construction 1:
 Construction 2:
   Groups: ['group_3', 'group_1']
   Number of Groups: 2
-  Event Throughput: 0.013 events/second
+  Event Throughput: 0.0125 events/second
   Total CPU Time: 172800.00 seconds
   Total Data Volumes for one job of each group:
     Input Data: 421.88 MB
@@ -78,7 +78,7 @@ Construction 2:
 Construction 3:
   Groups: ['group_0', 'group_1', 'group_2']
   Number of Groups: 3
-  Event Throughput: 0.014 events/second
+  Event Throughput: 0.0143 events/second
   Total CPU Time: 216000.00 seconds
   Total Data Volumes for one job of each group:
     Input Data: 1265.62 MB
