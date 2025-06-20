@@ -63,9 +63,9 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
                 padding: 20px;
             }}
             .construction {{
-                flex: 1 1 23%;
+                flex: 1 1 18%;
                 min-width: 300px;
-                margin-bottom: 15px;
+                margin-bottom: 10px;
             }}
             .mermaid {{
                 margin: 10px 0;
