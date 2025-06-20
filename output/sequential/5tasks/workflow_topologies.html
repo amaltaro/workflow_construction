@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Workflow Construction Topologies - tests/sequential/5tasks.json</title>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        <style>
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                padding: 20px;
+            }
+            .construction {
+                flex: 1 1 18%;
+                min-width: 300px;
+                margin-bottom: 10px;
+            }
+            .mermaid {
+                margin: 10px 0;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            .construction-title {
+                font-size: 1.1em;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+            .legend {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            .legend-item {
+                display: flex;
+                align-items: center;
+                margin: 5px 0;
+            }
+            .legend-color {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                border: 1px solid #333;
+            }
+            .group-composition {
+                margin: 20px;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 5px;
+                font-size: 0.9em;
+                line-height: 1.4;
+            }
+            .group-composition h3 {
+                margin: 0 0 10px 0;
+            }
+            .group-composition ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            .group-composition li {
+                margin: 2px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Workflow Construction Topologies - tests/sequential/5tasks.json</h1>
+        
+        <!-- Group Composition -->
+        <div class="group-composition">
+            <h3>Group/Task Composition:</h3>
+            <ul>
+    <li>Group group_0: Task1</li>
+<li>Group group_1: Task2</li>
+<li>Group group_10: Task2, Task3, Task4</li>
+<li>Group group_11: Task1, Task2, Task3, Task4</li>
+<li>Group group_12: Task1, Task2</li>
+<li>Group group_13: Task1, Task2, Task3</li>
+<li>Group group_14: Task2, Task3</li>
+<li>Group group_2: Task3</li>
+<li>Group group_3: Task4</li>
+<li>Group group_4: Task5</li>
+<li>Group group_5: Task4, Task5</li>
+<li>Group group_6: Task3, Task4, Task5</li>
+<li>Group group_7: Task2, Task3, Task4, Task5</li>
+<li>Group group_8: Task1, Task2, Task3, Task4, Task5</li>
+<li>Group group_9: Task3, Task4</li>
+
+            </ul>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Groups</h3>
+    
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #FF6B6B"></div>
+                <span>Group group_0</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #4ECDC4"></div>
+                <span>Group group_1</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #45B7D1"></div>
+                <span>Group group_10</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #96CEB4"></div>
+                <span>Group group_11</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #FFEEAD"></div>
+                <span>Group group_12</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #D4A5A5"></div>
+                <span>Group group_13</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #9B59B6"></div>
+                <span>Group group_14</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #3498DB"></div>
+                <span>Group group_2</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #E67E22"></div>
+                <span>Group group_3</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2ECC71"></div>
+                <span>Group group_4</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #F1C40F"></div>
+                <span>Group group_5</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #E74C3C"></div>
+                <span>Group group_6</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #1ABC9C"></div>
+                <span>Group group_7</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #34495E"></div>
+                <span>Group group_8</span>
+            </div>
+        
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #F39C12"></div>
+                <span>Group group_9</span>
+            </div>
+        
+        </div>
+        
+        <!-- Diagrams Container -->
+        <div class="container">
+    
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 1</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_8
+    Task2["Task2"]:::groupgroup_8
+    Task3["Task3"]:::groupgroup_8
+    Task4["Task4"]:::groupgroup_8
+    Task5["Task5"]:::groupgroup_8
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_8 fill:#34495E,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 2</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_11
+    Task2["Task2"]:::groupgroup_11
+    Task3["Task3"]:::groupgroup_11
+    Task4["Task4"]:::groupgroup_11
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_11 fill:#96CEB4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 3</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_7
+    Task3["Task3"]:::groupgroup_7
+    Task4["Task4"]:::groupgroup_7
+    Task5["Task5"]:::groupgroup_7
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_7 fill:#1ABC9C,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 4</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_12
+    Task2["Task2"]:::groupgroup_12
+    Task3["Task3"]:::groupgroup_6
+    Task4["Task4"]:::groupgroup_6
+    Task5["Task5"]:::groupgroup_6
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_12 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_6 fill:#E74C3C,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 5</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_13
+    Task2["Task2"]:::groupgroup_13
+    Task3["Task3"]:::groupgroup_13
+    Task4["Task4"]:::groupgroup_5
+    Task5["Task5"]:::groupgroup_5
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_13 fill:#D4A5A5,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_5 fill:#F1C40F,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 6</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_10
+    Task3["Task3"]:::groupgroup_10
+    Task4["Task4"]:::groupgroup_10
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_10 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 7</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_12
+    Task2["Task2"]:::groupgroup_12
+    Task3["Task3"]:::groupgroup_9
+    Task4["Task4"]:::groupgroup_9
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_12 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_9 fill:#F39C12,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 8</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_13
+    Task2["Task2"]:::groupgroup_13
+    Task3["Task3"]:::groupgroup_13
+    Task4["Task4"]:::groupgroup_3
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_13 fill:#D4A5A5,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_3 fill:#E67E22,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 9</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_14
+    Task3["Task3"]:::groupgroup_14
+    Task4["Task4"]:::groupgroup_5
+    Task5["Task5"]:::groupgroup_5
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_14 fill:#9B59B6,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_5 fill:#F1C40F,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 10</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_1
+    Task3["Task3"]:::groupgroup_6
+    Task4["Task4"]:::groupgroup_6
+    Task5["Task5"]:::groupgroup_6
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_6 fill:#E74C3C,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 11</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_12
+    Task2["Task2"]:::groupgroup_12
+    Task3["Task3"]:::groupgroup_2
+    Task4["Task4"]:::groupgroup_5
+    Task5["Task5"]:::groupgroup_5
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_12 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_2 fill:#3498DB,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_5 fill:#F1C40F,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 12</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_1
+    Task3["Task3"]:::groupgroup_9
+    Task4["Task4"]:::groupgroup_9
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_9 fill:#F39C12,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 13</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_14
+    Task3["Task3"]:::groupgroup_14
+    Task4["Task4"]:::groupgroup_3
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_14 fill:#9B59B6,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_3 fill:#E67E22,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 14</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_12
+    Task2["Task2"]:::groupgroup_12
+    Task3["Task3"]:::groupgroup_2
+    Task4["Task4"]:::groupgroup_3
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_12 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_2 fill:#3498DB,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_3 fill:#E67E22,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 15</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_1
+    Task3["Task3"]:::groupgroup_2
+    Task4["Task4"]:::groupgroup_5
+    Task5["Task5"]:::groupgroup_5
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_2 fill:#3498DB,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_5 fill:#F1C40F,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        <div class="construction">
+            <div class="construction-title">Workflow Construction 16</div>
+            <div class="mermaid">
+            graph TD
+            Task1["Task1"]:::groupgroup_0
+    Task2["Task2"]:::groupgroup_1
+    Task3["Task3"]:::groupgroup_2
+    Task4["Task4"]:::groupgroup_3
+    Task5["Task5"]:::groupgroup_4
+    Task1 --> Task2
+    Task2 --> Task3
+    Task3 --> Task4
+    Task4 --> Task5
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_2 fill:#3498DB,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_3 fill:#E67E22,stroke:#333,stroke-width:2px,color:white;
+    classDef groupgroup_4 fill:#2ECC71,stroke:#333,stroke-width:2px,color:white;
+</div></div>
+
+        </div>
+        <script>
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: false,
+                    htmlLabels: true,
+                    curve: 'basis'
+                }
+            });
+        </script>
+    </body>
+    </html>
+    

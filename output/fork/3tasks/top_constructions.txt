@@ -9,7 +9,7 @@ Construction 1:
   Stored Data per Event: 0.537 MB/event
 
 Construction 2:
-  Groups: ['group_3', 'group_2']
+  Groups: ['group_4', 'group_2']
   Number of Groups: 2
   Total Events: 7200
   Total CPU Time: 172800.00 seconds
@@ -17,7 +17,7 @@ Construction 2:
   Stored Data per Event: 0.195 MB/event
 
 Construction 3:
-  Groups: ['group_4', 'group_1']
+  Groups: ['group_3', 'group_1']
   Number of Groups: 2
   Total Events: 6480
   Total CPU Time: 172800.00 seconds

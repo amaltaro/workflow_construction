@@ -2,7 +2,7 @@ Workflow Construction Comparison
 ==============================
 
 Construction 1:
-  Groups: ['group_3', 'group_2']
+  Groups: ['group_4', 'group_2']
   Number of Groups: 2
   Event Throughput: 0.0125 events/second
   Total CPU Time: 172800.00 seconds
@@ -21,7 +21,7 @@ Construction 1:
     Parallel Time: 172800.00 seconds
     Parallel Efficiency: 1.000
   Group Details:
-    group_3:
+    group_4:
       Tasks: ['Task1', 'Task2']
       Events per Task: 1440
       CPU Time: 86400.00 seconds
@@ -39,7 +39,7 @@ Construction 1:
         Stored: 0.049 MB/event
 
 Construction 2:
-  Groups: ['group_4', 'group_1']
+  Groups: ['group_3', 'group_1']
   Number of Groups: 2
   Event Throughput: 0.0125 events/second
   Total CPU Time: 172800.00 seconds
@@ -58,7 +58,7 @@ Construction 2:
     Parallel Time: 172800.00 seconds
     Parallel Efficiency: 1.000
   Group Details:
-    group_4:
+    group_3:
       Tasks: ['Task1', 'Task3']
       Events per Task: 2160
       CPU Time: 86400.00 seconds

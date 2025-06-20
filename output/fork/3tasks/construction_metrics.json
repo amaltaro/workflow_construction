@@ -12,12 +12,12 @@
     "initial_input_events": 1440,
     "num_groups": 2,
     "groups": [
-      "group_3",
+      "group_4",
       "group_2"
     ],
     "group_details": [
       {
-        "group_id": "group_3",
+        "group_id": "group_4",
         "tasks": [
           "Task1",
           "Task2"
@@ -62,12 +62,12 @@
     "initial_input_events": 2160,
     "num_groups": 2,
     "groups": [
-      "group_4",
+      "group_3",
       "group_1"
     ],
     "group_details": [
       {
-        "group_id": "group_4",
+        "group_id": "group_3",
         "tasks": [
           "Task1",
           "Task3"
