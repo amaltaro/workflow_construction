@@ -766,7 +766,7 @@ def visualize_groups(groups: List[Dict],
 if __name__ == "__main__":
     # Set up argument parser
     parser = argparse.ArgumentParser(description='Visualize workflow groups and constructions from a template file.')
-    parser.add_argument('--template-file', type=str, help='Path to the template JSON file')
+    parser.add_argument('template_file', type=str, help='Path to the template JSON file')
     parser.add_argument('--output-dir', type=str, default='output',
                        help='Base output directory (default: output)')
     args = parser.parse_args()
