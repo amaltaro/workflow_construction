@@ -6,7 +6,7 @@ Research for: Optimizing Heterogeneous Workflow Construction for Enhanced Event 
 
 ## Overview
 
-The Workflow Task Grouper analyzes workflow tasks and their relationships to create optimal task groups while respecting both hard constraints (OS compatibility, architecture requirements) and soft constraints (resource utilization, performance characteristics).
+The Workflow Task Grouper analyzes workflow tasks and their relationships to create optimal task groups while respecting both hard constraints (OS compatibility, architecture requirements) and soft constraints (resource utilization, performance characteristics). The system also generates all possible workflow constructions and provides comprehensive analysis and visualization capabilities.
 
 ## Features
 
@@ -16,6 +16,11 @@ The Workflow Task Grouper analyzes workflow tasks and their relationships to cre
 - Support for various resource types (CPU, Memory, GPU)
 - Visualization of workflow DAG structure (ASCII and Mermaid formats)
 - Customizable weights for different scoring aspects
+- **NEW**: Generation of all possible workflow constructions
+- **NEW**: Comprehensive workflow construction analysis and comparison
+- **NEW**: Mermaid-based HTML workflow topology visualization
+- **NEW**: Storage rules and data volume calculation
+- **NEW**: Events per job calculation based on target wallclock time
 
 ## Installation
 
@@ -125,9 +130,160 @@ graph TD
     Task2 --> Task4
 ```
 
+## Comprehensive Workflow Analysis Module
+
+The `find_all_groups.py` module provides a comprehensive framework for analyzing all possible task groupings and workflow constructions in a workflow. This module generates and analyzes all valid task groupings based on dependency constraints and finds all possible ways to construct workflows from these groups.
+
+### Key Features
+
+- Generates all possible valid task groups based on dependency constraints
+- Calculates detailed resource utilization metrics for each group
+- **NEW**: Finds all possible workflow constructions (combinations of groups that cover all tasks)
+- **NEW**: Calculates comprehensive workflow-level metrics
+- **NEW**: Implements storage rules for data volume calculation
+- **NEW**: Calculates optimal events per job based on target wallclock time
+- Provides comprehensive analysis of CPU, memory, I/O, and dependency patterns
+- Supports visualization of grouping strategies and their impacts
+
+### Core Components
+
+1. **Task and Resource Models**:
+   ```python
+   @dataclass
+   class TaskResources:
+       os_version: str
+       cpu_arch: str
+       memory_mb: int
+       accelerator: Optional[str]
+       cpu_cores: int
+       events_per_second: float
+       time_per_event: float
+       size_per_event: float
+       input_events: int
+       keep_output: bool  # Whether the task's output needs to be kept in shared storage
+
+   @dataclass
+   class Task:
+       id: str
+       resources: TaskResources
+       input_task: Optional[str] = None
+       output_tasks: Set[str] = None
+       order: int = 0  # Order of the task in the workflow
+   ```
+
+2. **Group Metrics Calculation**:
+   - CPU utilization and efficiency
+   - Memory allocation and efficiency
+   - Throughput analysis
+   - I/O requirements with storage rules
+   - Dependency path analysis
+   - Events per job calculation
+
+3. **Workflow Construction Analysis**:
+   - Finds all possible combinations of groups that cover all tasks
+   - Respects task dependencies between groups
+   - Calculates workflow-level metrics including:
+     - Event throughput
+     - Total data volumes
+     - Resource utilization
+     - Parallel execution efficiency
+
+4. **Storage Rules**:
+   - Input data volume based on parent task's size per event
+   - Output data volume for all tasks in the group
+   - Stored data volume for tasks with `keep_output=True` or exit point tasks
+   - Per-event data volume calculations
+
+5. **Events per Job Calculation**:
+   - Based on target wallclock time (default: 12 hours)
+   - Calculates optimal events per job for each group
+   - Ensures consistent event processing across workflow
+
+### Usage Example
+
+```python
+from find_all_groups import create_workflow_from_json
+
+# Load workflow specification
+with open("workflow.json", "r") as file:
+    workflow_data = json.load(file)
+
+# Generate all possible groups and workflow constructions
+groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_data)
+
+# Each group contains detailed metrics:
+{
+    "group_id": "group_0",
+    "task_ids": ["Task1", "Task2", ...],
+    "resource_metrics": {
+        "cpu": {
+            "max_cores": 4,
+            "cpu_seconds": 1200.0,
+            "utilization_ratio": 0.75
+        },
+        "memory": {
+            "max_mb": 8000,
+            "min_mb": 4000,
+            "occupancy": 0.6
+        },
+        "io": {
+            "input_data_mb": 100.0,
+            "output_data_mb": 200.0,
+            "stored_data_mb": 150.0,
+            "input_data_per_event_mb": 0.1,
+            "output_data_per_event_mb": 0.2,
+            "stored_data_per_event_mb": 0.15
+        }
+        # ... other metrics
+    },
+    "events_per_job": 1440
+}
+
+# Each construction contains workflow-level metrics:
+{
+    "total_events": 4320,
+    "event_throughput": 0.1234,
+    "total_cpu_time": 3600.0,
+    "total_stored_data_mb": 450.0,
+    "stored_data_per_event_mb": 0.104,
+    "num_groups": 3,
+    "groups": ["group_0", "group_1", "group_2"]
+}
+```
+
+### Analysis Workflow
+
+1. **Workflow Parsing**:
+   - Loads workflow specification from JSON
+   - Creates task and resource models
+   - Builds dependency graph
+   - Calculates events per job based on target wallclock time
+
+2. **Group Generation**:
+   - Generates all possible valid task groups
+   - Validates dependency constraints
+   - Calculates metrics for each group including storage rules
+
+3. **Workflow Construction**:
+   - Finds all possible combinations of groups that cover all tasks
+   - Respects task dependencies between groups
+   - Calculates workflow-level metrics
+
+4. **Metrics Calculation**:
+   - Resource utilization (CPU, memory)
+   - Throughput analysis
+   - I/O requirements with storage rules
+   - Dependency patterns
+   - Parallel execution efficiency
+
+5. **Output Generation**:
+   - Returns detailed metrics for all groups and constructions
+   - Provides data for visualization
+   - Enables comparison of different workflow strategies
+
 ## Metrics Analysis and Visualization
 
-The module includes comprehensive metrics analysis and visualization capabilities through `vis_all_groups.py`. This tool generates detailed visualizations to analyze different aspects of task grouping strategies.
+The module includes comprehensive metrics analysis and visualization capabilities through `vis_all_groups.py`. This tool generates detailed visualizations to analyze different aspects of task grouping strategies and workflow constructions.
 
 ### Installation
 
@@ -179,9 +335,12 @@ pip install matplotlib seaborn pandas
    - Event Throughput Distribution
    - Storage Efficiency vs Event Throughput
 
-8. **Workflow Topology** (`workflow_topology.png`):
+8. **Workflow Topology** (`workflow_topologies.html`):
+   - **NEW**: Interactive HTML visualization with Mermaid diagrams
    - Visual representation of the DAG structure for each construction
    - Shows task dependencies and grouping relationships
+   - Color-coded groups with legend
+   - Side-by-side comparison of all constructions
 
 Each visualization provides unique insights into different aspects of the workflow constructions:
 - Resource utilization and efficiency
@@ -222,8 +381,12 @@ The visualization tool tracks and analyzes the following metrics:
 - Minimum events per second
 
 #### I/O Metrics
-- Total output size (MB)
-- Maximum output file size (MB)
+- Total input data size (MB)
+- Total output data size (MB)
+- Total stored data size (MB)
+- Input data per event (MB)
+- Output data per event (MB)
+- Stored data per event (MB)
 
 #### Dependency Metrics
 - Number of dependency paths
@@ -297,22 +460,23 @@ These metrics help in:
 from vis_all_groups import visualize_groups
 
 # After getting groups from create_workflow_from_json
-visualize_groups(groups, construction_metrics, tmpl_dir="sequential", output_dir="output")
+visualize_groups(groups, construction_metrics, template_path, output_dir="output", dag=dag)
 ```
 
 Or run directly from command line:
 ```bash
 # Basic usage with default output directory
-python src/vis_all_groups.py tests/sequential/1group_perfect.json
+python src/vis_all_groups.py tests/sequential/3tasks.json
 
 # With a custom output directory
-python src/vis_all_groups.py tests/sequential/1group_perfect.json --output-dir custom_output
+python src/vis_all_groups.py tests/sequential/3tasks.json --output-dir custom_output
 ```
 
 The script will:
 1. Automatically detect the template directory name (e.g., "sequential" or "fork") from the input file path
-2. Create the appropriate output directory structure (e.g., `output/sequential/` or `custom_output/sequential/`)
+2. Create the appropriate output directory structure (e.g., `output/sequential/3tasks/` or `custom_output/sequential/3tasks/`)
 3. Save all visualizations and data files in that directory
+4. Generate an interactive HTML file with Mermaid diagrams for workflow topology visualization
 
 You can get help on the command line arguments by running:
 ```bash
@@ -329,119 +493,19 @@ The visualizations help:
 3. Analyze dependency patterns
 4. Find correlations between different metrics
 5. Make informed decisions about task grouping strategies
-
-## Task Grouping Analysis Module
-
-The `group_all_groups.py` module provides a comprehensive framework for analyzing all possible task groupings in a workflow. Unlike the original task grouping algorithm that focused on finding optimal groups, this module generates and analyzes all valid task groupings based on dependency constraints.
-
-### Key Features
-
-- Generates all possible valid task groups based on dependency constraints
-- Calculates detailed resource utilization metrics for each group
-- Provides comprehensive analysis of CPU, memory, I/O, and dependency patterns
-- Supports visualization of grouping strategies and their impacts
-
-### Core Components
-
-1. **Task and Resource Models**:
-   ```python
-   @dataclass
-   class TaskResources:
-       os_version: str
-       cpu_arch: str
-       memory_mb: int
-       accelerator: Optional[str]
-       cpu_cores: int
-       events_per_second: float
-
-   @dataclass
-   class Task:
-       id: str
-       resources: TaskResources
-       input_task: Optional[str] = None
-       output_tasks: Set[str] = None
-   ```
-
-2. **Group Metrics Calculation**:
-   - CPU utilization and efficiency
-   - Memory allocation and efficiency
-   - Throughput analysis
-   - I/O requirements
-   - Dependency path analysis
-
-3. **Dependency Validation**:
-   - Ensures all tasks in a group have valid dependency paths
-   - Validates that all intermediate tasks in dependency paths are included
-   - Maintains workflow coherence within groups
-
-### Usage Example
-
-```python
-from group_all_groups import create_workflow_from_json
-
-# Load workflow specification
-with open("workflow.json", "r") as file:
-    workflow_data = json.load(file)
-
-# Generate all possible groups and their metrics
-groups, tasks = create_workflow_from_json(workflow_data)
-
-# Each group contains detailed metrics:
-{
-    "group_id": "group_0",
-    "task_ids": ["Task1", "Task2", ...],
-    "resource_metrics": {
-        "cpu": {
-            "total_cores": 8,
-            "max_cores": 4,
-            "cpu_seconds": 1200.0,
-            "efficiency": 0.75
-        },
-        "memory": {
-            "total_mb": 16000,
-            "max_mb": 8000,
-            "min_mb": 4000,
-            "memory_seconds": 24000.0,
-            "efficiency": 0.6
-        },
-        # ... other metrics
-    }
-}
-```
-
-### Analysis Workflow
-
-1. **Workflow Parsing**:
-   - Loads workflow specification from JSON
-   - Creates task and resource models
-   - Builds dependency graph
-
-2. **Group Generation**:
-   - Generates all possible valid task groups
-   - Validates dependency constraints
-   - Calculates metrics for each group
-
-3. **Metrics Calculation**:
-   - Resource utilization (CPU, memory)
-   - Throughput analysis
-   - I/O requirements
-   - Dependency patterns
-
-4. **Output Generation**:
-   - Returns detailed metrics for all groups
-   - Provides data for visualization
-   - Enables comparison of different grouping strategies
+6. Compare different workflow construction approaches
+7. Evaluate storage and network transfer requirements
 
 ### Integration with Visualization
 
 The module works seamlessly with the visualization tool (`vis_all_groups.py`):
 ```python
-from group_all_groups import create_workflow_from_json
+from find_all_groups import create_workflow_from_json
 from vis_all_groups import visualize_groups
 
 # Generate groups and visualize
-groups, tasks = create_workflow_from_json(workflow_data)
-visualize_groups(groups)
+groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_data)
+visualize_groups(groups, construction_metrics, template_path, output_dir="output", dag=dag)
 ```
 
 This integration allows for:
@@ -449,6 +513,8 @@ This integration allows for:
 - Comparison of resource utilization patterns
 - Identification of optimal group sizes
 - Understanding of tradeoffs between different metrics
+- Analysis of workflow construction alternatives
+- Evaluation of parallel execution potential
 
 ## Contributing
 
