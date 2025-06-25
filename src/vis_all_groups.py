@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 from typing import List, Dict
+from collections import defaultdict
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -60,10 +61,25 @@ def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     axes[1, 0].set_ylabel("Resource Utilization")
     axes[1, 0].grid(True)
 
-    # Plot 4: CPU Utilization Ratio vs Memory Occupancy
-    sns.scatterplot(x=cpu_utilization_ratios, y=memory_occupancies, 
-                   size=events_per_job, sizes=(50, 200), ax=axes[1, 1])
-    axes[1, 1].set_title("CPU Utilization Ratio vs Memory Occupancy\n(size indicates events per job)")
+    # Plot 4: CPU Utilization Ratio vs Memory Occupancy with color-coded events per job
+    # Create discrete color bins for events per job
+    events_array = np.array(events_per_job)
+    unique_events = np.unique(events_array)
+
+    # Create a discrete colormap
+    n_events = len(unique_events)
+    cmap = plt.colormaps['viridis'].resampled(n_events)
+
+    # Create scatter plot with discrete colors
+    scatter = axes[1, 1].scatter(cpu_utilization_ratios, memory_occupancies,
+                                c=events_array, cmap=cmap, s=100, alpha=0.7)
+
+    # Add colorbar with discrete ticks
+    cbar = plt.colorbar(scatter, ax=axes[1, 1], label="Events per Job")
+    cbar.set_ticks(unique_events)
+    cbar.set_ticklabels([f"{int(x)}" for x in unique_events])
+
+    axes[1, 1].set_title("CPU Utilization Ratio vs Memory Occupancy\n(color indicates events per job)")
     axes[1, 1].set_xlabel("CPU Utilization Ratio")
     axes[1, 1].set_ylabel("Memory Occupancy")
     axes[1, 1].grid(True)
@@ -95,7 +111,7 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
 
     # Create figure with subplots
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
-    fig.suptitle("Throughput and I/O Analysis", fontsize=16)
+    fig.suptitle("Group Throughput and I/O Analysis", fontsize=16)
 
     # Plot 1: Throughput vs Group Size
     sns.scatterplot(x=group_sizes, y=total_throughputs, ax=axes[0, 0])
@@ -105,9 +121,26 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
     axes[0, 0].grid(True)
 
     # Plot 2: Throughput Range vs Group Size
-    axes[0, 1].scatter(group_sizes, max_throughputs, label="Max Throughput", alpha=0.6)
-    axes[0, 1].scatter(group_sizes, min_throughputs, label="Min Throughput", alpha=0.6)
-    axes[0, 1].set_title("Throughput Range vs Group Size")
+    # Aggregate data by group size to get actual min/max across all groups of same size
+    group_size_data = defaultdict(lambda: {'max_throughputs': [], 'min_throughputs': []})
+
+    for i, size in enumerate(group_sizes):
+        group_size_data[size]['max_throughputs'].append(max_throughputs[i])
+        group_size_data[size]['min_throughputs'].append(min_throughputs[i])
+
+    # Calculate actual min and max for each group size
+    aggregated_sizes = []
+    aggregated_max_throughputs = []
+    aggregated_min_throughputs = []
+
+    for size in sorted(group_size_data.keys()):
+        aggregated_sizes.append(size)
+        aggregated_max_throughputs.append(max(group_size_data[size]['max_throughputs']))
+        aggregated_min_throughputs.append(min(group_size_data[size]['min_throughputs']))
+
+    axes[0, 1].scatter(aggregated_sizes, aggregated_max_throughputs, label="Max Throughput", alpha=0.6, s=100)
+    axes[0, 1].scatter(aggregated_sizes, aggregated_min_throughputs, label="Min Throughput", alpha=0.6, s=100)
+    axes[0, 1].set_title("Throughput Range vs Group Size\n(Min/Max across all groups of same size)")
     axes[0, 1].set_xlabel("Number of Tasks in Group")
     axes[0, 1].set_ylabel("Events per Second")
     axes[0, 1].legend()
@@ -124,9 +157,24 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
     axes[1, 0].grid(True)
 
     # Plot 4: Throughput vs Data Size
-    sns.scatterplot(x=total_throughputs, y=stored_data_sizes,
-                   size=group_sizes, sizes=(50, 200), ax=axes[1, 1])
-    axes[1, 1].set_title("Throughput vs Stored Data Size")
+    # Create discrete color bins for group sizes
+    group_sizes_array = np.array(group_sizes)
+    unique_group_sizes = np.unique(group_sizes_array)
+
+    # Create a discrete colormap
+    n_sizes = len(unique_group_sizes)
+    cmap = plt.colormaps['plasma'].resampled(n_sizes)
+
+    # Create scatter plot with discrete colors
+    scatter = axes[1, 1].scatter(total_throughputs, stored_data_sizes,
+                                c=group_sizes_array, cmap=cmap, s=100, alpha=0.7)
+
+    # Add colorbar with discrete ticks
+    cbar = plt.colorbar(scatter, ax=axes[1, 1], label="Group Size")
+    cbar.set_ticks(unique_group_sizes)
+    cbar.set_ticklabels([f"{int(x)}" for x in unique_group_sizes])
+
+    axes[1, 1].set_title("Throughput vs Stored Data Size\n(color indicates group size)")
     axes[1, 1].set_xlabel("Total Events per Second")
     axes[1, 1].set_ylabel("Stored Data Size (MB)")
     axes[1, 1].grid(True)
@@ -235,7 +283,7 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
 
     # Create figure with subplots
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
-    fig.suptitle("Storage Efficiency Analysis", fontsize=16)
+    fig.suptitle("Storage Efficiency Analysis for Workflow Constructions", fontsize=16)
 
     # Plot 1: Stored Data per Event vs Number of Groups
     sns.scatterplot(x=num_groups, y=stored_data_per_event, ax=axes[0, 0])
@@ -252,9 +300,24 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
     axes[0, 1].grid(True)
 
     # Plot 3: Total Stored Data vs Total Events
-    sns.scatterplot(x=total_events, y=total_stored_data,
-                   size=num_groups, sizes=(50, 200), ax=axes[1, 0])
-    axes[1, 0].set_title("Total Stored Data vs Total Events\n(size indicates number of groups)")
+    # Create discrete color bins for number of groups
+    num_groups_array = np.array(num_groups)
+    unique_num_groups = np.unique(num_groups_array)
+
+    # Create a discrete colormap
+    n_groups = len(unique_num_groups)
+    cmap = plt.colormaps['cool'].resampled(n_groups)
+
+    # Create scatter plot with discrete colors
+    scatter = axes[1, 0].scatter(total_events, total_stored_data,
+                                c=num_groups_array, cmap=cmap, s=100, alpha=0.7)
+
+    # Add colorbar with discrete ticks
+    cbar = plt.colorbar(scatter, ax=axes[1, 0], label="Number of Groups")
+    cbar.set_ticks(unique_num_groups)
+    cbar.set_ticklabels([f"{int(x)}" for x in unique_num_groups])
+
+    axes[1, 0].set_title("Total Stored Data vs Total Events\n(color indicates number of groups)")
     axes[1, 0].set_xlabel("Total Events")
     axes[1, 0].set_ylabel("Total Stored Data (MB)")
     axes[1, 0].grid(True)
@@ -302,9 +365,24 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     axes[0, 0].grid(True)
 
     # Plot 2: Total Events vs Total CPU Time
-    sns.scatterplot(x=total_cpu_times, y=total_events,
-                   size=stored_data_per_event, sizes=(50, 200), ax=axes[0, 1])
-    axes[0, 1].set_title("Total Events vs Total CPU Time\n(size indicates stored data per event)")
+    # Create discrete color bins for stored data per event
+    stored_data_array = np.array(stored_data_per_event)
+    unique_stored_data = np.unique(stored_data_array)
+
+    # Create a discrete colormap
+    n_stored = len(unique_stored_data)
+    cmap = plt.colormaps['magma'].resampled(n_stored)
+
+    # Create scatter plot with discrete colors
+    scatter = axes[0, 1].scatter(total_cpu_times, total_events,
+                                c=stored_data_array, cmap=cmap, s=100, alpha=0.7)
+
+    # Add colorbar with discrete ticks
+    cbar = plt.colorbar(scatter, ax=axes[0, 1], label="Stored Data per Event (MB)")
+    cbar.set_ticks(unique_stored_data)
+    cbar.set_ticklabels([f"{x:.3f}" for x in unique_stored_data])
+
+    axes[0, 1].set_title("Total Events vs Total CPU Time\n(color indicates stored data per event)")
     axes[0, 1].set_xlabel("Total CPU Time (seconds)")
     axes[0, 1].set_ylabel("Total Events")
     axes[0, 1].grid(True)
@@ -313,13 +391,28 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     sns.histplot(event_throughputs, bins=20, ax=axes[1, 0])
     axes[1, 0].set_title("Event Throughput Distribution")
     axes[1, 0].set_xlabel("Events per Second")
-    axes[1, 0].set_ylabel("Count")
+    axes[1, 0].set_ylabel("Number of Workflow Constructions")
     axes[1, 0].grid(True)
 
     # Plot 4: Stored Data per Event vs Event Throughput
-    sns.scatterplot(x=event_throughputs, y=stored_data_per_event,
-                   size=num_groups, sizes=(50, 200), ax=axes[1, 1])
-    axes[1, 1].set_title("Storage Efficiency vs Event Throughput\n(size indicates number of groups)")
+    # Create discrete color bins for number of groups
+    num_groups_array = np.array(num_groups)
+    unique_num_groups = np.unique(num_groups_array)
+
+    # Create a discrete colormap
+    n_groups = len(unique_num_groups)
+    cmap = plt.colormaps['spring'].resampled(n_groups)
+
+    # Create scatter plot with discrete colors
+    scatter = axes[1, 1].scatter(event_throughputs, stored_data_per_event,
+                                c=num_groups_array, cmap=cmap, s=100, alpha=0.7)
+
+    # Add colorbar with discrete ticks
+    cbar = plt.colorbar(scatter, ax=axes[1, 1], label="Number of Groups")
+    cbar.set_ticks(unique_num_groups)
+    cbar.set_ticklabels([f"{int(x)}" for x in unique_num_groups])
+
+    axes[1, 1].set_title("Storage Efficiency vs Event Throughput\n(color indicates number of groups)")
     axes[1, 1].set_xlabel("Event Throughput (events/second)")
     axes[1, 1].set_ylabel("Stored Data per Event (MB)")
     axes[1, 1].grid(True)
