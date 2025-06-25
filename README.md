@@ -249,7 +249,6 @@ groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_da
     "num_groups": 3,
     "groups": ["group_0", "group_1", "group_2"]
 }
-```
 
 ### Analysis Workflow
 
@@ -360,44 +359,43 @@ The visualizations help in:
 
 ### Metrics Tracked
 
-The visualization tool tracks and analyzes the following metrics:
+The visualization tool tracks and analyzes comprehensive metrics for both individual groups and workflow constructions:
 
-#### CPU Metrics
-- Total CPU cores
-- Maximum CPU cores
-- CPU-seconds (total CPU time required)
-- CPU efficiency (ratio of actual CPU usage to allocated CPU-seconds)
+#### **Group-Level Metrics**
 
-#### Memory Metrics
-- Total memory (MB)
-- Maximum memory (MB)
-- Minimum memory (MB)
-- Memory-seconds (total memory time required)
-- Memory efficiency (ratio of actual memory usage to allocated memory-seconds)
+**CPU Metrics**
+- **`max_cores`**: Maximum CPU cores allocated to the group
+- **`cpu_seconds`**: Total CPU time required (cores × wallclock time)
+- **`utilization_ratio`**: Actual CPU usage / allocated CPU (efficiency metric)
 
-#### Throughput Metrics
-- Total events per second
-- Maximum events per second
-- Minimum events per second
+**Memory Metrics**
+- **`max_mb`/`min_mb`**: Maximum/minimum memory requirements across tasks (in megabytes)
+- **`occupancy`**: Time-weighted average memory usage / max memory allocated
 
-#### I/O Metrics
-- Total input data size (MB)
-- Total output data size (MB)
-- Total stored data size (MB)
-- Input data per event (MB)
-- Output data per event (MB)
-- Stored data per event (MB)
+**Throughput Metrics**
+- **`total_eps`**: Group-level events per second (total events / total CPU time)
+- **`max_eps`**: Highest events/second achieved by any single task in the group
+- **`min_eps`**: Lowest events/second achieved by any single task in the group
+- **Note**: For single-task groups, all three throughput values are identical
 
-#### Dependency Metrics
-- Number of dependency paths
-- Average path length
-- Complete dependency paths within groups
+**I/O Metrics**
+- **`input_data_mb`**: Total input data volume for the group
+- **`output_data_mb`**: Total output data volume from all tasks
+- **`stored_data_mb`**: Data volume that needs persistent storage
+- **`*_per_event_mb`**: Per-event data volumes for each category
 
-#### Resource Utilization Metrics
-- Overall resource utilization efficiency
-- Event throughput
+**Resource Utilization Metrics**
+- **`resource_utilization`**: Overall efficiency (average of CPU and memory utilization)
+- **`event_throughput`**: Events processed per second at group level
 
-#### Workflow Construction Metrics
+**Group Configuration**
+- **`events_per_job`**: Number of events each task processes (based on target wallclock time)
+- **`entry_point_task`**: First task to execute in the group
+- **`exit_point_task`**: Last task to execute in the group
+- **`dependency_paths`**: All dependency relationships between tasks in the group
+
+#### **Workflow Construction Metrics**
+
 For each workflow construction, the following metrics are calculated and analyzed:
 
 1. **Group Composition Metrics**
