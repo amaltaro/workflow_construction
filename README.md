@@ -249,6 +249,7 @@ groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_da
     "num_groups": 3,
     "groups": ["group_0", "group_1", "group_2"]
 }
+```
 
 ### Analysis Workflow
 
