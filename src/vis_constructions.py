@@ -19,32 +19,17 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
     """
     print(f"Creating Mermaid visualizations for {len(construction_metrics)} workflow constructions")
     
-    # Create a consistent color palette for groups using distinct colors
-    # Using a carefully selected set of distinct colors
-    distinct_colors = [
-        "#FF6B6B",  # Coral Red
-        "#4ECDC4",  # Turquoise
-        "#45B7D1",  # Sky Blue
-        "#96CEB4",  # Sage Green
-        "#FFEEAD",  # Cream
-        "#D4A5A5",  # Dusty Rose
-        "#9B59B6",  # Purple
-        "#3498DB",  # Blue
-        "#E67E22",  # Orange
-        "#2ECC71",  # Green
-        "#F1C40F",  # Yellow
-        "#E74C3C",  # Red
-        "#1ABC9C",  # Teal
-        "#34495E",  # Dark Blue
-        "#F39C12",  # Dark Orange
-    ]
-    
-    # Create a color map for groups
-    all_groups = set()
+    # Use only one color for all groups
+    node_color = "#34495E"  # Dark Blue
+
+    # Collect all unique groups and their tasks for the summary
+    group_to_tasks = {}
     for metrics in construction_metrics:
-        all_groups.update(metrics["groups"])
-    group_colors = {group: distinct_colors[i % len(distinct_colors)] for i, group in enumerate(sorted(all_groups))}
-    
+        for group in metrics["group_details"]:
+            group_id = group["group_id"]
+            if group_id not in group_to_tasks:
+                group_to_tasks[group_id] = list(group["tasks"])
+
     # Start building the HTML content
     title = "Workflow Construction Topologies"
     if template_name:
@@ -75,41 +60,33 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
             <ul>
     """
     
-    # Add task descriptions for each group
-    for group in sorted(all_groups):
-        # Find the first construction that contains this group
-        group_info = None
-        for metrics in construction_metrics:
-            for g in metrics["group_details"]:
-                if g["group_id"] == group:
-                    group_info = g
-                    break
-            if group_info:
-                break
-        
-        if group_info:
-            tasks_str = ", ".join(group_info["tasks"])
-            html_content += f'<li>Group {group}: {tasks_str}</li>\n'
+    def extract_group_number(group):
+        """
+        Accepts either a group_id string (e.g., 'group_7') or a dict with a 'group_id' key.
+        Returns the integer group number for sorting.
+        """
+        if isinstance(group, dict):
+            group_id = group.get("group_id", "")
+        else:
+            group_id = group
+        try:
+            return int(group_id.split('_')[1])
+        except (IndexError, ValueError):
+            return float('inf')
+
+    def task_sort_key(task_id):
+        try:
+            return int(task_id.replace("Task", ""))
+        except ValueError:
+            return float('inf')
+
+    # Add task descriptions for each group, sorted by group number
+    for group in sorted(group_to_tasks, key=extract_group_number):
+        tasks_str = ", ".join(group_to_tasks[group])
+        html_content += f'<li>Group {group}: {tasks_str}</li>\n'
     
     html_content += """
             </ul>
-        </div>
-        
-        <!-- Legend -->
-        <div class="legend">
-            <h3>Groups</h3>
-    """
-    
-    # Add legend items
-    for group in sorted(all_groups):
-        html_content += f"""
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: {group_colors[group]}"></div>
-                <span>Group {group}</span>
-            </div>
-        """
-    
-    html_content += """
         </div>
         
         <!-- Diagrams Container -->
@@ -126,31 +103,23 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
             graph TD
         """
         
-        # Create a mapping of tasks to their groups
-        task_to_group = {}
-        for group in metrics["group_details"]:
-            for task in group["tasks"]:
-                task_to_group[task] = group["group_id"]
-
-        # Add subgraphs for each group
-        for group in metrics["group_details"]:
+        # Add subgraphs for each group, sorted by group number
+        for group in sorted(metrics["group_details"], key=extract_group_number):
             group_id = group["group_id"]
             mermaid_content += f'    subgraph {group_id} [Group {group_id}]\n'
-            for task in group["tasks"]:
-                # Optionally, keep color classes for nodes
-                mermaid_content += f'        {task}["{task}"]:::group{group_id}\n'
+            # Add tasks in sorted order by task number
+            for task in sorted(group["tasks"], key=task_sort_key):
+                mermaid_content += f'        {task}["{task}"]:::groupnode\n'
             mermaid_content += '    end\n'
 
-        # Add edges based on the DAG
+        # Add edges based on the DAG, sorted by source and target task number
         if dag is not None:
-            for edge in dag.edges():
-                source, target = edge
+            for source, target in sorted(dag.edges(), key=lambda e: (task_sort_key(e[0]), task_sort_key(e[1]))):
                 mermaid_content += f'    {source} --> {target}\n'
 
-        # Add style definitions for each group
-        mermaid_content += "\n    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;\n"
-        for group_id in metrics["groups"]:
-            mermaid_content += f'    classDef group{group_id} fill:{group_colors[group_id]},stroke:#333,stroke-width:2px,color:white;\n'
+        # Add style definition for all nodes (single color)
+        mermaid_content += "\n    classDef groupnode fill:{} ,stroke:#333,stroke-width:2px,color:white;\n".format(node_color)
+        mermaid_content += "    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;\n"
         
         mermaid_content += "</div></div>\n"
         html_content += mermaid_content
