@@ -50,76 +50,21 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
     if template_name:
         title += f" - {template_name}"
 
+    # Read the CSS file content to inline it in the HTML
+    css_path = os.path.join(os.path.dirname(__file__), '../css/workflow_styles.css')
+    try:
+        with open(css_path, 'r') as css_file:
+            css_content = css_file.read()
+    except Exception as e:
+        print(f"Warning: Could not read CSS file at {css_path}: {e}")
+        css_content = ''
+
     html_content = f"""<!DOCTYPE html>
     <html>
     <head>
         <title>{title}</title>
-        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-        <style>
-            .container {{
-                display: flex;
-                flex-wrap: wrap;
-                gap: 15px;
-                padding: 20px;
-            }}
-            .construction {{
-                flex: 1 1 18%;
-                min-width: 300px;
-                margin-bottom: 10px;
-            }}
-            .mermaid {{
-                margin: 10px 0;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-            }}
-            .construction-title {{
-                font-size: 1.1em;
-                font-weight: bold;
-                margin: 10px 0;
-            }}
-            .legend {{
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                padding: 15px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                max-height: 80vh;
-                overflow-y: auto;
-            }}
-            .legend-item {{
-                display: flex;
-                align-items: center;
-                margin: 5px 0;
-            }}
-            .legend-color {{
-                width: 20px;
-                height: 20px;
-                margin-right: 10px;
-                border: 1px solid #333;
-            }}
-            .group-composition {{
-                margin: 20px;
-                padding: 15px;
-                background: #f8f9fa;
-                border-radius: 5px;
-                font-size: 0.9em;
-                line-height: 1.4;
-            }}
-            .group-composition h3 {{
-                margin: 0 0 10px 0;
-            }}
-            .group-composition ul {{
-                margin: 0;
-                padding-left: 20px;
-            }}
-            .group-composition li {{
-                margin: 2px 0;
-            }}
-        </style>
+        <style>\n{css_content}\n</style>
+        <script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>
     </head>
     <body>
         <h1>{title}</h1>
@@ -187,17 +132,21 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
             for task in group["tasks"]:
                 task_to_group[task] = group["group_id"]
 
-        # Add nodes for all tasks with their group colors
-        for task in sorted(task_to_group.keys()):
-            group_id = task_to_group[task]
-            mermaid_content += f'    {task}["{task}"]:::group{group_id}\n'
-        
+        # Add subgraphs for each group
+        for group in metrics["group_details"]:
+            group_id = group["group_id"]
+            mermaid_content += f'    subgraph {group_id} [Group {group_id}]\n'
+            for task in group["tasks"]:
+                # Optionally, keep color classes for nodes
+                mermaid_content += f'        {task}["{task}"]:::group{group_id}\n'
+            mermaid_content += '    end\n'
+
         # Add edges based on the DAG
         if dag is not None:
             for edge in dag.edges():
                 source, target = edge
                 mermaid_content += f'    {source} --> {target}\n'
-        
+
         # Add style definitions for each group
         mermaid_content += "\n    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;\n"
         for group_id in metrics["groups"]:
