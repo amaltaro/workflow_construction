@@ -31,11 +31,11 @@ def test_workflow_from_json(json_template):
     # Print results
     logger.info("\nTask Groups:")
     # Sort the groups by their first task's ID number
-    sorted_groups = sorted(groups, key=lambda g: min(int(task_name[4:]) for task_name in g))
+    sorted_groups = sorted(groups, key=lambda g: min(int(task_name.replace("Taskset", "")) for task_name in g))
     
     for i, group in enumerate(sorted_groups, 1):
         # Sort tasks within the group by their ID number
-        sorted_tasks = sorted(group, key=lambda t: int(t[4:]))  # Extract number from "TaskX"
+        sorted_tasks = sorted(group, key=lambda t: int(t.replace("Taskset", "")))  # Extract number from "TasksetX"
         logger.info(f"Group {i}: {sorted_tasks}")
         
         # Print group details
