@@ -76,7 +76,7 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
 
     def task_sort_key(task_id):
         try:
-            return int(task_id.replace("Task", ""))
+            return int(task_id.replace("Taskset", ""))
         except ValueError:
             return float('inf')
 

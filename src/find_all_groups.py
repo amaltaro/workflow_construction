@@ -740,7 +740,7 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
     # Create tasks dictionary
     tasks = {}
     for i in range(1, workflow_data["NumTasks"] + 1):
-        task_name = f"Task{i}"
+        task_name = f"Taskset{i}"
         task_data = workflow_data[task_name]
 
         # Validate required parameters
@@ -774,7 +774,7 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         tasks[task_name] = Task(
             id=task_name,
             resources=resources,
-            input_task=task_data.get("InputTask", None),
+            input_task=task_data.get("InputTaskset", None),
             output_tasks=set(),  # Will be populated later
             order=i  # Store the order based on task number
         )

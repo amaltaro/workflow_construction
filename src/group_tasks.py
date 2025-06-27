@@ -57,6 +57,7 @@ class Task:
     resources: TaskResources
     input_task: Optional[str] = None
     output_tasks: Set[str] = None
+    order: int = 0
 
 
 class GroupScore:
@@ -245,7 +246,7 @@ class TaskGrouper:
             logger.info(f"{prefix}{connector}{node}")
 
             # Get and sort children
-            children = sorted(self.dag.successors(node), key=lambda x: int(x[4:]))
+            children = sorted(self.dag.successors(node), key=lambda x: int(x.replace("Taskset", "")))
 
             # Print children
             for i, child in enumerate(children):
@@ -253,13 +254,13 @@ class TaskGrouper:
                 print_node(child, new_prefix, i == len(children) - 1)
 
         # Print each root and its subtree
-        sorted_roots = sorted(roots, key=lambda x: int(x[4:]))
+        sorted_roots = sorted(roots, key=lambda x: int(x.replace("Taskset", "")))
         for i, root in enumerate(sorted_roots):
             if i == 0:
                 logger.info(root)  # Root node
             else:
                 logger.info("\n" + root)  # Add spacing between trees
-            children = sorted(self.dag.successors(root), key=lambda x: int(x[4:]))
+            children = sorted(self.dag.successors(root), key=lambda x: int(x.replace("Taskset", "")))
             for j, child in enumerate(children):
                 print_node(child, "", j == len(children) - 1)
 
@@ -270,14 +271,14 @@ class TaskGrouper:
         logger.info("graph TD")
 
         # Print all edges in sorted order
-        edges = sorted(self.dag.edges(), key=lambda x: (int(x[0][4:]), int(x[1][4:])))
+        edges = sorted(self.dag.edges(), key=lambda x: (int(x[0].replace("Taskset", "")), int(x[1].replace("Taskset", ""))))
         for src, dst in edges:
             logger.info(f"    {src} --> {dst}")
 
         # Print isolated nodes (if any)
         isolated = [n for n in self.dag.nodes()
                    if not list(self.dag.predecessors(n)) and not list(self.dag.successors(n))]
-        for node in sorted(isolated, key=lambda x: int(x[4:])):
+        for node in sorted(isolated, key=lambda x: int(x.replace("Taskset", ""))):
             logger.info(f"    {node}")
 
         logger.info("```")
@@ -312,7 +313,7 @@ def create_workflow_from_json(workflow_data: dict, min_group_score: float = 0.7)
     # Create tasks dictionary
     tasks = {}
     for i in range(1, workflow_data["NumTasks"] + 1):
-        task_name = f"Task{i}"
+        task_name = f"Taskset{i}"
         task_data = workflow_data[task_name]
 
         # Extract OS version and architecture from ScramArch
@@ -331,12 +332,13 @@ def create_workflow_from_json(workflow_data: dict, min_group_score: float = 0.7)
             events_per_second=events_per_second
         )
 
-        # Create Task
+        # Create Task with order information
         tasks[task_name] = Task(
             id=task_name,
             resources=resources,
-            input_task=task_data.get("InputTask", None),
-            output_tasks=set()  # Will be populated later
+            input_task=task_data.get("InputTaskset", None),
+            output_tasks=set(),  # Will be populated later
+            order=i  # Store the order based on task number
         )
 
     # Add output tasks
