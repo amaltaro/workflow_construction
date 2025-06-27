@@ -65,9 +65,16 @@
 .group-composition ul {
     margin: 0;
     padding-left: 20px;
+    columns: 2 300px;
+    -webkit-columns: 2 300px;
+    -moz-columns: 2 300px;
+    column-gap: 40px;
 }
 .group-composition li {
     margin: 2px 0;
+}
+@media (min-width: 900px) {
+    .group-composition ul { columns: 3 200px; }
 }
 /* Reduce font size for Mermaid SVG text (subgraph labels, etc.) */
 .mermaid text {
