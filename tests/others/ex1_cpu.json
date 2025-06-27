@@ -1,40 +1,48 @@
 {
     "Comments": "This is a test workflow",
     "NumTasks": 4,
-    "Task1": {
+    "Taskset1": {
         "EventsPerJob": 1000,
         "Memory": 2000,
         "Multicore": 1,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["slc7_amd64_gcc900"],
+        "ScramArch": [
+            "slc7_amd64_gcc900"
+        ],
         "SizePerEvent": 10,
         "TimePerEvent": 20
     },
-    "Task2": {
-        "InputTask": "Task1",
+    "Taskset2": {
         "Memory": 8000,
         "Multicore": 8,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el8_amd64_gcc11"],
+        "ScramArch": [
+            "el8_amd64_gcc11"
+        ],
         "SizePerEvent": 20,
-        "TimePerEvent": 10
+        "TimePerEvent": 10,
+        "InputTaskset": "Taskset1"
     },
-    "Task3": {
-        "InputTask": "Task2",
+    "Taskset3": {
         "Memory": 12000,
         "Multicore": 8,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el8_aarch64_gcc10"],
+        "ScramArch": [
+            "el8_aarch64_gcc10"
+        ],
         "SizePerEvent": 30,
-        "TimePerEvent": 12
+        "TimePerEvent": 12,
+        "InputTaskset": "Taskset2"
     },
-    "Task4": {
-        "InputTask": "Task3",
+    "Taskset4": {
         "Memory": 8000,
         "Multicore": 4,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el9_amd64_gcc11"],
+        "ScramArch": [
+            "el9_amd64_gcc11"
+        ],
         "SizePerEvent": 40,
-        "TimePerEvent": 5
+        "TimePerEvent": 5,
+        "InputTaskset": "Taskset3"
     }
- }
+}

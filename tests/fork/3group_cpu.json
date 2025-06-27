@@ -1,40 +1,48 @@
 {
-    "Comments": "Group 1: ['Task1', 'Task4'], Group 2: ['Task2'], Group 3: ['Task3']",
+    "Comments": "Group 1: ['Taskset1', 'Taskset4'], Group 2: ['Taskset2'], Group 3: ['Taskset3']",
     "NumTasks": 4,
-    "Task1": {
+    "Taskset1": {
         "EventsPerJob": 1000,
         "Memory": 2000,
         "Multicore": 4,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el9_aarch64_gcc11"],
+        "ScramArch": [
+            "el9_aarch64_gcc11"
+        ],
         "SizePerEvent": 10,
         "TimePerEvent": 10
     },
-    "Task2": {
-        "InputTask": "Task1",
+    "Taskset2": {
         "Memory": 2000,
         "Multicore": 4,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el9_amd64_gcc11"],
+        "ScramArch": [
+            "el9_amd64_gcc11"
+        ],
         "SizePerEvent": 10,
-        "TimePerEvent": 10
+        "TimePerEvent": 10,
+        "InputTaskset": "Taskset1"
     },
-    "Task3": {
-        "InputTask": "Task1",
+    "Taskset3": {
         "Memory": 2000,
         "Multicore": 4,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el9_amd64_gcc11"],
+        "ScramArch": [
+            "el9_amd64_gcc11"
+        ],
         "SizePerEvent": 10,
-        "TimePerEvent": 10
+        "TimePerEvent": 10,
+        "InputTaskset": "Taskset1"
     },
-    "Task4": {
-        "InputTask": "Task1",
+    "Taskset4": {
         "Memory": 2000,
         "Multicore": 4,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el9_aarch64_gcc11"],
+        "ScramArch": [
+            "el9_aarch64_gcc11"
+        ],
         "SizePerEvent": 10,
-        "TimePerEvent": 10
+        "TimePerEvent": 10,
+        "InputTaskset": "Taskset1"
     }
- }
+}
