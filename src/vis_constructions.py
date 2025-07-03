@@ -93,14 +93,28 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
         <div class="container">
     """
     
+    def is_sequential_workflow(metrics):
+        # Heuristic: if every group has at most one input and one output, treat as sequential
+        all_edges = set()
+        for group in metrics["group_details"]:
+            for task in group["tasks"]:
+                # Find all outgoing and incoming edges for this task
+                outgoing = [e for e in dag.edges() if e[0] == task]
+                incoming = [e for e in dag.edges() if e[1] == task]
+                if len(outgoing) > 1 or len(incoming) > 1:
+                    return False
+        return True
+
     # Add each construction's diagram
     for i, metrics in enumerate(construction_metrics, 1):
+        # Determine Mermaid direction
+        mermaid_direction = 'LR' if is_sequential_workflow(metrics) else 'TD'
         # Start the Mermaid diagram
         mermaid_content = f"""
         <div class="construction">
             <div class="construction-title">Workflow Construction {i}</div>
             <div class="mermaid">
-            graph TD
+            graph {mermaid_direction}
         """
         
         # Add subgraphs for each group, sorted by group number
@@ -128,15 +142,18 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
     html_content += """
         </div>
         <script>
-            mermaid.initialize({
+            mermaid.initialize({{
                 startOnLoad: true,
                 theme: 'default',
-                flowchart: {
-                    useMaxWidth: false,
+                flowchart: {{
+                    useMaxWidth: true,
                     htmlLabels: true,
-                    curve: 'basis'
-                }
-            });
+                    curve: 'basis',
+                    nodeSpacing: 50,
+                    rankSpacing: 50,
+                    diagramPadding: 20
+                }}
+            }});
         </script>
     </body>
     </html>
