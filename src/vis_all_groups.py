@@ -16,7 +16,7 @@ import networkx as nx
 
 def plot_resource_utilization(groups: List[Dict], output_dir: str = "plots"):
     """Plot resource utilization metrics for all groups"""
-    print(f"\nPlotting resource utilization for {len(groups)} groups")
+    print(f"Plotting resource utilization for {len(groups)} groups")
     # Create output directory if it doesn't exist
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
@@ -450,7 +450,7 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
 
     # Calculate optimal figure height based on number of groups, bar height and spacing between constructions
     bar_height = 0.2
-    fig_height = max(8, (total_groups + len(construction_metrics)) * bar_height)
+    fig_height = max(3, (total_groups + len(construction_metrics)) * bar_height)
     fig, ax = plt.subplots(figsize=(14, fig_height))
 
     # Calculate positions for each group in each construction
@@ -848,6 +848,99 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
                 f.write(f"        Stored: {group['stored_data_per_event_mb']:.3f} MB/event\n")
             f.write("\n")
 
+def filter_toy_model_constructions(construction_metrics: List[Dict]) -> List[Dict]:
+    """Filter construction_metrics to include only the two extreme cases for toy model.
+
+    Returns:
+        List containing only two constructions:
+        1. Single group with all tasks
+        2. One group per task (maximum number of groups)
+    """
+    if not construction_metrics:
+        return []
+
+    # Find the construction with the minimum number of groups (single group)
+    single_group_construction = min(construction_metrics, key=lambda x: x["num_groups"])
+
+    # Find the construction with the maximum number of groups (one group per task)
+    max_groups_construction = max(construction_metrics, key=lambda x: x["num_groups"])
+
+    # Verify we have different constructions
+    if single_group_construction == max_groups_construction:
+        print("Warning: Only one construction type found. Returning all constructions.")
+        return construction_metrics
+
+    print(f"Toy model: Single group construction has {single_group_construction['num_groups']} groups")
+    print(f"Toy model: Max groups construction has {max_groups_construction['num_groups']} groups")
+
+    return [single_group_construction, max_groups_construction]
+
+
+def visualize_toy_model(groups: List[Dict],
+                       construction_metrics: List[Dict],
+                       template_path: str,
+                       output_dir: str = "output",
+                       dag: nx.DiGraph = None):
+    """Create visualizations for the toy model with only two extreme constructions.
+
+    This function creates the same visualizations as visualize_groups but only
+    for the two extreme cases: single group and one group per task.
+    """
+    print("Creating toy model visualizations with two extreme constructions...")
+
+    # Filter to only the two extreme constructions
+    toy_constructions = filter_toy_model_constructions(construction_metrics)
+
+    if len(toy_constructions) != 2:
+        print(f"Warning: Expected 2 constructions for toy model, got {len(toy_constructions)}")
+        return
+
+    # Filter groups to only include those used in the toy constructions
+    toy_group_ids = set()
+    for construction in toy_constructions:
+        toy_group_ids.update(construction["groups"])
+
+    # Filter groups list to only include groups used in toy constructions
+    toy_groups = [group for group in groups if group["group_id"] in toy_group_ids]
+
+    print(f"Toy model: Using {len(toy_groups)} groups out of {len(groups)} total groups")
+    print(f"Toy model: Group IDs used: {sorted(toy_group_ids)}")
+
+    # Create output directory
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    # Generate all the same visualizations but with filtered data
+    print(f"Creating toy model visualizations for {len(toy_constructions)} constructions")
+
+    # 1. Group-level data volume analysis (the main plot you're working on)
+    plot_group_data_volume_analysis(toy_constructions, str(output_path))
+
+    # 2. Workflow construction comparison
+    plot_workflow_comparison(toy_constructions, str(output_path))
+
+    # 3. Storage efficiency analysis
+    plot_storage_efficiency(toy_constructions, str(output_path))
+
+    # 4. Workflow constructions overview
+    plot_workflow_constructions(toy_constructions, str(output_path))
+
+    # 5. Resource utilization analysis (using filtered groups)
+    plot_resource_utilization(toy_groups, str(output_path))
+
+    # 6. Throughput analysis (using filtered groups)
+    plot_throughput_analysis(toy_groups, str(output_path))
+
+    # 7. Dependency analysis (using filtered groups)
+    plot_dependency_analysis(toy_groups, str(output_path))
+
+    # 8. Workflow topology visualization
+    plot_workflow_topology(toy_constructions, str(output_path),
+                          Path(template_path).name, dag)
+
+    print(f"Toy model visualizations saved to {output_path}")
+
+
 def visualize_groups(groups: List[Dict],
                      construction_metrics: List[Dict],
                      template_path: str,
@@ -898,6 +991,8 @@ if __name__ == "__main__":
     parser.add_argument('template_file', type=str, help='Path to the template JSON file')
     parser.add_argument('--output-dir', type=str, default='output',
                        help='Base output directory (default: output)')
+    parser.add_argument('--toy-model', action='store_true',
+                       help='Create toy model with only two extreme constructions (single group vs one group per task)')
     args = parser.parse_args()
 
     # Convert template file path to Path object for easier manipulation
@@ -908,4 +1003,10 @@ if __name__ == "__main__":
         workflow_data = json.load(f)
 
     groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_data)
-    visualize_groups(groups, construction_metrics, template_path, args.output_dir, dag)
+
+    if args.toy_model:
+        print("\nRunning in toy model mode - visualizing only two extreme constructions")
+        visualize_toy_model(groups, construction_metrics, template_path, args.output_dir, dag)
+    else:
+        print("Running in full mode - visualizing all constructions")
+        visualize_groups(groups, construction_metrics, template_path, args.output_dir, dag)
