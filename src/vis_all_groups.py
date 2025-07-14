@@ -438,6 +438,92 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
             f.write(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second\n")
             f.write(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event\n\n")
 
+def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir: str = "plots"):
+    """Create a dedicated horizontal bar plot for group-level data volume analysis.
+
+    This plot shows the data volumes (input, output, stored) for each group
+    across all workflow constructions in a horizontal format for better readability.
+    """
+    # Calculate total number of groups for sizing
+    total_groups = sum(len(metrics["group_details"]) for metrics in construction_metrics)
+    print(f"Creating group-level analysis for total groups: {total_groups}, total constructions: {len(construction_metrics)}")
+
+    # Calculate optimal figure height based on number of groups, bar height and spacing between constructions
+    bar_height = 0.2
+    fig_height = max(8, (total_groups + len(construction_metrics)) * bar_height)
+    fig, ax = plt.subplots(figsize=(14, fig_height))
+
+    # Calculate positions for each group in each construction
+    group_positions = []
+    group_labels = []
+    current_pos = 0
+
+    for i, metrics in enumerate(construction_metrics):
+        groups_in_construction = len(metrics["group_details"])
+        # Create exactly the right number of positions for this construction's groups
+        # Each group gets one position, spaced by bar_height
+        # np.arange() is not good for floating point numbers
+        positions = np.linspace(current_pos, current_pos + (groups_in_construction - 1) * bar_height, groups_in_construction)
+        # print(f"Construction {i}: current_pos {current_pos}, groups_in_construction: {groups_in_construction}, positions: {positions}")
+        group_positions.extend(positions)
+        # Create labels for each group with more descriptive names
+        for j, group in enumerate(metrics["group_details"]):
+            group_id = group["group_id"]
+            tasks_str = ", ".join(group["tasks"])
+            group_labels.append(f"Const {i+1} - {group_id} ({tasks_str})")
+        # Move to next construction position (add spacing only between constructions)
+        current_pos += groups_in_construction * bar_height + bar_height
+
+    left = np.zeros(len(group_positions))
+    # Plot input data
+    input_data = [group["input_data_mb"] for metrics in construction_metrics
+                 for group in metrics["group_details"]]
+    ax.barh(group_positions, input_data, bar_height, label='Input Data', left=left, alpha=0.8,
+            edgecolor='black', linewidth=0.4)
+    left += input_data
+
+    # Plot output data
+    output_data = [group["output_data_mb"] for metrics in construction_metrics
+                  for group in metrics["group_details"]]
+    ax.barh(group_positions, output_data, bar_height, label='Output Data', left=left, alpha=0.8,
+            edgecolor='black', linewidth=0.4)
+    left += output_data
+
+    # Plot stored data
+    stored_data = [group["stored_data_mb"] for metrics in construction_metrics
+                  for group in metrics["group_details"]]
+    ax.barh(group_positions, stored_data, bar_height, label='Stored Data', left=left, alpha=0.8,
+            edgecolor='black', linewidth=0.4)
+
+    for i, (pos, input_val, output_val, stored_val) in enumerate(zip(group_positions, input_data, output_data, stored_data)):
+        total = input_val + output_val + stored_val
+        ax.text(total + 0.1, pos, f'{total:.1f}', va='center', fontsize=8, alpha=0.8)
+
+    ax.set_ylabel("Workflow Construction and Groups")
+    ax.set_xlabel("Total Data Volume (MB)")
+    ax.set_title(f"Group-level Data Volume Analysis\n(Data Volumes per Group - {len(construction_metrics)} Constructions)", fontsize=14, fontweight='bold')
+    ax.set_yticks(group_positions)
+    ax.set_yticklabels(group_labels, fontsize=8)  # Reduced font size for better fit
+    ax.legend(loc='upper right', fontsize=10)  # or "best" for dynamic placement
+    ax.grid(True, which='major', alpha=0.2)
+    ax.set_xlim(left=0)  # Start x-axis at 0
+
+    # Adjust y-axis limits to ensure all groups are visible with proper spacing
+    ax.set_ylim(bottom=(-1 * bar_height), top=fig_height)
+
+    # Add some styling
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    # Adjust layout to ensure all elements are visible
+    plt.tight_layout(pad=2.0)  # Increased padding
+
+    # Save with high DPI and tight bbox to ensure all content is captured
+    plt.savefig(os.path.join(output_dir, "group_data_volume_analysis.png"),
+                dpi=300, bbox_inches='tight', facecolor='white', edgecolor='none')
+    plt.close()
+
+
 def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots"):
     """Create a comprehensive comparison of workflow constructions.
 
@@ -475,11 +561,11 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     input_data_per_event = np.array(input_data_per_event)
     output_data_per_event = np.array(output_data_per_event)
 
-    # Create a figure with multiple subplots
+    # Create a figure with multiple subplots - now with fixed, professional proportions
     fig = plt.figure(figsize=(20, 20))
-    gs = fig.add_gridspec(5, 2)
+    gs = fig.add_gridspec(5, 2, height_ratios=[1, 1, 1, 1, 1])  # Equal height ratios for all rows
 
-    # 1. Group Size Distribution (moved to top)
+    # 1. Group Size Distribution
     ax3 = fig.add_subplot(gs[0, 0])
     group_sizes = []
     for metrics in construction_metrics:
@@ -491,65 +577,12 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax3.set_xlabel("Workflow Construction")
     ax3.set_ylabel("Number of Tasks per Group")
     ax3.set_title("Group Size Distribution")
+    ax3.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax3.grid(True)
     ax3.set_ylim(bottom=0)  # Set y-axis to start at 0
 
-    # 2. Group-level Data Volume Analysis
-    ax11 = fig.add_subplot(gs[0, 1])
-
-    # Calculate positions for each group in each construction
-    group_positions = []
-    group_labels = []
-    current_pos = 0
-
-    for i, metrics in enumerate(construction_metrics):
-        groups_in_construction = len(metrics["group_details"])
-        # Create positions for this construction's groups
-        positions = np.arange(current_pos, current_pos + groups_in_construction)
-        group_positions.extend(positions)
-        # Create labels for each group
-        group_labels.extend([f"Const {i+1}\nGroup {j+1}" for j in range(groups_in_construction)])
-        current_pos += groups_in_construction + 1  # Add 1 for spacing between constructions
-
-    # Plot stacked bars for each group
-    width = 0.8
-    bottom = np.zeros(len(group_positions))
-
-    # Plot input data
-    input_data = [group["input_data_mb"] for metrics in construction_metrics
-                 for group in metrics["group_details"]]
-    ax11.bar(group_positions, input_data, width, label='Input Data', bottom=bottom)
-    bottom += input_data
-
-    # Plot output data
-    output_data = [group["output_data_mb"] for metrics in construction_metrics
-                  for group in metrics["group_details"]]
-    ax11.bar(group_positions, output_data, width, label='Output Data', bottom=bottom)
-    bottom += output_data
-
-    # Plot stored data
-    stored_data = [group["stored_data_mb"] for metrics in construction_metrics
-                  for group in metrics["group_details"]]
-    ax11.bar(group_positions, stored_data, width, label='Stored Data', bottom=bottom)
-
-    # Add vertical lines to separate constructions
-    for i in range(len(construction_metrics) - 1):
-        sep_pos = group_positions[sum(len(metrics["group_details"])
-                                    for metrics in construction_metrics[:i+1])] + 0.5
-        ax11.axvline(x=sep_pos, color='gray', linestyle='--', alpha=0.5)
-
-    ax11.set_xlabel("Workflow Construction and Groups")
-    ax11.set_ylabel("Total Data Volume (MB)")
-    ax11.set_title("Group-level Data Volume Analysis\n(Data Volumes per Group)")
-    ax11.set_xticks(group_positions)
-    ax11.set_xticklabels(group_labels, rotation=45, ha='right')
-    ax11.legend()
-    ax11.grid(True)
-    ax11.set_ylim(bottom=0)  # Start y-axis at 0
-
-
-    # 3. Data Flow Analysis (Updated to use per-event metrics)
-    ax2 = fig.add_subplot(gs[1, 0])
+    # 2. Data Flow Analysis (Updated to use per-event metrics)
+    ax2 = fig.add_subplot(gs[0, 1])
     x = np.arange(len(construction_metrics))
     width = 0.25
     ax2.bar(x - width, input_data_per_event, width, label='Input Data/Event')
@@ -563,8 +596,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax2.legend()
     ax2.grid(True)
 
-    # 4. Total Data Volume Analysis (Stacked Bar)
-    ax10 = fig.add_subplot(gs[1, 1])
+    # 3. Total Data Volume Analysis (Stacked Bar)
+    ax10 = fig.add_subplot(gs[1, 0])
     x = np.arange(len(construction_metrics))
     width = 0.6
     bottom = np.zeros(len(construction_metrics))
@@ -595,8 +628,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax10.legend()
     ax10.grid(True)
 
-    # 5. Performance vs Storage Efficiency
-    ax1 = fig.add_subplot(gs[2, 0])
+    # 4. Performance vs Storage Efficiency
+    ax1 = fig.add_subplot(gs[1, 1])
 
     # Create a discrete colormap for number of groups
     unique_groups = np.unique(num_groups)
@@ -622,8 +655,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     # set x-axis to start at 0 and add 10% padding to the right
     ax1.set_xlim(left=0, right=np.max(event_throughputs) * 1.1)
 
-    # 6. Network Transfer Analysis
-    ax7 = fig.add_subplot(gs[2, 1])
+    # 5. Network Transfer Analysis
+    ax7 = fig.add_subplot(gs[2, 0])
     network_transfer = []
     for metrics in construction_metrics:
         # Calculate network transfer as sum of input and output data
@@ -638,8 +671,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax7.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax7.grid(True)
 
-    # 7. CPU Utilization Analysis
-    ax4 = fig.add_subplot(gs[3, 0])
+    # 6. CPU Utilization Analysis
+    ax4 = fig.add_subplot(gs[2, 1])
     cpu_utilization = []
     for metrics in construction_metrics:
         # Get CPU utilization ratio for each group from the original groups data
@@ -655,10 +688,11 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax4.set_xlabel("Workflow Construction")
     ax4.set_ylabel("CPU Utilization Ratio")
     ax4.set_title("CPU Utilization Analysis\n(Actual CPU Usage / Allocated CPU)")
+    ax4.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax4.grid(True)
 
-    # 8. Memory Utilization Analysis
-    ax6 = fig.add_subplot(gs[3, 1])
+    # 7. Memory Utilization Analysis
+    ax6 = fig.add_subplot(gs[3, 0])
     memory_utilization = []
     memory_std = []  # Store standard deviations
     for metrics in construction_metrics:
@@ -689,8 +723,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax6.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax6.grid(True)
 
-    # 9. Event Processing Analysis
-    ax5 = fig.add_subplot(gs[4, 0])
+    # 8. Event Processing Analysis
+    ax5 = fig.add_subplot(gs[3, 1])
     events_per_group = []
     for metrics in construction_metrics:
         events = [group["total_events"] for group in metrics["group_details"]]
@@ -700,10 +734,11 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax5.set_xlabel("Workflow Construction")
     ax5.set_ylabel("Events per Group")
     ax5.set_title("Event Processing Distribution")
+    ax5.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
     ax5.grid(True)
 
-    # 10. Parallelism Analysis
-    ax9 = fig.add_subplot(gs[4, 1])
+    # 9. Parallelism Analysis
+    ax9 = fig.add_subplot(gs[4, 0])
     parallelism_metrics = []
 
     for metrics in construction_metrics:
@@ -847,6 +882,7 @@ def visualize_groups(groups: List[Dict],
     plot_workflow_constructions(construction_metrics, output_path)
     plot_storage_efficiency(construction_metrics, output_path)
     plot_workflow_comparison(construction_metrics, output_path)
+    plot_group_data_volume_analysis(construction_metrics, output_path)  # New dedicated plot
     plot_workflow_topology(construction_metrics, output_path, template_path, dag)
 
     # Save raw data for further analysis
