@@ -9,7 +9,7 @@ Construction 1:
   Stored Data per Event: 0.708 MB/event
 
 Construction 2:
-  Groups: ['group_7', 'group_2', 'group_3', 'group_4']
+  Groups: ['group_10', 'group_2', 'group_3', 'group_4']
   Number of Groups: 4
   Total Events: 11808
   Total CPU Time: 518400.00 seconds
@@ -17,7 +17,7 @@ Construction 2:
   Stored Data per Event: 0.366 MB/event
 
 Construction 3:
-  Groups: ['group_8', 'group_1', 'group_3', 'group_4']
+  Groups: ['group_7', 'group_1', 'group_3', 'group_4']
   Number of Groups: 4
   Total Events: 11088
   Total CPU Time: 518400.00 seconds
@@ -25,7 +25,7 @@ Construction 3:
   Stored Data per Event: 0.488 MB/event
 
 Construction 4:
-  Groups: ['group_0', 'group_1', 'group_3', 'group_10']
+  Groups: ['group_0', 'group_1', 'group_3', 'group_5']
   Number of Groups: 4
   Total Events: 11828
   Total CPU Time: 475160.00 seconds
@@ -33,7 +33,7 @@ Construction 4:
   Stored Data per Event: 0.623 MB/event
 
 Construction 5:
-  Groups: ['group_7', 'group_3', 'group_10']
+  Groups: ['group_10', 'group_3', 'group_5']
   Number of Groups: 3
   Total Events: 8228
   Total CPU Time: 431960.00 seconds

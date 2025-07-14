@@ -6,10 +6,11 @@
 /* Workflow Construction Visualization Styles */
 .container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
-    padding: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 40px;
+    padding: 20px;
     align-items: start;
+    max-width: 100%;
 }
 .construction {
     min-width: 0;
@@ -19,19 +20,37 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    border-radius: 5px;
-    border: 1px solid #eee;
-    padding-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 .mermaid {
     width: 100%;
     background: #fff;
     border-radius: 5px;
+    overflow: auto;
+    max-height: 600px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Ensure Mermaid SVG scales properly */
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+    min-width: 300px;
 }
 .construction-title {
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 0 0 15px 0;
+    color: #333;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
 }
 .legend {
     position: fixed;
@@ -58,14 +77,16 @@
 }
 .group-composition {
     margin: 20px;
-    padding: 15px;
+    padding: 20px;
     background: #f8f9fa;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 0.9em;
     line-height: 1.4;
+    border: 1px solid #e9ecef;
 }
 .group-composition h3 {
-    margin: 0 0 10px 0;
+    margin: 0 0 15px 0;
+    color: #333;
 }
 .group-composition ul {
     margin: 0;
@@ -76,14 +97,63 @@
     column-gap: 40px;
 }
 .group-composition li {
-    margin: 2px 0;
+    margin: 4px 0;
+    break-inside: avoid;
 }
 @media (min-width: 900px) {
     .group-composition ul { columns: 3 200px; }
 }
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 10px;
+    }
+    
+    .construction {
+        padding: 10px;
+    }
+    
+    .mermaid {
+        max-height: 400px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 50px;
+    }
+}
 /* Reduce font size for Mermaid SVG text (subgraph labels, etc.) */
 .mermaid text {
-    font-size: 13px !important;
+    font-size: 12px !important;
+}
+/* Improve subgraph appearance */
+.mermaid .cluster rect {
+    fill: #f8f9fa !important;
+    stroke: #cacdd1 !important;
+    stroke-width: 1px !important;
+}
+.mermaid .cluster-label {
+    font-size: 11px !important;
+    font-weight: bold !important;
+}
+/* Additional Mermaid improvements */
+.mermaid .node rect {
+    stroke-width: 2px !important;
+}
+.mermaid .edgePath path {
+    stroke-width: 2px !important;
+}
+/* Ensure diagrams don't overflow their containers */
+.mermaid .flowchart {
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+/* Better spacing for complex diagrams */
+.mermaid .cluster {
+    margin: 10px !important;
 } 
 </style>
         <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
@@ -100,12 +170,12 @@
 <li>Group group_2: Taskset3</li>
 <li>Group group_3: Taskset4</li>
 <li>Group group_4: Taskset5</li>
-<li>Group group_5: Taskset2, Taskset4</li>
-<li>Group group_6: Taskset1, Taskset2, Taskset4</li>
-<li>Group group_7: Taskset1, Taskset2</li>
-<li>Group group_8: Taskset1, Taskset3</li>
-<li>Group group_9: Taskset1, Taskset3, Taskset5</li>
-<li>Group group_10: Taskset3, Taskset5</li>
+<li>Group group_5: Taskset3, Taskset5</li>
+<li>Group group_6: Taskset1, Taskset3, Taskset5</li>
+<li>Group group_7: Taskset1, Taskset3</li>
+<li>Group group_8: Taskset2, Taskset4</li>
+<li>Group group_9: Taskset1, Taskset2, Taskset4</li>
+<li>Group group_10: Taskset1, Taskset2</li>
 
             </ul>
         </div>
@@ -119,12 +189,12 @@
             graph TD
             subgraph group_6 [Group group_6]
         Taskset1["Taskset1"]:::groupnode
-        Taskset2["Taskset2"]:::groupnode
-        Taskset4["Taskset4"]:::groupnode
-    end
-    subgraph group_10 [Group group_10]
         Taskset3["Taskset3"]:::groupnode
         Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset1 --> Taskset3
@@ -140,13 +210,13 @@
             <div class="mermaid">
             graph TD
             subgraph group_5 [Group group_5]
-        Taskset2["Taskset2"]:::groupnode
-        Taskset4["Taskset4"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
     end
     subgraph group_9 [Group group_9]
         Taskset1["Taskset1"]:::groupnode
-        Taskset3["Taskset3"]:::groupnode
-        Taskset5["Taskset5"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset1 --> Taskset3
@@ -165,12 +235,12 @@
         Taskset1["Taskset1"]:::groupnode
     end
     subgraph group_5 [Group group_5]
-        Taskset2["Taskset2"]:::groupnode
-        Taskset4["Taskset4"]:::groupnode
-    end
-    subgraph group_10 [Group group_10]
         Taskset3["Taskset3"]:::groupnode
         Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset1 --> Taskset3
@@ -191,7 +261,7 @@
     subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
     end
-    subgraph group_6 [Group group_6]
+    subgraph group_9 [Group group_9]
         Taskset1["Taskset1"]:::groupnode
         Taskset2["Taskset2"]:::groupnode
         Taskset4["Taskset4"]:::groupnode
@@ -212,13 +282,13 @@
             subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
     end
-    subgraph group_5 [Group group_5]
-        Taskset2["Taskset2"]:::groupnode
-        Taskset4["Taskset4"]:::groupnode
-    end
-    subgraph group_8 [Group group_8]
+    subgraph group_7 [Group group_7]
         Taskset1["Taskset1"]:::groupnode
         Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset1 --> Taskset3
@@ -236,13 +306,13 @@
             subgraph group_3 [Group group_3]
         Taskset4["Taskset4"]:::groupnode
     end
-    subgraph group_7 [Group group_7]
-        Taskset1["Taskset1"]:::groupnode
-        Taskset2["Taskset2"]:::groupnode
-    end
-    subgraph group_10 [Group group_10]
+    subgraph group_5 [Group group_5]
         Taskset3["Taskset3"]:::groupnode
         Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_10 [Group group_10]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset1 --> Taskset3
@@ -263,7 +333,7 @@
     subgraph group_3 [Group group_3]
         Taskset4["Taskset4"]:::groupnode
     end
-    subgraph group_9 [Group group_9]
+    subgraph group_6 [Group group_6]
         Taskset1["Taskset1"]:::groupnode
         Taskset3["Taskset3"]:::groupnode
         Taskset5["Taskset5"]:::groupnode
@@ -290,7 +360,7 @@
     subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
     end
-    subgraph group_5 [Group group_5]
+    subgraph group_8 [Group group_8]
         Taskset2["Taskset2"]:::groupnode
         Taskset4["Taskset4"]:::groupnode
     end
@@ -316,7 +386,7 @@
     subgraph group_3 [Group group_3]
         Taskset4["Taskset4"]:::groupnode
     end
-    subgraph group_10 [Group group_10]
+    subgraph group_5 [Group group_5]
         Taskset3["Taskset3"]:::groupnode
         Taskset5["Taskset5"]:::groupnode
     end
@@ -342,7 +412,7 @@
     subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
     end
-    subgraph group_7 [Group group_7]
+    subgraph group_10 [Group group_10]
         Taskset1["Taskset1"]:::groupnode
         Taskset2["Taskset2"]:::groupnode
     end
@@ -368,7 +438,7 @@
     subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
     end
-    subgraph group_8 [Group group_8]
+    subgraph group_7 [Group group_7]
         Taskset1["Taskset1"]:::groupnode
         Taskset3["Taskset3"]:::groupnode
     end
@@ -411,15 +481,18 @@
 
         </div>
         <script>
-            mermaid.initialize({
+            mermaid.initialize({{
                 startOnLoad: true,
                 theme: 'default',
-                flowchart: {
-                    useMaxWidth: false,
+                flowchart: {{
+                    useMaxWidth: true,
                     htmlLabels: true,
-                    curve: 'basis'
-                }
-            });
+                    curve: 'basis',
+                    nodeSpacing: 50,
+                    rankSpacing: 50,
+                    diagramPadding: 20
+                }}
+            }});
         </script>
     </body>
     </html>
