@@ -31,7 +31,7 @@ Construction 1:
         Stored: 0.015 MB/event
 
 Construction 2:
-  Groups: ['group_0', 'group_7']
+  Groups: ['group_0', 'group_9']
   Number of Groups: 2
   Event Throughput: 0.0034 events/second
   Total CPU Time: 215960.00 seconds
@@ -58,7 +58,7 @@ Construction 2:
         Input: 0.000 MB/event
         Output: 0.195 MB/event
         Stored: 0.195 MB/event
-    group_7:
+    group_9:
       Tasks: ['Taskset2', 'Taskset3', 'Taskset4', 'Taskset5']
       Events per Task: 617
       CPU Time: 172760.00 seconds
@@ -68,7 +68,7 @@ Construction 2:
         Stored: 0.018 MB/event
 
 Construction 3:
-  Groups: ['group_13', 'group_5']
+  Groups: ['group_13', 'group_11']
   Number of Groups: 2
   Event Throughput: 0.0042 events/second
   Total CPU Time: 259200.00 seconds
@@ -95,7 +95,7 @@ Construction 3:
         Input: 0.000 MB/event
         Output: 0.179 MB/event
         Stored: 0.016 MB/event
-    group_5:
+    group_11:
       Tasks: ['Taskset4', 'Taskset5']
       Events per Task: 1080
       CPU Time: 172800.00 seconds
@@ -105,7 +105,7 @@ Construction 3:
         Stored: 0.037 MB/event
 
 Construction 4:
-  Groups: ['group_12', 'group_6']
+  Groups: ['group_12', 'group_10']
   Number of Groups: 2
   Event Throughput: 0.0038 events/second
   Total CPU Time: 259200.00 seconds
@@ -132,7 +132,7 @@ Construction 4:
         Input: 0.000 MB/event
         Output: 0.244 MB/event
         Stored: 0.146 MB/event
-    group_6:
+    group_10:
       Tasks: ['Taskset3', 'Taskset4', 'Taskset5']
       Events per Task: 864
       CPU Time: 172800.00 seconds
@@ -142,7 +142,7 @@ Construction 4:
         Stored: 0.024 MB/event
 
 Construction 5:
-  Groups: ['group_11', 'group_4']
+  Groups: ['group_7', 'group_4']
   Number of Groups: 2
   Event Throughput: 0.0031 events/second
   Total CPU Time: 345500.00 seconds
@@ -161,7 +161,7 @@ Construction 5:
     Parallel Time: 345500.00 seconds
     Parallel Efficiency: 1.000
   Group Details:
-    group_11:
+    group_7:
       Tasks: ['Taskset1', 'Taskset2', 'Taskset3', 'Taskset4']
       Events per Task: 785
       CPU Time: 172700.00 seconds
@@ -179,7 +179,7 @@ Construction 5:
         Stored: 0.073 MB/event
 
 Construction 6:
-  Groups: ['group_0', 'group_14', 'group_5']
+  Groups: ['group_0', 'group_14', 'group_11']
   Number of Groups: 3
   Event Throughput: 0.0043 events/second
   Total CPU Time: 302400.00 seconds
@@ -214,7 +214,7 @@ Construction 6:
         Input: 0.195 MB/event
         Output: 0.171 MB/event
         Stored: 0.024 MB/event
-    group_5:
+    group_11:
       Tasks: ['Taskset4', 'Taskset5']
       Events per Task: 1080
       CPU Time: 172800.00 seconds
@@ -224,7 +224,7 @@ Construction 6:
         Stored: 0.037 MB/event
 
 Construction 7:
-  Groups: ['group_0', 'group_1', 'group_6']
+  Groups: ['group_0', 'group_1', 'group_10']
   Number of Groups: 3
   Event Throughput: 0.0040 events/second
   Total CPU Time: 302400.00 seconds
@@ -259,7 +259,7 @@ Construction 7:
         Input: 0.195 MB/event
         Output: 0.293 MB/event
         Stored: 0.293 MB/event
-    group_6:
+    group_10:
       Tasks: ['Taskset3', 'Taskset4', 'Taskset5']
       Events per Task: 864
       CPU Time: 172800.00 seconds
@@ -269,7 +269,7 @@ Construction 7:
         Stored: 0.024 MB/event
 
 Construction 8:
-  Groups: ['group_0', 'group_10', 'group_4']
+  Groups: ['group_0', 'group_6', 'group_4']
   Number of Groups: 3
   Event Throughput: 0.0034 events/second
   Total CPU Time: 388800.00 seconds
@@ -296,7 +296,7 @@ Construction 8:
         Input: 0.000 MB/event
         Output: 0.195 MB/event
         Stored: 0.195 MB/event
-    group_10:
+    group_6:
       Tasks: ['Taskset2', 'Taskset3', 'Taskset4']
       Events per Task: 960
       CPU Time: 172800.00 seconds
@@ -314,7 +314,7 @@ Construction 8:
         Stored: 0.073 MB/event
 
 Construction 9:
-  Groups: ['group_12', 'group_2', 'group_5']
+  Groups: ['group_12', 'group_2', 'group_11']
   Number of Groups: 3
   Event Throughput: 0.0042 events/second
   Total CPU Time: 345600.00 seconds
@@ -349,7 +349,7 @@ Construction 9:
         Input: 0.293 MB/event
         Output: 0.049 MB/event
         Stored: 0.049 MB/event
-    group_5:
+    group_11:
       Tasks: ['Taskset4', 'Taskset5']
       Events per Task: 1080
       CPU Time: 172800.00 seconds
@@ -404,7 +404,7 @@ Construction 10:
         Stored: 0.073 MB/event
 
 Construction 11:
-  Groups: ['group_12', 'group_9', 'group_4']
+  Groups: ['group_12', 'group_5', 'group_4']
   Number of Groups: 3
   Event Throughput: 0.0038 events/second
   Total CPU Time: 432000.00 seconds
@@ -431,7 +431,7 @@ Construction 11:
         Input: 0.000 MB/event
         Output: 0.244 MB/event
         Stored: 0.146 MB/event
-    group_9:
+    group_5:
       Tasks: ['Taskset3', 'Taskset4']
       Events per Task: 1728
       CPU Time: 172800.00 seconds
@@ -449,7 +449,7 @@ Construction 11:
         Stored: 0.073 MB/event
 
 Construction 12:
-  Groups: ['group_0', 'group_1', 'group_2', 'group_5']
+  Groups: ['group_0', 'group_1', 'group_2', 'group_11']
   Number of Groups: 4
   Event Throughput: 0.0043 events/second
   Total CPU Time: 388800.00 seconds
@@ -492,7 +492,7 @@ Construction 12:
         Input: 0.293 MB/event
         Output: 0.049 MB/event
         Stored: 0.049 MB/event
-    group_5:
+    group_11:
       Tasks: ['Taskset4', 'Taskset5']
       Events per Task: 1080
       CPU Time: 172800.00 seconds
@@ -555,7 +555,7 @@ Construction 13:
         Stored: 0.073 MB/event
 
 Construction 14:
-  Groups: ['group_0', 'group_1', 'group_9', 'group_4']
+  Groups: ['group_0', 'group_1', 'group_5', 'group_4']
   Number of Groups: 4
   Event Throughput: 0.0040 events/second
   Total CPU Time: 475200.00 seconds
@@ -590,7 +590,7 @@ Construction 14:
         Input: 0.195 MB/event
         Output: 0.293 MB/event
         Stored: 0.293 MB/event
-    group_9:
+    group_5:
       Tasks: ['Taskset3', 'Taskset4']
       Events per Task: 1728
       CPU Time: 172800.00 seconds

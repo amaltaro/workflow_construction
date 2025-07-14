@@ -50,7 +50,7 @@
     "num_groups": 2,
     "groups": [
       "group_0",
-      "group_7"
+      "group_9"
     ],
     "group_details": [
       {
@@ -69,7 +69,7 @@
         "stored_data_per_event_mb": 0.1953125
       },
       {
-        "group_id": "group_7",
+        "group_id": "group_9",
         "tasks": [
           "Taskset2",
           "Taskset3",
@@ -102,7 +102,7 @@
     "num_groups": 2,
     "groups": [
       "group_13",
-      "group_5"
+      "group_11"
     ],
     "group_details": [
       {
@@ -123,7 +123,7 @@
         "stored_data_per_event_mb": 0.016276041666666668
       },
       {
-        "group_id": "group_5",
+        "group_id": "group_11",
         "tasks": [
           "Taskset4",
           "Taskset5"
@@ -154,7 +154,7 @@
     "num_groups": 2,
     "groups": [
       "group_12",
-      "group_6"
+      "group_10"
     ],
     "group_details": [
       {
@@ -174,7 +174,7 @@
         "stored_data_per_event_mb": 0.146484375
       },
       {
-        "group_id": "group_6",
+        "group_id": "group_10",
         "tasks": [
           "Taskset3",
           "Taskset4",
@@ -205,12 +205,12 @@
     "initial_input_events": 785,
     "num_groups": 2,
     "groups": [
-      "group_11",
+      "group_7",
       "group_4"
     ],
     "group_details": [
       {
-        "group_id": "group_11",
+        "group_id": "group_7",
         "tasks": [
           "Taskset1",
           "Taskset2",
@@ -259,7 +259,7 @@
     "groups": [
       "group_0",
       "group_14",
-      "group_5"
+      "group_11"
     ],
     "group_details": [
       {
@@ -294,7 +294,7 @@
         "stored_data_per_event_mb": 0.0244140625
       },
       {
-        "group_id": "group_5",
+        "group_id": "group_11",
         "tasks": [
           "Taskset4",
           "Taskset5"
@@ -326,7 +326,7 @@
     "groups": [
       "group_0",
       "group_1",
-      "group_6"
+      "group_10"
     ],
     "group_details": [
       {
@@ -360,7 +360,7 @@
         "stored_data_per_event_mb": 0.29296875
       },
       {
-        "group_id": "group_6",
+        "group_id": "group_10",
         "tasks": [
           "Taskset3",
           "Taskset4",
@@ -392,7 +392,7 @@
     "num_groups": 3,
     "groups": [
       "group_0",
-      "group_10",
+      "group_6",
       "group_4"
     ],
     "group_details": [
@@ -412,7 +412,7 @@
         "stored_data_per_event_mb": 0.1953125
       },
       {
-        "group_id": "group_10",
+        "group_id": "group_6",
         "tasks": [
           "Taskset2",
           "Taskset3",
@@ -460,7 +460,7 @@
     "groups": [
       "group_12",
       "group_2",
-      "group_5"
+      "group_11"
     ],
     "group_details": [
       {
@@ -495,7 +495,7 @@
         "stored_data_per_event_mb": 0.048828125
       },
       {
-        "group_id": "group_5",
+        "group_id": "group_11",
         "tasks": [
           "Taskset4",
           "Taskset5"
@@ -593,7 +593,7 @@
     "num_groups": 3,
     "groups": [
       "group_12",
-      "group_9",
+      "group_5",
       "group_4"
     ],
     "group_details": [
@@ -614,7 +614,7 @@
         "stored_data_per_event_mb": 0.146484375
       },
       {
-        "group_id": "group_9",
+        "group_id": "group_5",
         "tasks": [
           "Taskset3",
           "Taskset4"
@@ -662,7 +662,7 @@
       "group_0",
       "group_1",
       "group_2",
-      "group_5"
+      "group_11"
     ],
     "group_details": [
       {
@@ -711,7 +711,7 @@
         "stored_data_per_event_mb": 0.048828125
       },
       {
-        "group_id": "group_5",
+        "group_id": "group_11",
         "tasks": [
           "Taskset4",
           "Taskset5"
@@ -825,7 +825,7 @@
     "groups": [
       "group_0",
       "group_1",
-      "group_9",
+      "group_5",
       "group_4"
     ],
     "group_details": [
@@ -860,7 +860,7 @@
         "stored_data_per_event_mb": 0.29296875
       },
       {
-        "group_id": "group_9",
+        "group_id": "group_5",
         "tasks": [
           "Taskset3",
           "Taskset4"
