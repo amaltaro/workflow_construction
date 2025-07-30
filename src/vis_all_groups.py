@@ -333,7 +333,7 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
     plt.savefig(os.path.join(output_dir, "storage_efficiency.png"))
     plt.close()
 
-def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: str = "plots"):
+def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
     """Plot metrics for different workflow constructions"""
     print(f"Plotting workflow construction analysis for {len(construction_metrics)} constructions")
 
@@ -430,7 +430,20 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     with open(os.path.join(output_dir, "top_constructions.txt"), "w") as f:
         f.write("Top 5 Workflow Constructions by Event Throughput:\n\n")
         for i, metrics in enumerate(top_constructions, 1):
-            f.write(f"Construction {i}:\n")
+            # Use custom label if provided and if this construction is in the toy model
+            if custom_labels and len(construction_metrics) == 2:
+                # For toy model, find the index of this construction in the original list
+                try:
+                    original_index = construction_metrics.index(metrics)
+                    if original_index < len(custom_labels):
+                        construction_label = custom_labels[original_index]
+                    else:
+                        construction_label = f"Construction {i}"
+                except ValueError:
+                    construction_label = f"Construction {i}"
+            else:
+                construction_label = f"Construction {i}"
+            f.write(f"{construction_label}:\n")
             f.write(f"  Groups: {metrics['groups']}\n")
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
             f.write(f"  Total Events: {metrics['total_events']}\n")
@@ -438,7 +451,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
             f.write(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second\n")
             f.write(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event\n\n")
 
-def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir: str = "plots"):
+def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
     """Create a dedicated horizontal bar plot for group-level data volume analysis.
 
     This plot shows the data volumes (input, output, stored) for each group
@@ -470,7 +483,12 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
         for j, group in enumerate(metrics["group_details"]):
             group_id = group["group_id"]
             tasks_str = ", ".join(group["tasks"])
-            group_labels.append(f"Const {i+1} - {group_id} ({tasks_str})")
+            # Use custom label if provided, otherwise use default "Const" label
+            if custom_labels and i < len(custom_labels):
+                construction_label = custom_labels[i]
+            else:
+                construction_label = f"Const {i+1}"
+            group_labels.append(f"{construction_label} - {group_id} ({tasks_str})")
         # Move to next construction position (add spacing only between constructions)
         current_pos += groups_in_construction * bar_height + bar_height
 
@@ -524,7 +542,7 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
     plt.close()
 
 
-def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots"):
+def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
     """Create a comprehensive comparison of workflow constructions.
 
     This function creates multiple visualizations to help identify trade-offs
@@ -565,6 +583,12 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     fig = plt.figure(figsize=(20, 20))
     gs = fig.add_gridspec(5, 2, height_ratios=[1, 1, 1, 1, 1])  # Equal height ratios for all rows
 
+    # Helper function to get construction labels
+    if custom_labels:
+        construction_labels = custom_labels
+    else:
+        construction_labels = [f"Const {i+1}" for i in range(len(construction_metrics))]
+
     # 1. Group Size Distribution
     ax3 = fig.add_subplot(gs[0, 0])
     group_sizes = []
@@ -573,11 +597,11 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
         group_sizes.append(sizes)
 
     # Create a box plot for group sizes
-    ax3.boxplot(group_sizes, tick_labels=[f"Const {i+1}" for i in range(len(construction_metrics))])
+    ax3.boxplot(group_sizes, tick_labels=construction_labels)
     ax3.set_xlabel("Workflow Construction")
     ax3.set_ylabel("Number of Tasks per Group")
     ax3.set_title("Group Size Distribution")
-    ax3.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax3.set_xticklabels(construction_labels, rotation=45)
     ax3.grid(True)
     ax3.set_ylim(bottom=0)  # Set y-axis to start at 0
 
@@ -592,7 +616,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax2.set_ylabel("Data Volume per Event (MB)")
     ax2.set_title("Data Flow Analysis\n(Per-Event Data Volumes)")
     ax2.set_xticks(x)
-    ax2.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax2.set_xticklabels(construction_labels, rotation=45)
     ax2.legend()
     ax2.grid(True)
 
@@ -624,7 +648,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax10.set_ylabel("Total Data Volume (MB)")
     ax10.set_title("Total Data Volume Analysis\n(Aggregated Data Volumes for one job of each group)")
     ax10.set_xticks(x)
-    ax10.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax10.set_xticklabels(construction_labels, rotation=45)
     ax10.legend()
     ax10.grid(True)
 
@@ -668,7 +692,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax7.set_ylabel("Network Transfer (MB)")
     ax7.set_title("Network Transfer Analysis")
     ax7.set_xticks(range(len(construction_metrics)))
-    ax7.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax7.set_xticklabels(construction_labels, rotation=45)
     ax7.grid(True)
 
     # 6. CPU Utilization Analysis
@@ -684,11 +708,11 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
                 util.append(group_data["resource_metrics"]["cpu"]["utilization_ratio"])
         cpu_utilization.append(util)
 
-    ax4.boxplot(cpu_utilization, tick_labels=[f"Const {i+1}" for i in range(len(construction_metrics))])
+    ax4.boxplot(cpu_utilization, tick_labels=construction_labels)
     ax4.set_xlabel("Workflow Construction")
     ax4.set_ylabel("CPU Utilization Ratio")
     ax4.set_title("CPU Utilization Analysis\n(Actual CPU Usage / Allocated CPU)")
-    ax4.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax4.set_xticklabels(construction_labels, rotation=45)
     ax4.grid(True)
 
     # 7. Memory Utilization Analysis
@@ -720,7 +744,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax6.set_ylabel("Memory Utilization Ratio")
     ax6.set_title("Memory Utilization Analysis\n(Average Memory Occupancy ± Std Dev)")
     ax6.set_xticks(x)
-    ax6.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax6.set_xticklabels(construction_labels, rotation=45)
     ax6.grid(True)
 
     # 8. Event Processing Analysis
@@ -730,11 +754,11 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
         events = [group["total_events"] for group in metrics["group_details"]]
         events_per_group.append(events)
 
-    ax5.boxplot(events_per_group, tick_labels=[f"Const {i+1}" for i in range(len(construction_metrics))])
+    ax5.boxplot(events_per_group, tick_labels=construction_labels)
     ax5.set_xlabel("Workflow Construction")
     ax5.set_ylabel("Events per Group")
     ax5.set_title("Event Processing Distribution")
-    ax5.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax5.set_xticklabels(construction_labels, rotation=45)
     ax5.grid(True)
 
     # 9. Parallelism Analysis
@@ -803,7 +827,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax9.set_ylabel("Parallel Efficiency")
     ax9.set_title("Parallel Execution Analysis\n(Efficiency = Sequential Time / Parallel Time)")
     ax9.set_xticks(range(len(construction_metrics)))
-    ax9.set_xticklabels([f"Const {i+1}" for i in range(len(construction_metrics))], rotation=45)
+    ax9.set_xticklabels(construction_labels, rotation=45)
     ax9.grid(True)
 
     plt.tight_layout()
@@ -816,7 +840,12 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
         f.write("==============================\n\n")
 
         for i, metrics in enumerate(construction_metrics, 1):
-            f.write(f"Construction {i}:\n")
+            # Use custom label if provided, otherwise use default "Construction" label
+            if custom_labels and i <= len(custom_labels):
+                construction_label = custom_labels[i-1]
+            else:
+                construction_label = f"Construction {i}"
+            f.write(f"{construction_label}:\n")
             f.write(f"  Groups: {metrics['groups']}\n")
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
             f.write(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second\n")
@@ -895,6 +924,9 @@ def visualize_toy_model(groups: List[Dict],
         print(f"Warning: Expected 2 constructions for toy model, got {len(toy_constructions)}")
         return
 
+    # Define custom labels for toy model
+    custom_labels = ["Grouped", "Separated"]
+
     # Filter groups to only include those used in the toy constructions
     toy_group_ids = set()
     for construction in toy_constructions:
@@ -914,16 +946,16 @@ def visualize_toy_model(groups: List[Dict],
     print(f"Creating toy model visualizations for {len(toy_constructions)} constructions")
 
     # 1. Group-level data volume analysis (the main plot you're working on)
-    plot_group_data_volume_analysis(toy_constructions, str(output_path))
+    plot_group_data_volume_analysis(toy_constructions, str(output_path), custom_labels)
 
     # 2. Workflow construction comparison
-    plot_workflow_comparison(toy_constructions, str(output_path))
+    plot_workflow_comparison(toy_constructions, str(output_path), custom_labels)
 
     # 3. Storage efficiency analysis
     plot_storage_efficiency(toy_constructions, str(output_path))
 
     # 4. Workflow constructions overview
-    plot_workflow_constructions(toy_constructions, str(output_path))
+    plot_workflow_constructions(toy_constructions, str(output_path), custom_labels)
 
     # 5. Resource utilization analysis (using filtered groups)
     plot_resource_utilization(toy_groups, str(output_path))

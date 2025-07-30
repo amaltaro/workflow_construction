@@ -8,6 +8,8 @@ Research for: Optimizing Heterogeneous Workflow Construction for Enhanced Event 
 
 The Workflow Task Grouper analyzes workflow tasks and their relationships to create optimal task groups while respecting both hard constraints (OS compatibility, architecture requirements) and soft constraints (resource utilization, performance characteristics). The system also generates all possible workflow constructions and provides comprehensive analysis and visualization capabilities.
 
+For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23wmLHEGS`, please see [this](https://cmsweb.cern.ch/reqmgr2/fetch?rid=cmsunified_task_HIG-Run3Summer23wmLHEGS-00565__v1_T_250718_210653_3406) workflow.
+
 ## Features
 
 - Task dependency analysis using directed acyclic graphs (DAG)
@@ -469,7 +471,25 @@ python src/vis_all_groups.py tests/sequential/3tasks.json
 
 # With a custom output directory
 python src/vis_all_groups.py tests/sequential/3tasks.json --output-dir custom_output
+
+# Toy model mode - visualize only two extreme constructions
+python src/vis_all_groups.py tests/sequential/5tasks.json --toy-model --output-dir output/toy_model
 ```
+
+### Toy Model Mode
+
+The `--toy-model` flag enables a simplified analysis that focuses on two extreme workflow construction strategies:
+
+1. **Grouped Strategy**: All tasks in a single group (minimum number of groups)
+2. **Separated Strategy**: One group per task (maximum number of groups)
+
+This mode is useful for:
+- Quick comparison of extreme grouping strategies
+- Understanding the trade-offs between grouping and separation
+- Simplified analysis for educational or demonstration purposes
+- Focused visualization of key metrics without overwhelming detail
+
+The toy model generates the same comprehensive visualizations but only for these two extreme cases, making it easier to understand the fundamental differences between grouped and separated approaches.
 
 The script will:
 1. Automatically detect the template directory name (e.g., "sequential" or "fork") from the input file path
