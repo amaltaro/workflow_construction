@@ -2,72 +2,161 @@
     <html>
     <head>
         <title>Workflow Construction Topologies - tests/fork/3tasks.json</title>
-        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
         <style>
-            .container {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 15px;
-                padding: 20px;
-            }
-            .construction {
-                flex: 1 1 18%;
-                min-width: 300px;
-                margin-bottom: 10px;
-            }
-            .mermaid {
-                margin: 10px 0;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-            }
-            .construction-title {
-                font-size: 1.1em;
-                font-weight: bold;
-                margin: 10px 0;
-            }
-            .legend {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                padding: 15px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                max-height: 80vh;
-                overflow-y: auto;
-            }
-            .legend-item {
-                display: flex;
-                align-items: center;
-                margin: 5px 0;
-            }
-            .legend-color {
-                width: 20px;
-                height: 20px;
-                margin-right: 10px;
-                border: 1px solid #333;
-            }
-            .group-composition {
-                margin: 20px;
-                padding: 15px;
-                background: #f8f9fa;
-                border-radius: 5px;
-                font-size: 0.9em;
-                line-height: 1.4;
-            }
-            .group-composition h3 {
-                margin: 0 0 10px 0;
-            }
-            .group-composition ul {
-                margin: 0;
-                padding-left: 20px;
-            }
-            .group-composition li {
-                margin: 2px 0;
-            }
-        </style>
+/* Workflow Construction Visualization Styles */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 40px;
+    padding: 20px;
+    align-items: start;
+    max-width: 100%;
+}
+.construction {
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.mermaid {
+    width: 100%;
+    background: #fff;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 600px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Ensure Mermaid SVG scales properly */
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+    min-width: 300px;
+}
+.construction-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    color: #333;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+.legend {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+.legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #333;
+}
+.group-composition {
+    margin: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 0.9em;
+    line-height: 1.4;
+    border: 1px solid #e9ecef;
+}
+.group-composition h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+.group-composition ul {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2 300px;
+    -webkit-columns: 2 300px;
+    -moz-columns: 2 300px;
+    column-gap: 40px;
+}
+.group-composition li {
+    margin: 4px 0;
+    break-inside: avoid;
+}
+@media (min-width: 900px) {
+    .group-composition ul { columns: 3 200px; }
+}
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 10px;
+    }
+    
+    .construction {
+        padding: 10px;
+    }
+    
+    .mermaid {
+        max-height: 400px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 50px;
+    }
+}
+/* Reduce font size for Mermaid SVG text (subgraph labels, etc.) */
+.mermaid text {
+    font-size: 12px !important;
+}
+/* Improve subgraph appearance */
+.mermaid .cluster rect {
+    fill: #f8f9fa !important;
+    stroke: #cacdd1 !important;
+    stroke-width: 1px !important;
+}
+.mermaid .cluster-label {
+    font-size: 11px !important;
+    font-weight: bold !important;
+}
+/* Additional Mermaid improvements */
+.mermaid .node rect {
+    stroke-width: 2px !important;
+}
+.mermaid .edgePath path {
+    stroke-width: 2px !important;
+}
+/* Ensure diagrams don't overflow their containers */
+.mermaid .flowchart {
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+/* Better spacing for complex diagrams */
+.mermaid .cluster {
+    margin: 10px !important;
+} 
+</style>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     </head>
     <body>
         <h1>Workflow Construction Topologies - tests/fork/3tasks.json</h1>
@@ -76,44 +165,13 @@
         <div class="group-composition">
             <h3>Group/Task Composition:</h3>
             <ul>
-    <li>Group group_0: Task1</li>
-<li>Group group_1: Task2</li>
-<li>Group group_2: Task3</li>
-<li>Group group_3: Task1, Task2</li>
-<li>Group group_4: Task1, Task3</li>
+    <li>Group group_0: Taskset1</li>
+<li>Group group_1: Taskset2</li>
+<li>Group group_2: Taskset3</li>
+<li>Group group_3: Taskset1, Taskset2</li>
+<li>Group group_4: Taskset1, Taskset3</li>
 
             </ul>
-        </div>
-        
-        <!-- Legend -->
-        <div class="legend">
-            <h3>Groups</h3>
-    
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #FF6B6B"></div>
-                <span>Group group_0</span>
-            </div>
-        
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #4ECDC4"></div>
-                <span>Group group_1</span>
-            </div>
-        
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #45B7D1"></div>
-                <span>Group group_2</span>
-            </div>
-        
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #96CEB4"></div>
-                <span>Group group_3</span>
-            </div>
-        
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #FFEEAD"></div>
-                <span>Group group_4</span>
-            </div>
-        
         </div>
         
         <!-- Diagrams Container -->
@@ -123,59 +181,72 @@
             <div class="construction-title">Workflow Construction 1</div>
             <div class="mermaid">
             graph TD
-            Task1["Task1"]:::groupgroup_3
-    Task2["Task2"]:::groupgroup_3
-    Task3["Task3"]:::groupgroup_2
-    Task1 --> Task2
-    Task1 --> Task3
+            subgraph group_2 [Group group_2]
+        Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_3 [Group group_3]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset1 --> Taskset3
 
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef groupgroup_3 fill:#96CEB4,stroke:#333,stroke-width:2px,color:white;
-    classDef groupgroup_2 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
 </div></div>
 
         <div class="construction">
             <div class="construction-title">Workflow Construction 2</div>
             <div class="mermaid">
             graph TD
-            Task1["Task1"]:::groupgroup_4
-    Task2["Task2"]:::groupgroup_1
-    Task3["Task3"]:::groupgroup_4
-    Task1 --> Task2
-    Task1 --> Task3
+            subgraph group_1 [Group group_1]
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset1 --> Taskset3
 
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef groupgroup_4 fill:#FFEEAD,stroke:#333,stroke-width:2px,color:white;
-    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
 </div></div>
 
         <div class="construction">
             <div class="construction-title">Workflow Construction 3</div>
             <div class="mermaid">
             graph TD
-            Task1["Task1"]:::groupgroup_0
-    Task2["Task2"]:::groupgroup_1
-    Task3["Task3"]:::groupgroup_2
-    Task1 --> Task2
-    Task1 --> Task3
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_1 [Group group_1]
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_2 [Group group_2]
+        Taskset3["Taskset3"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset1 --> Taskset3
 
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef groupgroup_0 fill:#FF6B6B,stroke:#333,stroke-width:2px,color:white;
-    classDef groupgroup_1 fill:#4ECDC4,stroke:#333,stroke-width:2px,color:white;
-    classDef groupgroup_2 fill:#45B7D1,stroke:#333,stroke-width:2px,color:white;
 </div></div>
 
         </div>
         <script>
-            mermaid.initialize({
+            mermaid.initialize({{
                 startOnLoad: true,
                 theme: 'default',
-                flowchart: {
-                    useMaxWidth: false,
+                flowchart: {{
+                    useMaxWidth: true,
                     htmlLabels: true,
-                    curve: 'basis'
-                }
-            });
+                    curve: 'basis',
+                    nodeSpacing: 50,
+                    rankSpacing: 50,
+                    diagramPadding: 20
+                }}
+            }});
         </script>
     </body>
     </html>

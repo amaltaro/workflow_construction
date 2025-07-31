@@ -2,10 +2,10 @@
   {
     "group_id": "group_0",
     "task_ids": [
-      "Task1"
+      "Taskset1"
     ],
-    "entry_point_task": "Task1",
-    "exit_point_task": "Task1",
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 1,
@@ -44,10 +44,10 @@
   {
     "group_id": "group_1",
     "task_ids": [
-      "Task2"
+      "Taskset2"
     ],
-    "entry_point_task": "Task2",
-    "exit_point_task": "Task2",
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -86,10 +86,10 @@
   {
     "group_id": "group_2",
     "task_ids": [
-      "Task3"
+      "Taskset3"
     ],
-    "entry_point_task": "Task3",
-    "exit_point_task": "Task3",
+    "entry_point_task": "Taskset3",
+    "exit_point_task": "Taskset3",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -128,11 +128,11 @@
   {
     "group_id": "group_3",
     "task_ids": [
-      "Task1",
-      "Task2"
+      "Taskset1",
+      "Taskset2"
     ],
-    "entry_point_task": "Task1",
-    "exit_point_task": "Task2",
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -167,8 +167,8 @@
     },
     "dependency_paths": [
       [
-        "Task1",
-        "Task2"
+        "Taskset1",
+        "Taskset2"
       ]
     ],
     "events_per_job": 1440
@@ -176,11 +176,11 @@
   {
     "group_id": "group_4",
     "task_ids": [
-      "Task1",
-      "Task3"
+      "Taskset1",
+      "Taskset3"
     ],
-    "entry_point_task": "Task1",
-    "exit_point_task": "Task3",
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset3",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -215,8 +215,8 @@
     },
     "dependency_paths": [
       [
-        "Task1",
-        "Task3"
+        "Taskset1",
+        "Taskset3"
       ]
     ],
     "events_per_job": 2160

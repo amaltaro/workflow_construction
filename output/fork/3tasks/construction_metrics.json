@@ -19,8 +19,8 @@
       {
         "group_id": "group_3",
         "tasks": [
-          "Task1",
-          "Task2"
+          "Taskset1",
+          "Taskset2"
         ],
         "events_per_task": 1440,
         "total_events": 2880,
@@ -35,7 +35,7 @@
       {
         "group_id": "group_2",
         "tasks": [
-          "Task3"
+          "Taskset3"
         ],
         "events_per_task": 4320,
         "total_events": 4320,
@@ -69,8 +69,8 @@
       {
         "group_id": "group_4",
         "tasks": [
-          "Task1",
-          "Task3"
+          "Taskset1",
+          "Taskset3"
         ],
         "events_per_task": 2160,
         "total_events": 4320,
@@ -85,7 +85,7 @@
       {
         "group_id": "group_1",
         "tasks": [
-          "Task2"
+          "Taskset2"
         ],
         "events_per_task": 2160,
         "total_events": 2160,
@@ -120,7 +120,7 @@
       {
         "group_id": "group_0",
         "tasks": [
-          "Task1"
+          "Taskset1"
         ],
         "events_per_task": 4320,
         "total_events": 4320,
@@ -135,7 +135,7 @@
       {
         "group_id": "group_1",
         "tasks": [
-          "Task2"
+          "Taskset2"
         ],
         "events_per_task": 2160,
         "total_events": 2160,
@@ -150,7 +150,7 @@
       {
         "group_id": "group_2",
         "tasks": [
-          "Task3"
+          "Taskset3"
         ],
         "events_per_task": 4320,
         "total_events": 4320,

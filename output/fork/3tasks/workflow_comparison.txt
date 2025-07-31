@@ -22,7 +22,7 @@ Construction 1:
     Parallel Efficiency: 1.000
   Group Details:
     group_3:
-      Tasks: ['Task1', 'Task2']
+      Tasks: ['Taskset1', 'Taskset2']
       Events per Task: 1440
       CPU Time: 86400.00 seconds
       Data Flow (per event):
@@ -30,7 +30,7 @@ Construction 1:
         Output: 0.244 MB/event
         Stored: 0.146 MB/event
     group_2:
-      Tasks: ['Task3']
+      Tasks: ['Taskset3']
       Events per Task: 4320
       CPU Time: 86400.00 seconds
       Data Flow (per event):
@@ -59,7 +59,7 @@ Construction 2:
     Parallel Efficiency: 1.000
   Group Details:
     group_4:
-      Tasks: ['Task1', 'Task3']
+      Tasks: ['Taskset1', 'Taskset3']
       Events per Task: 2160
       CPU Time: 86400.00 seconds
       Data Flow (per event):
@@ -67,7 +67,7 @@ Construction 2:
         Output: 0.122 MB/event
         Stored: 0.024 MB/event
     group_1:
-      Tasks: ['Task2']
+      Tasks: ['Taskset2']
       Events per Task: 2160
       CPU Time: 86400.00 seconds
       Data Flow (per event):
@@ -96,7 +96,7 @@ Construction 3:
     Parallel Efficiency: 1.000
   Group Details:
     group_0:
-      Tasks: ['Task1']
+      Tasks: ['Taskset1']
       Events per Task: 4320
       CPU Time: 43200.00 seconds
       Data Flow (per event):
@@ -104,7 +104,7 @@ Construction 3:
         Output: 0.195 MB/event
         Stored: 0.195 MB/event
     group_1:
-      Tasks: ['Task2']
+      Tasks: ['Taskset2']
       Events per Task: 2160
       CPU Time: 86400.00 seconds
       Data Flow (per event):
@@ -112,7 +112,7 @@ Construction 3:
         Output: 0.293 MB/event
         Stored: 0.293 MB/event
     group_2:
-      Tasks: ['Task3']
+      Tasks: ['Taskset3']
       Events per Task: 4320
       CPU Time: 86400.00 seconds
       Data Flow (per event):
