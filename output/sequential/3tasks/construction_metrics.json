@@ -12,15 +12,15 @@
     "initial_input_events": 1080,
     "num_groups": 1,
     "groups": [
-      "group_4"
+      "group_5"
     ],
     "group_details": [
       {
-        "group_id": "group_4",
+        "group_id": "group_5",
         "tasks": [
-          "Task1",
-          "Task2",
-          "Task3"
+          "Taskset1",
+          "Taskset2",
+          "Taskset3"
         ],
         "events_per_task": 1080,
         "total_events": 3240,
@@ -48,13 +48,13 @@
     "num_groups": 2,
     "groups": [
       "group_0",
-      "group_3"
+      "group_4"
     ],
     "group_details": [
       {
         "group_id": "group_0",
         "tasks": [
-          "Task1"
+          "Taskset1"
         ],
         "events_per_task": 4320,
         "total_events": 4320,
@@ -67,10 +67,10 @@
         "stored_data_per_event_mb": 0.1953125
       },
       {
-        "group_id": "group_3",
+        "group_id": "group_4",
         "tasks": [
-          "Task2",
-          "Task3"
+          "Taskset2",
+          "Taskset3"
         ],
         "events_per_task": 1440,
         "total_events": 2880,
@@ -97,15 +97,15 @@
     "initial_input_events": 1440,
     "num_groups": 2,
     "groups": [
-      "group_5",
+      "group_3",
       "group_2"
     ],
     "group_details": [
       {
-        "group_id": "group_5",
+        "group_id": "group_3",
         "tasks": [
-          "Task1",
-          "Task2"
+          "Taskset1",
+          "Taskset2"
         ],
         "events_per_task": 1440,
         "total_events": 2880,
@@ -120,7 +120,7 @@
       {
         "group_id": "group_2",
         "tasks": [
-          "Task3"
+          "Taskset3"
         ],
         "events_per_task": 4320,
         "total_events": 4320,
@@ -155,7 +155,7 @@
       {
         "group_id": "group_0",
         "tasks": [
-          "Task1"
+          "Taskset1"
         ],
         "events_per_task": 4320,
         "total_events": 4320,
@@ -170,7 +170,7 @@
       {
         "group_id": "group_1",
         "tasks": [
-          "Task2"
+          "Taskset2"
         ],
         "events_per_task": 2160,
         "total_events": 2160,
@@ -185,7 +185,7 @@
       {
         "group_id": "group_2",
         "tasks": [
-          "Task3"
+          "Taskset3"
         ],
         "events_per_task": 4320,
         "total_events": 4320,

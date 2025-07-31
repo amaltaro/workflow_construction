@@ -2,10 +2,10 @@
   {
     "group_id": "group_0",
     "task_ids": [
-      "Task1"
+      "Taskset1"
     ],
-    "entry_point_task": "Task1",
-    "exit_point_task": "Task1",
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 1,
@@ -44,10 +44,10 @@
   {
     "group_id": "group_1",
     "task_ids": [
-      "Task2"
+      "Taskset2"
     ],
-    "entry_point_task": "Task2",
-    "exit_point_task": "Task2",
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -86,10 +86,10 @@
   {
     "group_id": "group_2",
     "task_ids": [
-      "Task3"
+      "Taskset3"
     ],
-    "entry_point_task": "Task3",
-    "exit_point_task": "Task3",
+    "entry_point_task": "Taskset3",
+    "exit_point_task": "Taskset3",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -128,117 +128,11 @@
   {
     "group_id": "group_3",
     "task_ids": [
-      "Task2",
-      "Task3"
+      "Taskset1",
+      "Taskset2"
     ],
-    "entry_point_task": "Task2",
-    "exit_point_task": "Task3",
-    "resource_metrics": {
-      "cpu": {
-        "max_cores": 2,
-        "cpu_seconds": 86400,
-        "utilization_ratio": 1.0
-      },
-      "memory": {
-        "max_mb": 4000,
-        "min_mb": 3000,
-        "occupancy": 0.9166666666666666
-      },
-      "throughput": {
-        "total_eps": 0.03333333333333333,
-        "max_eps": 0.05,
-        "min_eps": 0.025
-      },
-      "io": {
-        "input_data_mb": 281.25,
-        "output_data_mb": 492.1875,
-        "stored_data_mb": 70.3125,
-        "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.1708984375,
-        "stored_data_per_event_mb": 0.0244140625
-      },
-      "accelerator": {
-        "types": []
-      }
-    },
-    "utilization_metrics": {
-      "resource_utilization": 0.9583333333333333,
-      "event_throughput": 0.03333333333333333
-    },
-    "dependency_paths": [
-      [
-        "Task2",
-        "Task3"
-      ]
-    ],
-    "events_per_job": 1440
-  },
-  {
-    "group_id": "group_4",
-    "task_ids": [
-      "Task1",
-      "Task2",
-      "Task3"
-    ],
-    "entry_point_task": "Task1",
-    "exit_point_task": "Task3",
-    "resource_metrics": {
-      "cpu": {
-        "max_cores": 2,
-        "cpu_seconds": 86400,
-        "utilization_ratio": 0.875
-      },
-      "memory": {
-        "max_mb": 4000,
-        "min_mb": 2000,
-        "occupancy": 0.8125
-      },
-      "throughput": {
-        "total_eps": 0.0375,
-        "max_eps": 0.1,
-        "min_eps": 0.025
-      },
-      "io": {
-        "input_data_mb": 0.0,
-        "output_data_mb": 580.078125,
-        "stored_data_mb": 52.734375,
-        "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.17903645833333334,
-        "stored_data_per_event_mb": 0.016276041666666668
-      },
-      "accelerator": {
-        "types": []
-      }
-    },
-    "utilization_metrics": {
-      "resource_utilization": 0.84375,
-      "event_throughput": 0.0375
-    },
-    "dependency_paths": [
-      [
-        "Task1",
-        "Task2",
-        "Task3"
-      ],
-      [
-        "Task1",
-        "Task2"
-      ],
-      [
-        "Task2",
-        "Task3"
-      ]
-    ],
-    "events_per_job": 1080
-  },
-  {
-    "group_id": "group_5",
-    "task_ids": [
-      "Task1",
-      "Task2"
-    ],
-    "entry_point_task": "Task1",
-    "exit_point_task": "Task2",
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -273,10 +167,116 @@
     },
     "dependency_paths": [
       [
-        "Task1",
-        "Task2"
+        "Taskset1",
+        "Taskset2"
       ]
     ],
     "events_per_job": 1440
+  },
+  {
+    "group_id": "group_4",
+    "task_ids": [
+      "Taskset2",
+      "Taskset3"
+    ],
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset3",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 2,
+        "cpu_seconds": 86400,
+        "utilization_ratio": 1.0
+      },
+      "memory": {
+        "max_mb": 4000,
+        "min_mb": 3000,
+        "occupancy": 0.9166666666666666
+      },
+      "throughput": {
+        "total_eps": 0.03333333333333333,
+        "max_eps": 0.05,
+        "min_eps": 0.025
+      },
+      "io": {
+        "input_data_mb": 281.25,
+        "output_data_mb": 492.1875,
+        "stored_data_mb": 70.3125,
+        "input_data_per_event_mb": 0.1953125,
+        "output_data_per_event_mb": 0.1708984375,
+        "stored_data_per_event_mb": 0.0244140625
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.9583333333333333,
+      "event_throughput": 0.03333333333333333
+    },
+    "dependency_paths": [
+      [
+        "Taskset2",
+        "Taskset3"
+      ]
+    ],
+    "events_per_job": 1440
+  },
+  {
+    "group_id": "group_5",
+    "task_ids": [
+      "Taskset1",
+      "Taskset2",
+      "Taskset3"
+    ],
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset3",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 2,
+        "cpu_seconds": 86400,
+        "utilization_ratio": 0.875
+      },
+      "memory": {
+        "max_mb": 4000,
+        "min_mb": 2000,
+        "occupancy": 0.8125
+      },
+      "throughput": {
+        "total_eps": 0.0375,
+        "max_eps": 0.1,
+        "min_eps": 0.025
+      },
+      "io": {
+        "input_data_mb": 0.0,
+        "output_data_mb": 580.078125,
+        "stored_data_mb": 52.734375,
+        "input_data_per_event_mb": 0.0,
+        "output_data_per_event_mb": 0.17903645833333334,
+        "stored_data_per_event_mb": 0.016276041666666668
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.84375,
+      "event_throughput": 0.0375
+    },
+    "dependency_paths": [
+      [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset1",
+        "Taskset2"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3"
+      ]
+    ],
+    "events_per_job": 1080
   }
 ]
