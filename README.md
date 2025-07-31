@@ -18,11 +18,11 @@ For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23
 - Support for various resource types (CPU, Memory, GPU)
 - Visualization of workflow DAG structure (ASCII and Mermaid formats)
 - Customizable weights for different scoring aspects
-- **NEW**: Generation of all possible workflow constructions
-- **NEW**: Comprehensive workflow construction analysis and comparison
-- **NEW**: Mermaid-based HTML workflow topology visualization
-- **NEW**: Storage rules and data volume calculation
-- **NEW**: Events per job calculation based on target wallclock time
+- Generation of all possible workflow constructions
+- Comprehensive workflow construction analysis and comparison
+- Mermaid-based HTML workflow topology visualization
+- Storage rules and data volume calculation
+- Events per job calculation based on target wallclock time
 
 ## Installation
 
@@ -55,9 +55,10 @@ The algorithm forms groups iteratively:
    For each potential task to add to the group, the algorithm checks:
 
    a. **Hard Constraints**:
-   - OS version compatibility
-   - CPU architecture compatibility
+   - OS version compatibility (tasks must have the same OS version)
+   - CPU architecture compatibility (tasks must have the same CPU architecture)
    - Existence of dependency paths between tasks
+   - Accelerator requirements compatibility (GPU requirements must match)
 
    b. **Soft Constraints** (Scoring System):
    - CPU utilization efficiency
@@ -140,10 +141,10 @@ The `find_all_groups.py` module provides a comprehensive framework for analyzing
 
 - Generates all possible valid task groups based on dependency constraints
 - Calculates detailed resource utilization metrics for each group
-- **NEW**: Finds all possible workflow constructions (combinations of groups that cover all tasks)
-- **NEW**: Calculates comprehensive workflow-level metrics
-- **NEW**: Implements storage rules for data volume calculation
-- **NEW**: Calculates optimal events per job based on target wallclock time
+- Finds all possible workflow constructions (combinations of groups that cover all tasks)
+- Calculates comprehensive workflow-level metrics
+- Implements storage rules for data volume calculation
+- Calculates optimal events per job based on target wallclock time
 - Provides comprehensive analysis of CPU, memory, I/O, and dependency patterns
 - Supports visualization of grouping strategies and their impacts
 
@@ -338,7 +339,7 @@ pip install matplotlib seaborn pandas
    - Storage Efficiency vs Event Throughput
 
 8. **Workflow Topology** (`workflow_topologies.html`):
-   - **NEW**: Interactive HTML visualization with Mermaid diagrams
+   - Interactive HTML visualization with Mermaid diagrams
    - Visual representation of the DAG structure for each construction
    - Shows task dependencies and grouping relationships
    - Color-coded groups with legend

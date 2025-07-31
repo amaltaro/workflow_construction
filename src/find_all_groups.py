@@ -205,17 +205,24 @@ class TaskGrouper:
         return dag
 
     def _can_be_grouped(self, task1: Task, task2: Task) -> bool:
-        """Check if tasks can be grouped based on dependencies"""
-        return self._check_dependency_chain(task1.id, task2.id)
-
-    def _check_dependency_chain(self, task1_id: str, task2_id: str) -> bool:
-        """Check if tasks have a valid dependency chain for grouping.
-
-        Tasks can only be grouped if there is a direct dependency path
-        between them in either direction.
         """
-        return nx.has_path(self.dag, task1_id, task2_id) or \
-               nx.has_path(self.dag, task2_id, task1_id)
+        Check if tasks can be grouped based on hard requirements, such as:
+        - direct dependency path between them in both directions
+        - same OS version
+        - same CPU architecture
+        """
+        # do these tasks have a direct dependency path between them in both directions?
+        if not (nx.has_path(self.dag, task1.id, task2.id) or nx.has_path(self.dag, task2.id, task1.id)):
+            return False
+        # do these tasks request the same OS version?
+        if task1.resources.os_version != task2.resources.os_version:
+            return False
+        # do these tasks request the same CPU architecture?
+        if task1.resources.cpu_arch != task2.resources.cpu_arch:
+            return False
+        # FIXME: do these tasks request the same accelerator?
+
+        return True
 
     def _all_dependency_paths_within_group(self, group: Set[str]) -> bool:
         """
