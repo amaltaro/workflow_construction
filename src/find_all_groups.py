@@ -22,10 +22,10 @@ logger = logging.getLogger(__name__)
 
 def extract_os_and_arch(scram_arch: List[str]) -> Tuple[str, str]:
     """Extract OS version and CPU architecture from ScramArch string.
-    
+
     Args:
         scram_arch: List of ScramArch strings (e.g., ["el8_amd64_gcc11"])
-        
+
     Returns:
         Tuple of (os_version, cpu_arch)
         e.g., ("8", "amd64")
@@ -91,7 +91,7 @@ class GroupScore:
         self.memory_score: float = 0.0
         self.throughput_score: float = 0.0
         self.accelerator_score: float = 0.0
-    
+
     def total_score(self) -> float:
         weighted_sum = (
             self.weights['cpu'] * self.cpu_score +
@@ -281,9 +281,10 @@ class TaskGrouper:
     def _calculate_group_metrics(self, group: Set[str]) -> GroupMetrics:
         """Calculate detailed metrics for a group of tasks"""
         group_id = f"group_{len(self.all_possible_groups)}"
-        print(f"Calculating group metrics for {group_id} with tasks {group}")
-        tasks = [self.tasks[task_id] for task_id in group]
-        
+        sorted_group = sorted(list(group))
+        print(f"Calculating group metrics for {group_id} with tasks {sorted_group}")
+        tasks = [self.tasks[task_id] for task_id in sorted_group]
+
         # Find entry and exit point tasks
         entry_point_task = self._find_entry_point_task(tasks)
         exit_point_task = self._find_exit_point_task(tasks)
@@ -407,7 +408,7 @@ class TaskGrouper:
 
         return GroupMetrics(
             group_id=group_id,
-            task_ids=group,
+            task_ids=sorted_group,
             entry_point_task=entry_point_task,
             exit_point_task=exit_point_task,
             max_cpu_cores=max_cores,
@@ -432,58 +433,80 @@ class TaskGrouper:
             events_per_job=events_per_job
         )
 
-    def _generate_groups_recursive(self, current_group: Set[str],
-                                   remaining_tasks: Set[str],
-                                   seen_groups: Set[frozenset]) -> None:
-        """Recursively generate all possible valid groups of tasks.
-        
-        Args:
-            current_group: Set of tasks in the current group being built
-            remaining_tasks: Set of tasks that haven't been considered yet
-            seen_groups: Set of frozen sets tracking unique groups we've already processed
+    def generate_all_possible_groups(self) -> List[List[str]]:
         """
-        if current_group:
-            # Convert current group to frozen set for hashing
-            frozen_group = frozenset(current_group)
-            if frozen_group not in seen_groups:
-                seen_groups.add(frozen_group)
-                # Calculate metrics for current group
-                metrics = self._calculate_group_metrics(current_group)
-                self.all_possible_groups.append(metrics)
+        Generate all possible valid groups of tasks with their metrics using a deterministic algorithm.
 
-        if not remaining_tasks:
-            return
-
-        # First, generate all single-task groups in order
-        if not current_group:  # Only do this at the root level
-            # Sort tasks by their order
-            sorted_tasks = sorted(remaining_tasks, key=lambda t: self.tasks[t].order)
-            for task in sorted_tasks:
-                single_group = {task}
-                frozen_group = frozenset(single_group)
-                if frozen_group not in seen_groups:
-                    seen_groups.add(frozen_group)
-                    metrics = self._calculate_group_metrics(single_group)
-                    self.all_possible_groups.append(metrics)
-
-        # Then proceed with multi-task groups
-        for task in remaining_tasks:
-            # Check if task can be added to current group
-            if not current_group or all(self._can_be_grouped(self.tasks[t], self.tasks[task])
-                                     for t in current_group):
-                new_group = current_group | {task}
-                if self._all_dependency_paths_within_group(new_group):
-                    new_remaining = remaining_tasks - {task}
-                    self._generate_groups_recursive(new_group, new_remaining, seen_groups)
-
-    def generate_all_possible_groups(self) -> List[GroupMetrics]:
-        """Generate all possible valid groups of tasks with their metrics"""
+        This algorithm ensures:
+        1. Deterministic group generation order
+        2. Deterministic group composition
+        3. Reproducible results across different runs
+        """
         all_tasks = set(self.tasks.keys())
-        self.all_possible_groups = []
-        seen_groups = set()  # Track unique groups using frozen sets
+        valid_groups = []
 
-        self._generate_groups_recursive(set(), all_tasks, seen_groups)
-        return self.all_possible_groups
+        # Sort tasks by order for deterministic behavior
+        sorted_task_ids = sorted(all_tasks, key=lambda t: self.tasks[t].order)
+        print(f"Generating groups for {len(sorted_task_ids)} tasks in deterministic order: {sorted_task_ids}")
+
+        # Generate all possible subsets systematically
+        from itertools import combinations
+
+        for size in range(1, len(sorted_task_ids) + 1):
+            print(f"Generating groups of size {size}...")
+            for task_combo in combinations(sorted_task_ids, size):
+                group = set(task_combo)
+
+                # Validate the group
+                if self._is_valid_group(group):
+                    # Convert to sorted list for deterministic ordering
+                    sorted_group = sorted(list(group))
+                    valid_groups.append(sorted_group)
+                    print(f"  Added valid group: {sorted_group}")
+
+        print(f"Generated {len(valid_groups)} valid groups\n")
+        return valid_groups
+
+    def _is_valid_group(self, group: Set[str]) -> bool:
+        """
+        Check if a group of tasks is valid for grouping.
+
+        Args:
+            group: Set of task IDs to validate
+
+        Returns:
+            True if the group is valid, False otherwise
+        """
+        task_list = list(group)
+
+        # Check if all tasks can be grouped together
+        for i, task1 in enumerate(task_list):
+            for task2 in task_list[i+1:]:
+                if not self._can_be_grouped(self.tasks[task1], self.tasks[task2]):
+                    return False
+
+        # Check if all dependency paths are contained within the group
+        return self._all_dependency_paths_within_group(group)
+
+    def calculate_metrics_for_groups(self, groups: List[List[str]]):
+        """
+        Calculate metrics for a list of task groups.
+
+        Args:
+            groups: List of task groups (lists of task IDs)
+
+        """
+        for group in groups:
+            # Convert list to set for the existing _calculate_group_metrics method
+            group_set = set(group)
+            metrics = self._calculate_group_metrics(group_set)
+            self.all_possible_groups.append(metrics)
+
+        # Sort by group_id for consistent ordering
+        self.all_possible_groups.sort(key=lambda g: g.group_id)
+
+        print(f"Calculated metrics for {len(self.all_possible_groups)} groups")
+
 
     def get_group_metrics(self) -> List[dict]:
         """Get all possible groups with their metrics in a format suitable for visualization"""
@@ -492,38 +515,38 @@ class TaskGrouper:
 
 def validate_task_parameters(task_data: dict, task_name: str) -> None:
     """Validate that all required parameters are present in the task data.
-    
+
     Args:
         task_data: Dictionary containing the task specification
         task_name: Name of the task being validated
-        
+
     Raises:
         ValueError: If any required parameter is missing
     """
     required_parameters = ["ScramArch", "TimePerEvent", "Memory", "Multicore", "SizePerEvent"]
     missing_parameters = [param for param in required_parameters if param not in task_data]
-    
+
     if missing_parameters:
         raise ValueError(f"Missing required parameters for {task_name}: {', '.join(missing_parameters)}")
 
 
 def calculate_events_per_job(task_data: dict, tasks: Dict[str, Task], task_name: str) -> int:
     """Calculate optimal events per job based on target wallclock time.
-    
+
     Args:
         task_data: Dictionary containing the task specification
         tasks: Dictionary of already created tasks
         task_name: Name of the current task
-        
+
     Returns:
         Number of events per job that would result in target wallclock time
     """
     # Convert target wallclock time to seconds
     target_wallclock_seconds = TARGET_WALLCLOCK_TIME_HOURS * 3600
-    
+
     # Get time per event for this task
     time_per_event = task_data["TimePerEvent"]
-    
+
     # Calculate events per job that would result in target wallclock time
     events_per_job = int(target_wallclock_seconds / time_per_event)
 
@@ -587,7 +610,7 @@ def find_all_workflow_constructions(grouper: TaskGrouper) -> List[List[GroupMetr
         valid_groups = []
         for group in grouper.all_possible_groups:
             # Check if group contains any available task and doesn't overlap with current construction
-            if group.task_ids & available_tasks and not (group.task_ids & tasks_in_construction):
+            if set(group.task_ids) & available_tasks and not (set(group.task_ids) & tasks_in_construction):
                 valid_groups.append(group)
 
         return valid_groups
@@ -785,14 +808,15 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             if tasks[task.input_task].output_tasks is None:
                 tasks[task.input_task].output_tasks = set()
             tasks[task.input_task].output_tasks.add(task_name)
-    
+
     # Print content of each task
     for task_name, task in tasks.items():
         print(f"Final task creation for {task_name}:\n{pformat(task)}\n")
 
     # Create task grouper and generate all possible groups
     grouper = TaskGrouper(tasks)
-    grouper.generate_all_possible_groups()
+    all_groups = grouper.generate_all_possible_groups()
+    grouper.calculate_metrics_for_groups(all_groups)
 
     # Find all possible workflow constructions
     all_constructions = find_all_workflow_constructions(grouper)
