@@ -1,7 +1,7 @@
 Top 5 Workflow Constructions by Event Throughput:
 
 Construction 1:
-  Groups: ['group_0', 'group_14', 'group_11']
+  Groups: ['group_0', 'group_6', 'group_8']
   Number of Groups: 3
   Total Events: 9360
   Total CPU Time: 302400.00 seconds
@@ -9,7 +9,7 @@ Construction 1:
   Stored Data per Event: 0.256 MB/event
 
 Construction 2:
-  Groups: ['group_0', 'group_1', 'group_2', 'group_11']
+  Groups: ['group_0', 'group_1', 'group_2', 'group_8']
   Number of Groups: 4
   Total Events: 12960
   Total CPU Time: 388800.00 seconds
@@ -17,7 +17,7 @@ Construction 2:
   Stored Data per Event: 0.574 MB/event
 
 Construction 3:
-  Groups: ['group_0', 'group_14', 'group_3', 'group_4']
+  Groups: ['group_0', 'group_6', 'group_3', 'group_4']
   Number of Groups: 4
   Total Events: 11808
   Total CPU Time: 475200.00 seconds
@@ -33,7 +33,7 @@ Construction 4:
   Stored Data per Event: 0.708 MB/event
 
 Construction 5:
-  Groups: ['group_13', 'group_11']
+  Groups: ['group_9', 'group_8']
   Number of Groups: 2
   Total Events: 5400
   Total CPU Time: 259200.00 seconds
