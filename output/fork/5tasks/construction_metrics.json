@@ -12,12 +12,12 @@
     "initial_input_events": 960,
     "num_groups": 2,
     "groups": [
-      "group_6",
-      "group_8"
+      "group_10",
+      "group_7"
     ],
     "group_details": [
       {
-        "group_id": "group_6",
+        "group_id": "group_10",
         "tasks": [
           "Taskset1",
           "Taskset3",
@@ -34,7 +34,7 @@
         "stored_data_per_event_mb": 0.0244140625
       },
       {
-        "group_id": "group_8",
+        "group_id": "group_7",
         "tasks": [
           "Taskset2",
           "Taskset4"
@@ -65,7 +65,7 @@
     "num_groups": 2,
     "groups": [
       "group_9",
-      "group_5"
+      "group_8"
     ],
     "group_details": [
       {
@@ -86,7 +86,7 @@
         "stored_data_per_event_mb": 0.032552083333333336
       },
       {
-        "group_id": "group_5",
+        "group_id": "group_8",
         "tasks": [
           "Taskset3",
           "Taskset5"
@@ -117,7 +117,7 @@
     "num_groups": 3,
     "groups": [
       "group_0",
-      "group_5",
+      "group_7",
       "group_8"
     ],
     "group_details": [
@@ -137,23 +137,7 @@
         "stored_data_per_event_mb": 0.1953125
       },
       {
-        "group_id": "group_5",
-        "tasks": [
-          "Taskset3",
-          "Taskset5"
-        ],
-        "events_per_task": 1234,
-        "total_events": 2468,
-        "cpu_seconds": 172760,
-        "input_data_mb": 241.015625,
-        "output_data_mb": 150.634765625,
-        "stored_data_mb": 90.380859375,
-        "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.06103515625,
-        "stored_data_per_event_mb": 0.03662109375
-      },
-      {
-        "group_id": "group_8",
+        "group_id": "group_7",
         "tasks": [
           "Taskset2",
           "Taskset4"
@@ -167,6 +151,22 @@
         "input_data_per_event_mb": 0.1953125,
         "output_data_per_event_mb": 0.1953125,
         "stored_data_per_event_mb": 0.048828125
+      },
+      {
+        "group_id": "group_8",
+        "tasks": [
+          "Taskset3",
+          "Taskset5"
+        ],
+        "events_per_task": 1234,
+        "total_events": 2468,
+        "cpu_seconds": 172760,
+        "input_data_mb": 241.015625,
+        "output_data_mb": 150.634765625,
+        "stored_data_mb": 90.380859375,
+        "input_data_per_event_mb": 0.1953125,
+        "output_data_per_event_mb": 0.06103515625,
+        "stored_data_per_event_mb": 0.03662109375
       }
     ]
   },
@@ -250,13 +250,13 @@
     "initial_input_events": 2160,
     "num_groups": 3,
     "groups": [
-      "group_7",
+      "group_6",
       "group_4",
-      "group_8"
+      "group_7"
     ],
     "group_details": [
       {
-        "group_id": "group_7",
+        "group_id": "group_6",
         "tasks": [
           "Taskset1",
           "Taskset3"
@@ -287,7 +287,7 @@
         "stored_data_per_event_mb": 0.0732421875
       },
       {
-        "group_id": "group_8",
+        "group_id": "group_7",
         "tasks": [
           "Taskset2",
           "Taskset4"
@@ -317,13 +317,13 @@
     "initial_input_events": 1440,
     "num_groups": 3,
     "groups": [
-      "group_10",
+      "group_5",
       "group_3",
-      "group_5"
+      "group_8"
     ],
     "group_details": [
       {
-        "group_id": "group_10",
+        "group_id": "group_5",
         "tasks": [
           "Taskset1",
           "Taskset2"
@@ -354,7 +354,7 @@
         "stored_data_per_event_mb": 0.09765625
       },
       {
-        "group_id": "group_5",
+        "group_id": "group_8",
         "tasks": [
           "Taskset3",
           "Taskset5"
@@ -384,13 +384,13 @@
     "initial_input_events": 960,
     "num_groups": 3,
     "groups": [
-      "group_6",
+      "group_10",
       "group_1",
       "group_3"
     ],
     "group_details": [
       {
-        "group_id": "group_6",
+        "group_id": "group_10",
         "tasks": [
           "Taskset1",
           "Taskset3",
@@ -454,7 +454,7 @@
       "group_0",
       "group_2",
       "group_4",
-      "group_8"
+      "group_7"
     ],
     "group_details": [
       {
@@ -503,7 +503,7 @@
         "stored_data_per_event_mb": 0.0732421875
       },
       {
-        "group_id": "group_8",
+        "group_id": "group_7",
         "tasks": [
           "Taskset2",
           "Taskset4"
@@ -536,7 +536,7 @@
       "group_0",
       "group_1",
       "group_3",
-      "group_5"
+      "group_8"
     ],
     "group_details": [
       {
@@ -585,7 +585,7 @@
         "stored_data_per_event_mb": 0.09765625
       },
       {
-        "group_id": "group_5",
+        "group_id": "group_8",
         "tasks": [
           "Taskset3",
           "Taskset5"
@@ -615,14 +615,14 @@
     "initial_input_events": 1440,
     "num_groups": 4,
     "groups": [
-      "group_10",
+      "group_5",
       "group_2",
       "group_3",
       "group_4"
     ],
     "group_details": [
       {
-        "group_id": "group_10",
+        "group_id": "group_5",
         "tasks": [
           "Taskset1",
           "Taskset2"
@@ -697,14 +697,14 @@
     "initial_input_events": 2160,
     "num_groups": 4,
     "groups": [
-      "group_7",
+      "group_6",
       "group_1",
       "group_3",
       "group_4"
     ],
     "group_details": [
       {
-        "group_id": "group_7",
+        "group_id": "group_6",
         "tasks": [
           "Taskset1",
           "Taskset3"

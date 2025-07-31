@@ -84,6 +84,64 @@
     "events_per_job": 2160
   },
   {
+    "group_id": "group_10",
+    "task_ids": [
+      "Taskset1",
+      "Taskset3",
+      "Taskset5"
+    ],
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset5",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 4,
+        "cpu_seconds": 172800,
+        "utilization_ratio": 0.7222222222222222
+      },
+      "memory": {
+        "max_mb": 6000,
+        "min_mb": 2000,
+        "occupancy": 0.7407407407407407
+      },
+      "throughput": {
+        "total_eps": 0.016666666666666666,
+        "max_eps": 0.1,
+        "min_eps": 0.01
+      },
+      "io": {
+        "input_data_mb": 0.0,
+        "output_data_mb": 304.6875,
+        "stored_data_mb": 70.3125,
+        "input_data_per_event_mb": 0.0,
+        "output_data_per_event_mb": 0.10579427083333333,
+        "stored_data_per_event_mb": 0.0244140625
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.7314814814814814,
+      "event_throughput": 0.016666666666666666
+    },
+    "dependency_paths": [
+      [
+        "Taskset1",
+        "Taskset3",
+        "Taskset5"
+      ],
+      [
+        "Taskset1",
+        "Taskset3"
+      ],
+      [
+        "Taskset3",
+        "Taskset5"
+      ]
+    ],
+    "events_per_job": 960
+  },
+  {
     "group_id": "group_2",
     "task_ids": [
       "Taskset3"
@@ -212,111 +270,53 @@
   {
     "group_id": "group_5",
     "task_ids": [
-      "Taskset3",
-      "Taskset5"
-    ],
-    "entry_point_task": "Taskset3",
-    "exit_point_task": "Taskset5",
-    "resource_metrics": {
-      "cpu": {
-        "max_cores": 4,
-        "cpu_seconds": 172760,
-        "utilization_ratio": 0.8571428571428571
-      },
-      "memory": {
-        "max_mb": 6000,
-        "min_mb": 3000,
-        "occupancy": 0.8571428571428572
-      },
-      "throughput": {
-        "total_eps": 0.014285714285714285,
-        "max_eps": 0.05,
-        "min_eps": 0.01
-      },
-      "io": {
-        "input_data_mb": 241.015625,
-        "output_data_mb": 150.634765625,
-        "stored_data_mb": 90.380859375,
-        "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.06103515625,
-        "stored_data_per_event_mb": 0.03662109375
-      },
-      "accelerator": {
-        "types": []
-      }
-    },
-    "utilization_metrics": {
-      "resource_utilization": 0.8571428571428572,
-      "event_throughput": 0.014285714285714285
-    },
-    "dependency_paths": [
-      [
-        "Taskset3",
-        "Taskset5"
-      ]
-    ],
-    "events_per_job": 1234
-  },
-  {
-    "group_id": "group_6",
-    "task_ids": [
       "Taskset1",
-      "Taskset3",
-      "Taskset5"
+      "Taskset2"
     ],
     "entry_point_task": "Taskset1",
-    "exit_point_task": "Taskset5",
+    "exit_point_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
-        "max_cores": 4,
-        "cpu_seconds": 172800,
-        "utilization_ratio": 0.7222222222222222
+        "max_cores": 2,
+        "cpu_seconds": 86400,
+        "utilization_ratio": 0.8333333333333334
       },
       "memory": {
-        "max_mb": 6000,
+        "max_mb": 4000,
         "min_mb": 2000,
-        "occupancy": 0.7407407407407407
+        "occupancy": 0.8333333333333334
       },
       "throughput": {
-        "total_eps": 0.016666666666666666,
+        "total_eps": 0.03333333333333333,
         "max_eps": 0.1,
-        "min_eps": 0.01
+        "min_eps": 0.025
       },
       "io": {
         "input_data_mb": 0.0,
-        "output_data_mb": 304.6875,
-        "stored_data_mb": 70.3125,
+        "output_data_mb": 703.125,
+        "stored_data_mb": 421.875,
         "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.10579427083333333,
-        "stored_data_per_event_mb": 0.0244140625
+        "output_data_per_event_mb": 0.244140625,
+        "stored_data_per_event_mb": 0.146484375
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.7314814814814814,
-      "event_throughput": 0.016666666666666666
+      "resource_utilization": 0.8333333333333334,
+      "event_throughput": 0.03333333333333333
     },
     "dependency_paths": [
       [
-        "Taskset3",
-        "Taskset5"
-      ],
-      [
         "Taskset1",
-        "Taskset3"
-      ],
-      [
-        "Taskset1",
-        "Taskset3",
-        "Taskset5"
+        "Taskset2"
       ]
     ],
-    "events_per_job": 960
+    "events_per_job": 1440
   },
   {
-    "group_id": "group_7",
+    "group_id": "group_6",
     "task_ids": [
       "Taskset1",
       "Taskset3"
@@ -364,7 +364,7 @@
     "events_per_job": 2160
   },
   {
-    "group_id": "group_8",
+    "group_id": "group_7",
     "task_ids": [
       "Taskset2",
       "Taskset4"
@@ -407,6 +407,54 @@
       [
         "Taskset2",
         "Taskset4"
+      ]
+    ],
+    "events_per_job": 1234
+  },
+  {
+    "group_id": "group_8",
+    "task_ids": [
+      "Taskset3",
+      "Taskset5"
+    ],
+    "entry_point_task": "Taskset3",
+    "exit_point_task": "Taskset5",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 4,
+        "cpu_seconds": 172760,
+        "utilization_ratio": 0.8571428571428571
+      },
+      "memory": {
+        "max_mb": 6000,
+        "min_mb": 3000,
+        "occupancy": 0.8571428571428572
+      },
+      "throughput": {
+        "total_eps": 0.014285714285714285,
+        "max_eps": 0.05,
+        "min_eps": 0.01
+      },
+      "io": {
+        "input_data_mb": 241.015625,
+        "output_data_mb": 150.634765625,
+        "stored_data_mb": 90.380859375,
+        "input_data_per_event_mb": 0.1953125,
+        "output_data_per_event_mb": 0.06103515625,
+        "stored_data_per_event_mb": 0.03662109375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.8571428571428572,
+      "event_throughput": 0.014285714285714285
+    },
+    "dependency_paths": [
+      [
+        "Taskset3",
+        "Taskset5"
       ]
     ],
     "events_per_job": 1234
@@ -455,12 +503,12 @@
     "dependency_paths": [
       [
         "Taskset1",
-        "Taskset2",
-        "Taskset4"
+        "Taskset2"
       ],
       [
         "Taskset1",
-        "Taskset2"
+        "Taskset2",
+        "Taskset4"
       ],
       [
         "Taskset2",
@@ -468,53 +516,5 @@
       ]
     ],
     "events_per_job": 960
-  },
-  {
-    "group_id": "group_10",
-    "task_ids": [
-      "Taskset1",
-      "Taskset2"
-    ],
-    "entry_point_task": "Taskset1",
-    "exit_point_task": "Taskset2",
-    "resource_metrics": {
-      "cpu": {
-        "max_cores": 2,
-        "cpu_seconds": 86400,
-        "utilization_ratio": 0.8333333333333334
-      },
-      "memory": {
-        "max_mb": 4000,
-        "min_mb": 2000,
-        "occupancy": 0.8333333333333334
-      },
-      "throughput": {
-        "total_eps": 0.03333333333333333,
-        "max_eps": 0.1,
-        "min_eps": 0.025
-      },
-      "io": {
-        "input_data_mb": 0.0,
-        "output_data_mb": 703.125,
-        "stored_data_mb": 421.875,
-        "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.244140625,
-        "stored_data_per_event_mb": 0.146484375
-      },
-      "accelerator": {
-        "types": []
-      }
-    },
-    "utilization_metrics": {
-      "resource_utilization": 0.8333333333333334,
-      "event_throughput": 0.03333333333333333
-    },
-    "dependency_paths": [
-      [
-        "Taskset1",
-        "Taskset2"
-      ]
-    ],
-    "events_per_job": 1440
   }
 ]
