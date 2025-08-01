@@ -1,6 +1,7 @@
 {
     "Comments": "This is a test workflow",
     "NumTasks": 4,
+    "RequestNumEvents": 1000000,
     "Taskset1": {
         "EventsPerJob": 1000,
         "Memory": 2000,

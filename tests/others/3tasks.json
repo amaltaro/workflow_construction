@@ -1,11 +1,14 @@
 {
     "NumTasks": 3,
+    "RequestNumEvents": 1000000,
     "Taskset1": {
         "KeepOutput": false,
         "Memory": 2000,
         "Multicore": 1,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el9_amd64_gcc11"],
+        "ScramArch": [
+            "el9_amd64_gcc11"
+        ],
         "SizePerEvent": 200,
         "TimePerEvent": 10
     },
@@ -15,7 +18,9 @@
         "Multicore": 2,
         "RequiresGPU": "required",
         "GPUParams": "{'CUDACapabilities': ['6.0', '6.1'], 'CUDARuntime': '12.0', 'GPUMemoryMB': 8000}",
-        "ScramArch": ["el9_amd64_gcc11"],
+        "ScramArch": [
+            "el9_amd64_gcc11"
+        ],
         "SizePerEvent": 300,
         "TimePerEvent": 20,
         "InputTaskset": "Taskset1"
@@ -25,7 +30,9 @@
         "Memory": 12000,
         "Multicore": 8,
         "RequiresGPU": "forbidden",
-        "ScramArch": ["el8_aarch64_gcc11"],
+        "ScramArch": [
+            "el8_aarch64_gcc11"
+        ],
         "SizePerEvent": 50,
         "TimePerEvent": 10,
         "InputTaskset": "Taskset1"

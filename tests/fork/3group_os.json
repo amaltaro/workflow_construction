@@ -1,6 +1,7 @@
 {
     "Comments": "Group 1: ['Taskset1', 'Taskset3'], Group 2: ['Taskset2'], Group 3: ['Taskset4']",
     "NumTasks": 4,
+    "RequestNumEvents": 1000000,
     "Taskset1": {
         "EventsPerJob": 1000,
         "Memory": 2000,
