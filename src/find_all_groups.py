@@ -125,12 +125,12 @@ class GroupMetrics:
     max_throughput: float
     min_throughput: float
     # I/O metrics
-    input_data_mb: float  # Total input data volume in MB
-    output_data_mb: float  # Total output data volume in MB
-    stored_data_mb: float  # Total data volume that needs to be stored
-    input_data_per_event_mb: float  # Input data per event in MB
-    output_data_per_event_mb: float  # Output data per event in MB
-    stored_data_per_event_mb: float  # Stored data per event in MB
+    read_remote_mb: float  # Total remote read data volume in MB
+    write_local_mb: float  # Total local write data volume in MB
+    write_remote_mb: float  # Total remote write data volume in MB
+    read_remote_per_event_mb: float  # Remote read data per event in MB
+    write_local_per_event_mb: float  # Local write data per event in MB
+    write_remote_per_event_mb: float  # Remote write data per event in MB
     # Accelerator metrics
     accelerator_types: Set[str]
     # Dependency metrics
@@ -165,12 +165,12 @@ class GroupMetrics:
                     "min_eps": self.min_throughput
                 },
                 "io": {
-                    "input_data_mb": self.input_data_mb,
-                    "output_data_mb": self.output_data_mb,
-                    "stored_data_mb": self.stored_data_mb,
-                    "input_data_per_event_mb": self.input_data_per_event_mb,
-                    "output_data_per_event_mb": self.output_data_per_event_mb,
-                    "stored_data_per_event_mb": self.stored_data_per_event_mb
+                    "read_remote_mb": self.read_remote_mb,
+                    "write_local_mb": self.write_local_mb,
+                    "write_remote_mb": self.write_remote_mb,
+                    "read_remote_per_event_mb": self.read_remote_per_event_mb,
+                    "write_local_per_event_mb": self.write_local_per_event_mb,
+                    "write_remote_per_event_mb": self.write_remote_per_event_mb
                 },
                 "accelerator": {
                     "types": list(self.accelerator_types)
@@ -355,35 +355,35 @@ class TaskGrouper:
         min_throughput = min(task_throughputs)
 
         ### Calculate I/O metrics with storage rules
-        # Calculate input data volume based on:
+        # Calculate remote read data volume based on:
         # - input events for the entry point task (using events_per_job)
         # - size per event of the parent task that feeds into the entry point task
-        input_data_mb = 0.0
+        read_remote_mb = 0.0
         entry_task = self.tasks[entry_point_task]
         if entry_task.input_task and entry_task.input_task in self.tasks:
             # Get the parent task that feeds into this group's entry point
             parent_task = self.tasks[entry_task.input_task]
-            input_data_mb = (events_per_job * parent_task.resources.size_per_event) / 1024.0
+            read_remote_mb = (events_per_job * parent_task.resources.size_per_event) / 1024.0
         # normalize the data volume per event
-        input_data_per_event_mb = input_data_mb / events_per_job
+        read_remote_per_event_mb = read_remote_mb / events_per_job
 
-        # Calculate output sizes of all tasks in the group based on storage rules
-        output_data_mb = 0.0
-        stored_data_mb = 0.0
+        # Calculate local write and remote write sizes of all tasks in the group based on storage rules
+        write_local_mb = 0.0
+        write_remote_mb = 0.0
         for task in tasks:
             # Convert KB to MB for consistency with other memory metrics
             task_output_size = (events_per_job * task.resources.size_per_event) / 1024.0
-            output_data_mb += task_output_size
+            write_local_mb += task_output_size
 
-            # Add to stored data if:
+            # Add to remote write data if:
             # * it has to save the output to the storage
             # * it is the exit point task of the group
             if task.resources.keep_output or task.id == exit_point_task:
-                stored_data_mb += task_output_size
-        # normalize the output and stored data volume per event
+                write_remote_mb += task_output_size
+        # normalize the local write and remote write data volume per event
         # Use events_per_job for consistency with throughput and workflow construction metrics
-        output_data_per_event_mb = output_data_mb / events_per_job
-        stored_data_per_event_mb = stored_data_mb / events_per_job
+        write_local_per_event_mb = write_local_mb / events_per_job
+        write_remote_per_event_mb = write_remote_mb / events_per_job
 
         # Calculate accelerator metrics
         accelerators = set(t.resources.accelerator for t in tasks if t.resources.accelerator)
@@ -418,12 +418,12 @@ class TaskGrouper:
             total_throughput=total_throughput,
             max_throughput=max_throughput,
             min_throughput=min_throughput,
-            input_data_mb=input_data_mb,
-            output_data_mb=output_data_mb,
-            stored_data_mb=stored_data_mb,
-            input_data_per_event_mb=input_data_per_event_mb,
-            output_data_per_event_mb=output_data_per_event_mb,
-            stored_data_per_event_mb=stored_data_per_event_mb,
+            read_remote_mb=read_remote_mb,
+            write_local_mb=write_local_mb,
+            write_remote_mb=write_remote_mb,
+            read_remote_per_event_mb=read_remote_per_event_mb,
+            write_local_per_event_mb=write_local_per_event_mb,
+            write_remote_per_event_mb=write_remote_per_event_mb,
             accelerator_types=accelerators,
             dependency_paths=dependency_paths,
             resource_utilization=resource_utilization,
@@ -708,14 +708,14 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
     event_throughput = max_events_per_job / total_cpu_time_all_jobs if total_cpu_time_all_jobs > 0 else 0.0
 
     # Calculate total data volumes
-    total_input_data = sum(group.input_data_mb for group in construction)
-    total_output_data = sum(group.output_data_mb for group in construction)
-    total_stored_data = sum(group.stored_data_mb for group in construction)
+    total_read_remote = sum(group.read_remote_mb for group in construction)
+    total_write_local = sum(group.write_local_mb for group in construction)
+    total_write_remote = sum(group.write_remote_mb for group in construction)
 
     # Calculate per-event metrics by summing up each group's per-event metrics
-    input_data_per_event = sum(group.input_data_per_event_mb for group in construction)
-    output_data_per_event = sum(group.output_data_per_event_mb for group in construction)
-    stored_data_per_event = sum(group.stored_data_per_event_mb for group in construction)
+    read_remote_per_event = sum(group.read_remote_per_event_mb for group in construction)
+    write_local_per_event = sum(group.write_local_per_event_mb for group in construction)
+    write_remote_per_event = sum(group.write_remote_per_event_mb for group in construction)
 
     # Create detailed group information
     group_details = []
@@ -726,24 +726,24 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
             "events_per_task": group.events_per_job,
             "total_events": group.events_per_job,  # Fixed: use events_per_job, not len(group.task_ids) * group.events_per_job
             "cpu_seconds": group.cpu_seconds,
-            "input_data_mb": group.input_data_mb,
-            "output_data_mb": group.output_data_mb,
-            "stored_data_mb": group.stored_data_mb,
-            "input_data_per_event_mb": group.input_data_per_event_mb,
-            "output_data_per_event_mb": group.output_data_per_event_mb,
-            "stored_data_per_event_mb": group.stored_data_per_event_mb
+            "read_remote_mb": group.read_remote_mb,
+            "write_local_mb": group.write_local_mb,
+            "write_remote_mb": group.write_remote_mb,
+            "read_remote_per_event_mb": group.read_remote_per_event_mb,
+            "write_local_per_event_mb": group.write_local_per_event_mb,
+            "write_remote_per_event_mb": group.write_remote_per_event_mb
         })
 
     return {
         "total_events": total_events,
         "total_cpu_time": total_cpu_time,
         "event_throughput": event_throughput,
-        "total_input_data_mb": total_input_data,
-        "total_output_data_mb": total_output_data,
-        "total_stored_data_mb": total_stored_data,
-        "input_data_per_event_mb": input_data_per_event,
-        "output_data_per_event_mb": output_data_per_event,
-        "stored_data_per_event_mb": stored_data_per_event,
+        "total_read_remote_mb": total_read_remote,
+        "total_write_local_mb": total_write_local,
+        "total_write_remote_mb": total_write_remote,
+        "read_remote_per_event_mb": read_remote_per_event,
+        "write_local_per_event_mb": write_local_per_event,
+        "write_remote_per_event_mb": write_remote_per_event,
         "initial_input_events": construction[0].events_per_job,
         "num_groups": len(construction),
         "groups": [group.group_id for group in construction],
@@ -832,12 +832,12 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Total Events: {metrics['total_events']}")
         print(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds")
         print(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second")
-        print(f"  Total Input Data: {metrics['total_input_data_mb']:.2f} MB")
-        print(f"  Total Output Data: {metrics['total_output_data_mb']:.2f} MB")
-        print(f"  Total Stored Data: {metrics['total_stored_data_mb']:.2f} MB")
-        print(f"  Input Data per Event: {metrics['input_data_per_event_mb']:.3f} MB/event")
-        print(f"  Output Data per Event: {metrics['output_data_per_event_mb']:.3f} MB/event")
-        print(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event")
+        print(f"  Total Remote Read Data: {metrics['total_read_remote_mb']:.2f} MB")
+        print(f"  Total Local Write Data: {metrics['total_write_local_mb']:.2f} MB")
+        print(f"  Total Remote Write Data: {metrics['total_write_remote_mb']:.2f} MB")
+        print(f"  Remote Read Data per Event: {metrics['read_remote_per_event_mb']:.3f} MB/event")
+        print(f"  Local Write Data per Event: {metrics['write_local_per_event_mb']:.3f} MB/event")
+        print(f"  Remote Write Data per Event: {metrics['write_remote_per_event_mb']:.3f} MB/event")
         print("  Group Details:")
         for group in metrics['group_details']:
             print(f"    {group['group_id']}:")
@@ -845,9 +845,9 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
             print(f"      Events per Task: {group['events_per_task']}")
             print(f"      Total Events: {group['total_events']}")
             print(f"      CPU Time: {group['cpu_seconds']:.2f} seconds")
-            print(f"      Input Data: {group['input_data_mb']:.2f} MB")
-            print(f"      Output Data: {group['output_data_mb']:.2f} MB")
-            print(f"      Stored Data: {group['stored_data_mb']:.2f} MB")
+            print(f"      Remote Read Data: {group['read_remote_mb']:.2f} MB")
+            print(f"      Local Write Data: {group['write_local_mb']:.2f} MB")
+            print(f"      Remote Write Data: {group['write_remote_mb']:.2f} MB")
 
     # Return group metrics, tasks, construction metrics, and the DAG
     return grouper.get_group_metrics(), tasks, construction_metrics, grouper.dag

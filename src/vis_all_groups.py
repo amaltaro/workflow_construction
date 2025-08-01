@@ -105,9 +105,9 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
         total_throughputs.append(group["resource_metrics"]["throughput"]["total_eps"])
         max_throughputs.append(group["resource_metrics"]["throughput"]["max_eps"])
         min_throughputs.append(group["resource_metrics"]["throughput"]["min_eps"])
-        input_data_sizes.append(group["resource_metrics"]["io"]["input_data_mb"])
-        output_data_sizes.append(group["resource_metrics"]["io"]["output_data_mb"])
-        stored_data_sizes.append(group["resource_metrics"]["io"]["stored_data_mb"])
+        input_data_sizes.append(group["resource_metrics"]["io"]["read_remote_mb"])
+        output_data_sizes.append(group["resource_metrics"]["io"]["write_local_mb"])
+        stored_data_sizes.append(group["resource_metrics"]["io"]["write_remote_mb"])
 
     # Create figure with subplots
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
@@ -147,9 +147,9 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
     axes[0, 1].grid(True)
 
     # Plot 3: Data Size vs Group Size
-    axes[1, 0].scatter(group_sizes, input_data_sizes, label="Input Data", alpha=0.6)
-    axes[1, 0].scatter(group_sizes, output_data_sizes, label="Output Data", alpha=0.6)
-    axes[1, 0].scatter(group_sizes, stored_data_sizes, label="Stored Data", alpha=0.6)
+    axes[1, 0].scatter(group_sizes, input_data_sizes, label="Remote Read Data", alpha=0.6)
+    axes[1, 0].scatter(group_sizes, output_data_sizes, label="Local Write Data", alpha=0.6)
+    axes[1, 0].scatter(group_sizes, stored_data_sizes, label="Remote Write Data", alpha=0.6)
     axes[1, 0].set_title("Data Size vs Group Size")
     axes[1, 0].set_xlabel("Number of Tasks in Group")
     axes[1, 0].set_ylabel("Data Size (MB)")
@@ -174,9 +174,9 @@ def plot_throughput_analysis(groups: List[Dict], output_dir: str = "plots"):
     cbar.set_ticks(unique_group_sizes)
     cbar.set_ticklabels([f"{int(x)}" for x in unique_group_sizes])
 
-    axes[1, 1].set_title("Throughput vs Stored Data Size\n(color indicates group size)")
+    axes[1, 1].set_title("Throughput vs Remote Write Data Size\n(color indicates group size)")
     axes[1, 1].set_xlabel("Total Events per Second")
-    axes[1, 1].set_ylabel("Stored Data Size (MB)")
+    axes[1, 1].set_ylabel("Remote Write Data Size (MB)")
     axes[1, 1].grid(True)
 
     plt.tight_layout()
@@ -232,9 +232,9 @@ def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
         "Memory Occupancy": [],
         "Resource Utilization": [],
         "Total Throughput": [],
-        "Input Data Size": [],
-        "Output Data Size": [],
-        "Stored Data Size": [],
+        "Remote Read Data Size": [],
+        "Local Write Data Size": [],
+        "Remote Write Data Size": [],
         "Events per Job": [],
         "Dependency Paths": []
     }
@@ -245,9 +245,9 @@ def plot_comparison_heatmap(groups: List[Dict], output_dir: str = "plots"):
         metrics["Memory Occupancy"].append(group["resource_metrics"]["memory"]["occupancy"])
         metrics["Resource Utilization"].append(group["utilization_metrics"]["resource_utilization"])
         metrics["Total Throughput"].append(group["resource_metrics"]["throughput"]["total_eps"])
-        metrics["Input Data Size"].append(group["resource_metrics"]["io"]["input_data_mb"])
-        metrics["Output Data Size"].append(group["resource_metrics"]["io"]["output_data_mb"])
-        metrics["Stored Data Size"].append(group["resource_metrics"]["io"]["stored_data_mb"])
+        metrics["Remote Read Data Size"].append(group["resource_metrics"]["io"]["read_remote_mb"])
+        metrics["Local Write Data Size"].append(group["resource_metrics"]["io"]["write_local_mb"])
+        metrics["Remote Write Data Size"].append(group["resource_metrics"]["io"]["write_remote_mb"])
         metrics["Dependency Paths"].append(len(group["dependency_paths"]))
         metrics["Events per Job"].append(group["events_per_job"])
 
@@ -277,26 +277,26 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
     for metrics in construction_metrics:
         num_groups.append(metrics["num_groups"])
         event_throughputs.append(metrics["event_throughput"])
-        stored_data_per_event.append(metrics["stored_data_per_event_mb"])
-        total_stored_data.append(metrics["total_stored_data_mb"])
+        stored_data_per_event.append(metrics["write_remote_per_event_mb"])
+        total_stored_data.append(metrics["total_write_remote_mb"])
         total_events.append(metrics["total_events"])
 
     # Create figure with subplots
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
     fig.suptitle("Storage Efficiency Analysis for Workflow Constructions", fontsize=16)
 
-    # Plot 1: Stored Data per Event vs Number of Groups
+    # Plot 1: Remote Write Data per Event vs Number of Groups
     sns.scatterplot(x=num_groups, y=stored_data_per_event, ax=axes[0, 0])
-    axes[0, 0].set_title("Storage Efficiency vs Number of Groups")
+    axes[0, 0].set_title("Remote Write Efficiency vs Number of Groups")
     axes[0, 0].set_xlabel("Number of Groups")
-    axes[0, 0].set_ylabel("Stored Data per Event (MB)")
+    axes[0, 0].set_ylabel("Remote Write Data per Event (MB)")
     axes[0, 0].grid(True)
 
-    # Plot 2: Stored Data per Event vs Event Throughput
+    # Plot 2: Remote Write Data per Event vs Event Throughput
     sns.scatterplot(x=event_throughputs, y=stored_data_per_event, ax=axes[0, 1])
-    axes[0, 1].set_title("Storage Efficiency vs Event Throughput")
+    axes[0, 1].set_title("Remote Write Efficiency vs Event Throughput")
     axes[0, 1].set_xlabel("Event Throughput (events/second)")
-    axes[0, 1].set_ylabel("Stored Data per Event (MB)")
+    axes[0, 1].set_ylabel("Remote Write Data per Event (MB)")
     axes[0, 1].grid(True)
 
     # Plot 3: Total Stored Data vs Total Events
@@ -317,15 +317,15 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
     cbar.set_ticks(unique_num_groups)
     cbar.set_ticklabels([f"{int(x)}" for x in unique_num_groups])
 
-    axes[1, 0].set_title("Total Stored Data vs Total Events\n(color indicates number of groups)")
+    axes[1, 0].set_title("Total Remote Write Data vs Total Events\n(color indicates number of groups)")
     axes[1, 0].set_xlabel("Total Events")
-    axes[1, 0].set_ylabel("Total Stored Data (MB)")
+    axes[1, 0].set_ylabel("Total Remote Write Data (MB)")
     axes[1, 0].grid(True)
 
-    # Plot 4: Stored Data per Event Distribution
+    # Plot 4: Remote Write Data per Event Distribution
     sns.histplot(stored_data_per_event, bins=20, ax=axes[1, 1])
-    axes[1, 1].set_title("Stored Data per Event Distribution")
-    axes[1, 1].set_xlabel("Stored Data per Event (MB)")
+    axes[1, 1].set_title("Remote Write Data per Event Distribution")
+    axes[1, 1].set_xlabel("Remote Write Data per Event (MB)")
     axes[1, 1].set_ylabel("Count")
     axes[1, 1].grid(True)
 
@@ -350,7 +350,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
         event_throughputs.append(metrics["event_throughput"])
         total_events.append(metrics["total_events"])
         total_cpu_times.append(metrics["total_cpu_time"])
-        stored_data_per_event.append(metrics["stored_data_per_event_mb"])
+        stored_data_per_event.append(metrics["write_remote_per_event_mb"])
         group_combinations.append(" + ".join(metrics["groups"]))
 
     # Create figure with subplots
@@ -365,7 +365,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     axes[0, 0].grid(True)
 
     # Plot 2: Total Events vs Total CPU Time
-    # Create discrete color bins for stored data per event
+    # Create discrete color bins for remote write data per event
     stored_data_array = np.array(stored_data_per_event)
     unique_stored_data = np.unique(stored_data_array)
 
@@ -378,11 +378,11 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
                                 c=stored_data_array, cmap=cmap, s=100, alpha=0.7)
 
     # Add colorbar with discrete ticks
-    cbar = plt.colorbar(scatter, ax=axes[0, 1], label="Stored Data per Event (MB)")
+    cbar = plt.colorbar(scatter, ax=axes[0, 1], label="Remote Write Data per Event (MB)")
     cbar.set_ticks(unique_stored_data)
     cbar.set_ticklabels([f"{x:.3f}" for x in unique_stored_data])
 
-    axes[0, 1].set_title("Total Events vs Total CPU Time\n(color indicates stored data per event)")
+    axes[0, 1].set_title("Total Events vs Total CPU Time\n(color indicates remote write data per event)")
     axes[0, 1].set_xlabel("Total CPU Time (seconds)")
     axes[0, 1].set_ylabel("Total Events")
     axes[0, 1].grid(True)
@@ -394,7 +394,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     axes[1, 0].set_ylabel("Number of Workflow Constructions")
     axes[1, 0].grid(True)
 
-    # Plot 4: Stored Data per Event vs Event Throughput
+    # Plot 4: Remote Write Data per Event vs Event Throughput
     # Create discrete color bins for number of groups
     num_groups_array = np.array(num_groups)
     unique_num_groups = np.unique(num_groups_array)
@@ -412,9 +412,9 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
     cbar.set_ticks(unique_num_groups)
     cbar.set_ticklabels([f"{int(x)}" for x in unique_num_groups])
 
-    axes[1, 1].set_title("Storage Efficiency vs Event Throughput\n(color indicates number of groups)")
+    axes[1, 1].set_title("Remote Write Efficiency vs Event Throughput\n(color indicates number of groups)")
     axes[1, 1].set_xlabel("Event Throughput (events/second)")
-    axes[1, 1].set_ylabel("Stored Data per Event (MB)")
+    axes[1, 1].set_ylabel("Remote Write Data per Event (MB)")
     axes[1, 1].grid(True)
 
     plt.tight_layout()
@@ -449,7 +449,7 @@ def plot_workflow_constructions(construction_metrics: List[Dict], output_dir: st
             f.write(f"  Total Events: {metrics['total_events']}\n")
             f.write(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
             f.write(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second\n")
-            f.write(f"  Stored Data per Event: {metrics['stored_data_per_event_mb']:.3f} MB/event\n\n")
+            f.write(f"  Remote Write Data per Event: {metrics['write_remote_per_event_mb']:.3f} MB/event\n\n")
 
 def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
     """Create a dedicated horizontal bar plot for group-level data volume analysis.
@@ -493,24 +493,24 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
         current_pos += groups_in_construction * bar_height + bar_height
 
     left = np.zeros(len(group_positions))
-    # Plot input data
-    input_data = [group["input_data_mb"] for metrics in construction_metrics
+    # Plot remote read data
+    input_data = [group["read_remote_mb"] for metrics in construction_metrics
                  for group in metrics["group_details"]]
-    ax.barh(group_positions, input_data, bar_height, label='Input Data', left=left, alpha=0.8,
+    ax.barh(group_positions, input_data, bar_height, label='Remote Read Data', left=left, alpha=0.8,
             edgecolor='black', linewidth=0.4)
     left += input_data
 
-    # Plot output data
-    output_data = [group["output_data_mb"] for metrics in construction_metrics
+    # Plot local write data
+    output_data = [group["write_local_mb"] for metrics in construction_metrics
                   for group in metrics["group_details"]]
-    ax.barh(group_positions, output_data, bar_height, label='Output Data', left=left, alpha=0.8,
+    ax.barh(group_positions, output_data, bar_height, label='Local Write Data', left=left, alpha=0.8,
             edgecolor='black', linewidth=0.4)
     left += output_data
 
-    # Plot stored data
-    stored_data = [group["stored_data_mb"] for metrics in construction_metrics
+    # Plot remote write data
+    stored_data = [group["write_remote_mb"] for metrics in construction_metrics
                   for group in metrics["group_details"]]
-    ax.barh(group_positions, stored_data, bar_height, label='Stored Data', left=left, alpha=0.8,
+    ax.barh(group_positions, stored_data, bar_height, label='Remote Write Data', left=left, alpha=0.8,
             edgecolor='black', linewidth=0.4)
 
     for i, (pos, input_val, output_val, stored_val) in enumerate(zip(group_positions, input_data, output_data, stored_data)):
@@ -564,10 +564,10 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
         num_groups.append(metrics["num_groups"])
         event_throughputs.append(metrics["event_throughput"])
         total_cpu_times.append(metrics["total_cpu_time"])
-        stored_data_per_event.append(metrics["stored_data_per_event_mb"])
-        total_stored_data.append(metrics["total_stored_data_mb"])
-        input_data_per_event.append(metrics["input_data_per_event_mb"])
-        output_data_per_event.append(metrics["output_data_per_event_mb"])
+        stored_data_per_event.append(metrics["write_remote_per_event_mb"])
+        total_stored_data.append(metrics["total_write_remote_mb"])
+        input_data_per_event.append(metrics["read_remote_per_event_mb"])
+        output_data_per_event.append(metrics["write_local_per_event_mb"])
         group_combinations.append(" + ".join(metrics["groups"]))
 
     # Convert lists to numpy arrays for numerical operations
@@ -609,9 +609,9 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax2 = fig.add_subplot(gs[0, 1])
     x = np.arange(len(construction_metrics))
     width = 0.25
-    ax2.bar(x - width, input_data_per_event, width, label='Input Data/Event')
-    ax2.bar(x, output_data_per_event, width, label='Output Data/Event')
-    ax2.bar(x + width, stored_data_per_event, width, label='Stored Data/Event')
+    ax2.bar(x - width, input_data_per_event, width, label='Remote Read Data/Event')
+    ax2.bar(x, output_data_per_event, width, label='Local Write Data/Event')
+    ax2.bar(x + width, stored_data_per_event, width, label='Remote Write Data/Event')
     ax2.set_xlabel("Workflow Construction")
     ax2.set_ylabel("Data Volume per Event (MB)")
     ax2.set_title("Data Flow Analysis\n(Per-Event Data Volumes)")
@@ -627,19 +627,19 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     bottom = np.zeros(len(construction_metrics))
 
     # Plot each data type as a layer in the stack
-    ax10.bar(x, [m["total_input_data_mb"] for m in construction_metrics], width,
-            label='Input Data', bottom=bottom)
-    bottom += [m["total_input_data_mb"] for m in construction_metrics]
+    ax10.bar(x, [m["total_read_remote_mb"] for m in construction_metrics], width,
+            label='Remote Read Data', bottom=bottom)
+    bottom += [m["total_read_remote_mb"] for m in construction_metrics]
 
-    ax10.bar(x, [m["total_output_data_mb"] for m in construction_metrics], width,
-            label='Output Data', bottom=bottom)
-    bottom += [m["total_output_data_mb"] for m in construction_metrics]
+    ax10.bar(x, [m["total_write_local_mb"] for m in construction_metrics], width,
+            label='Local Write Data', bottom=bottom)
+    bottom += [m["total_write_local_mb"] for m in construction_metrics]
 
-    ax10.bar(x, [m["total_stored_data_mb"] for m in construction_metrics], width,
-            label='Stored Data', bottom=bottom)
+    ax10.bar(x, [m["total_write_remote_mb"] for m in construction_metrics], width,
+            label='Remote Write Data', bottom=bottom)
 
     # Add total value labels on top of each bar
-    totals = [m["total_input_data_mb"] + m["total_output_data_mb"] + m["total_stored_data_mb"]
+    totals = [m["total_read_remote_mb"] + m["total_write_local_mb"] + m["total_write_remote_mb"]
              for m in construction_metrics]
     for i, total in enumerate(totals):
         ax10.text(i, total, f'{total:.1f}', ha='center', va='bottom')
@@ -652,7 +652,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax10.legend()
     ax10.grid(True)
 
-    # 4. Performance vs Storage Efficiency
+    # 4. Performance vs Remote Write Efficiency
     ax1 = fig.add_subplot(gs[1, 1])
 
     # Create a discrete colormap for number of groups
@@ -672,8 +672,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     cbar.set_ticklabels([f"{int(x)}" for x in unique_groups])
 
     ax1.set_xlabel("Event Throughput (events/second)")
-    ax1.set_ylabel("Stored Data per Event (MB)")
-    ax1.set_title("Performance vs Storage Efficiency\n(size=CPU time, color=num groups)")
+    ax1.set_ylabel("Remote Write Data per Event (MB)")
+    ax1.set_title("Performance vs Remote Write Efficiency\n(size=CPU time, color=num groups)")
     ax1.grid(True)
 
     # set x-axis to start at 0 and add 10% padding to the right
@@ -683,8 +683,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax7 = fig.add_subplot(gs[2, 0])
     network_transfer = []
     for metrics in construction_metrics:
-        # Calculate network transfer as sum of input and output data
-        transfer = metrics["input_data_per_event_mb"] + metrics["output_data_per_event_mb"]
+        # Calculate network transfer as sum of remote read and local write data
+        transfer = metrics["read_remote_per_event_mb"] + metrics["write_local_per_event_mb"]
         network_transfer.append(transfer)
 
     ax7.bar(range(len(construction_metrics)), network_transfer)
@@ -781,7 +781,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             deps = []
             for j, prev_group in enumerate(group_details[:i]):
                 # If this group needs input from a previous group
-                if group["input_data_mb"] > 0 and prev_group["output_data_mb"] > 0:
+                if group["read_remote_mb"] > 0 and prev_group["write_local_mb"] > 0:
                     deps.append(j)
             group_deps[i] = deps
 
@@ -851,13 +851,13 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             f.write(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second\n")
             f.write(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
             f.write("  Total Data Volumes for one job of each group:\n")
-            f.write(f"    Input Data: {metrics['total_input_data_mb']:.2f} MB\n")
-            f.write(f"    Output Data: {metrics['total_output_data_mb']:.2f} MB\n")
-            f.write(f"    Stored Data: {metrics['total_stored_data_mb']:.2f} MB\n")
+            f.write(f"    Remote Read Data: {metrics['total_read_remote_mb']:.2f} MB\n")
+            f.write(f"    Local Write Data: {metrics['total_write_local_mb']:.2f} MB\n")
+            f.write(f"    Remote Write Data: {metrics['total_write_remote_mb']:.2f} MB\n")
             f.write("  Data Flow Metrics (per event):\n")
-            f.write(f"    Input Data: {metrics['input_data_per_event_mb']:.3f} MB/event\n")
-            f.write(f"    Output Data: {metrics['output_data_per_event_mb']:.3f} MB/event\n")
-            f.write(f"    Stored Data: {metrics['stored_data_per_event_mb']:.3f} MB/event\n")
+            f.write(f"    Remote Read Data: {metrics['read_remote_per_event_mb']:.3f} MB/event\n")
+            f.write(f"    Local Write Data: {metrics['write_local_per_event_mb']:.3f} MB/event\n")
+            f.write(f"    Remote Write Data: {metrics['write_remote_per_event_mb']:.3f} MB/event\n")
             f.write(f"  Memory Utilization: {memory_utilization[i-1]:.2f}\n")
             f.write(f"  Network Transfer: {network_transfer[i-1]:.2f} MB\n")
            # f.write(f"  Estimated Cost: ${costs[i-1]:.2f}\n")
@@ -872,9 +872,9 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
                 f.write(f"      Events per Task: {group['events_per_task']}\n")
                 f.write(f"      CPU Time: {group['cpu_seconds']:.2f} seconds\n")
                 f.write("      Data Flow (per event):\n")
-                f.write(f"        Input: {group['input_data_per_event_mb']:.3f} MB/event\n")
-                f.write(f"        Output: {group['output_data_per_event_mb']:.3f} MB/event\n")
-                f.write(f"        Stored: {group['stored_data_per_event_mb']:.3f} MB/event\n")
+                f.write(f"        Remote Read: {group['read_remote_per_event_mb']:.3f} MB/event\n")
+                f.write(f"        Local Write: {group['write_local_per_event_mb']:.3f} MB/event\n")
+                f.write(f"        Remote Write: {group['write_remote_per_event_mb']:.3f} MB/event\n")
             f.write("\n")
 
 def filter_toy_model_constructions(construction_metrics: List[Dict]) -> List[Dict]:
