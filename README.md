@@ -156,6 +156,195 @@ The `find_all_groups.py` module provides a comprehensive framework for analyzing
    - Calculates optimal events per job for each group
    - Ensures consistent event processing across workflow
 
+### Group Metrics Calculation Formulas
+
+The module calculates comprehensive metrics for each taskset group, and an example is given below (using sequential/3tasks.json):
+```
+  {
+    "group_id": "group_4",
+    "task_ids": ["Taskset2", "Taskset3"],
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset3",
+    "events_per_job": 1440,
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 2,
+        "cpu_seconds": 86400,
+        "utilization_ratio": 1.0
+      },
+      "memory": {
+        "max_mb": 4000,
+        "min_mb": 3000,
+        "occupancy": 0.9166666666666666
+      },
+      "throughput": {
+        "total_eps": 0.03333333333333333,
+        "max_eps": 0.05,
+        "min_eps": 0.025
+      },
+      "io": {
+        "input_data_mb": 281.25,
+        "output_data_mb": 492.1875,
+        "stored_data_mb": 70.3125,
+        "input_data_per_event_mb": 0.1953125,
+        "output_data_per_event_mb": 0.1708984375,
+        "stored_data_per_event_mb": 0.0244140625
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.9583333333333333,
+      "event_throughput": 0.03333333333333333
+    },
+    "dependency_paths": [["Taskset2","Taskset3"]]
+  },
+```
+
+These metrics are calculated with the following mathematical formulas:
+
+#### **Events per Job Calculation (events_per_job)**
+Number of events that enter a taskset group.
+```
+Target Wallclock Time = 12.0 hours = 43,200 seconds
+Total Time per Event = Σ(task.time_per_event for all tasks in group)
+Events per Job = max(1, Target Wallclock Time / Total Time per Event)
+```
+
+#### **CPU Metrics**
+
+**Maximum CPU Cores (cpu.max_cores):**
+Maximum number of CPU cores across all tasks within a group.
+```
+max_cpu_cores = max(task.cpu_cores for all tasks in group)
+```
+
+**CPU Seconds (cpu.cpu_seconds):**
+How long CPUs are allocated for a grid job instance of a taskset group.
+```
+total_wallclock_time = events_per_job × total_time_per_event
+cpu_seconds = max_cpu_cores × total_wallclock_time
+```
+
+**CPU Utilization Ratio (cpu.utilization_ratio):**
+How well CPUs are utilized for a grid job instance of a taskset group.
+```
+For each task t:
+    task_duration = events_per_job × task.time_per_event
+    weighted_cpu_utilization += task.cpu_cores × task_duration
+
+total_duration = Σ(task_duration for all tasks)
+max_possible_utilization = max_cpu_cores × total_duration
+cpu_utilization_ratio = weighted_cpu_utilization / max_possible_utilization
+```
+
+#### **Memory Metrics**
+
+**Memory Range (memory.min_mb and memory.max_mb):**
+Minimum and maximum memory required in all tasks present in a taskset group.
+```
+max_memory_mb = max(task.memory_mb for all tasks in group)
+min_memory_mb = min(task.memory_mb for all tasks in group)
+```
+
+**Memory Occupancy (memory.occupancy):**
+```
+For each task t:
+    task_duration = events_per_job × task.time_per_event
+    weighted_memory += task.memory_mb × task_duration
+
+total_duration = Σ(task_duration for all tasks)
+time_weighted_avg_memory = weighted_memory / total_duration
+memory_occupancy = time_weighted_avg_memory / max_memory_mb
+```
+
+#### **Throughput Metrics**
+
+**Total Throughput (throughput.total_eps):**
+Events processed through the entire group (i.e., how long it takes to process 1 event from the first to the last task in a group)
+```
+total_throughput = events_per_job / cpu_seconds
+```
+
+**Individual Task Throughput (throughput.min_eps and throughput.max_eps):**
+Tasksets in the group that provide the minimum and the largest event throughput, as a function of task cpu_seconds.
+```
+For each task t:
+    task_cpu_seconds = task.cpu_cores × task.time_per_event × events_per_job
+    task_throughput = task.input_events / task_cpu_seconds
+
+max_throughput = max(task_throughput for all tasks)
+min_throughput = min(task_throughput for all tasks)
+```
+
+#### **I/O Metrics with Storage Rules**
+
+**Input Data Volume (io.input_data_mb):**
+Data volume of input data, in megabytes, that is read from the shared storage by the entry point taskset. 
+```
+If entry_point_task has a parent task:
+    parent_task = tasks[entry_point_task.input_task]
+    input_data_mb = (events_per_job × parent_task.size_per_event) / 1024.0
+Else:
+    input_data_mb = 0.0
+
+input_data_per_event_mb = input_data_mb / events_per_job
+```
+
+**Output Data Volume (io.output_data_mb):**
+Data volume of output data, in megabytes, that all tasks in the group write to the local storage.
+For the output data per event, it keeps consistency with throughput, hence it is given for events per job of the whole group.
+```
+For each task t:
+    task_output_size = (events_per_job × task.size_per_event) / 1024.0
+    output_data_mb += task_output_size
+
+output_data_per_event_mb = output_data_mb / events_per_job
+```
+
+**Stored Data Volume (io.stored_data_mb):**
+Data volume of stored data, in megabytes, that all tasks in the group write to the shared storage.
+For the stored data per event, it keeps consistency with throughput, hence it is given for events per job of the whole group.
+```
+For each task t:
+    task_output_size = (events_per_job × task.size_per_event) / 1024.0
+    If task.keep_output == True OR task.id == exit_point_task:
+        stored_data_mb += task_output_size
+
+stored_data_per_event_mb = stored_data_mb / events_per_job
+```
+
+#### **Resource Utilization Metrics**
+
+**Overall Resource Utilization (utilization_metrics.resource_utilization):**
+This is a weighted average of CPU utilization ration and memory occupancy.
+```
+resource_utilization = (cpu_utilization_ratio + memory_occupancy) / 2.0
+```
+
+**Event Throughput (utilization_metrics.event_throughput):**
+This is the number of events processed per second (events_per_job / cpu_seconds)
+```
+event_throughput = total_throughput
+```
+
+#### **Dependency Analysis**
+
+**Dependency Paths:**
+```
+For each pair of tasks (src, dst) in group:
+    If src ≠ dst AND there exists a path from src to dst in DAG:
+        Add all simple paths from src to dst to dependency_paths
+```
+
+#### **Accelerator Analysis**
+
+**Accelerator Types:**
+```
+accelerator_types = {task.accelerator for task in group if task.accelerator is not None}
+```
+
 ### Scoring System (not yet in use)
 
 Groups are evaluated using a weighted scoring system (`GroupScore` class) that considers:
