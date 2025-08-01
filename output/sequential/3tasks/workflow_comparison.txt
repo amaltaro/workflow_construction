@@ -12,10 +12,10 @@ Construction 1:
     Stored Data: 52.73 MB
   Data Flow Metrics (per event):
     Input Data: 0.000 MB/event
-    Output Data: 0.179 MB/event
-    Stored Data: 0.016 MB/event
+    Output Data: 0.537 MB/event
+    Stored Data: 0.049 MB/event
   Memory Utilization: 0.81
-  Network Transfer: 0.18 MB
+  Network Transfer: 0.54 MB
   Parallel Execution Metrics:
     Sequential Time: 86400.00 seconds
     Parallel Time: 86400.00 seconds
@@ -27,8 +27,8 @@ Construction 1:
       CPU Time: 86400.00 seconds
       Data Flow (per event):
         Input: 0.000 MB/event
-        Output: 0.179 MB/event
-        Stored: 0.016 MB/event
+        Output: 0.537 MB/event
+        Stored: 0.049 MB/event
 
 Construction 2:
   Groups: ['group_0', 'group_4']
@@ -41,10 +41,10 @@ Construction 2:
     Stored Data: 914.06 MB
   Data Flow Metrics (per event):
     Input Data: 0.195 MB/event
-    Output Data: 0.366 MB/event
-    Stored Data: 0.220 MB/event
+    Output Data: 0.537 MB/event
+    Stored Data: 0.244 MB/event
   Memory Utilization: 0.96
-  Network Transfer: 0.56 MB
+  Network Transfer: 0.73 MB
   Parallel Execution Metrics:
     Sequential Time: 129600.00 seconds
     Parallel Time: 129600.00 seconds
@@ -64,8 +64,8 @@ Construction 2:
       CPU Time: 86400.00 seconds
       Data Flow (per event):
         Input: 0.195 MB/event
-        Output: 0.171 MB/event
-        Stored: 0.024 MB/event
+        Output: 0.342 MB/event
+        Stored: 0.049 MB/event
 
 Construction 3:
   Groups: ['group_3', 'group_2']
@@ -78,10 +78,10 @@ Construction 3:
     Stored Data: 632.81 MB
   Data Flow Metrics (per event):
     Input Data: 0.293 MB/event
-    Output Data: 0.293 MB/event
-    Stored Data: 0.195 MB/event
+    Output Data: 0.537 MB/event
+    Stored Data: 0.342 MB/event
   Memory Utilization: 0.92
-  Network Transfer: 0.59 MB
+  Network Transfer: 0.83 MB
   Parallel Execution Metrics:
     Sequential Time: 172800.00 seconds
     Parallel Time: 172800.00 seconds
@@ -93,8 +93,8 @@ Construction 3:
       CPU Time: 86400.00 seconds
       Data Flow (per event):
         Input: 0.000 MB/event
-        Output: 0.244 MB/event
-        Stored: 0.146 MB/event
+        Output: 0.488 MB/event
+        Stored: 0.293 MB/event
     group_2:
       Tasks: ['Taskset3']
       Events per Task: 4320

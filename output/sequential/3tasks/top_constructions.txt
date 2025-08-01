@@ -6,7 +6,7 @@ Construction 1:
   Total Events: 7200
   Total CPU Time: 129600.00 seconds
   Event Throughput: 0.0143 events/second
-  Stored Data per Event: 0.220 MB/event
+  Stored Data per Event: 0.244 MB/event
 
 Construction 2:
   Groups: ['group_0', 'group_1', 'group_2']
@@ -22,7 +22,7 @@ Construction 3:
   Total Events: 3240
   Total CPU Time: 86400.00 seconds
   Event Throughput: 0.0125 events/second
-  Stored Data per Event: 0.016 MB/event
+  Stored Data per Event: 0.049 MB/event
 
 Construction 4:
   Groups: ['group_3', 'group_2']
@@ -30,5 +30,5 @@ Construction 4:
   Total Events: 7200
   Total CPU Time: 172800.00 seconds
   Event Throughput: 0.0125 events/second
-  Stored Data per Event: 0.195 MB/event
+  Stored Data per Event: 0.342 MB/event
 

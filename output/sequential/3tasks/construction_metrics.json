@@ -7,8 +7,8 @@
     "total_output_data_mb": 580.078125,
     "total_stored_data_mb": 52.734375,
     "input_data_per_event_mb": 0.0,
-    "output_data_per_event_mb": 0.17903645833333334,
-    "stored_data_per_event_mb": 0.016276041666666668,
+    "output_data_per_event_mb": 0.537109375,
+    "stored_data_per_event_mb": 0.048828125,
     "initial_input_events": 1080,
     "num_groups": 1,
     "groups": [
@@ -29,8 +29,8 @@
         "output_data_mb": 580.078125,
         "stored_data_mb": 52.734375,
         "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.17903645833333334,
-        "stored_data_per_event_mb": 0.016276041666666668
+        "output_data_per_event_mb": 0.537109375,
+        "stored_data_per_event_mb": 0.048828125
       }
     ]
   },
@@ -42,8 +42,8 @@
     "total_output_data_mb": 1335.9375,
     "total_stored_data_mb": 914.0625,
     "input_data_per_event_mb": 0.1953125,
-    "output_data_per_event_mb": 0.3662109375,
-    "stored_data_per_event_mb": 0.2197265625,
+    "output_data_per_event_mb": 0.537109375,
+    "stored_data_per_event_mb": 0.244140625,
     "initial_input_events": 4320,
     "num_groups": 2,
     "groups": [
@@ -79,8 +79,8 @@
         "output_data_mb": 492.1875,
         "stored_data_mb": 70.3125,
         "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.1708984375,
-        "stored_data_per_event_mb": 0.0244140625
+        "output_data_per_event_mb": 0.341796875,
+        "stored_data_per_event_mb": 0.048828125
       }
     ]
   },
@@ -92,8 +92,8 @@
     "total_output_data_mb": 914.0625,
     "total_stored_data_mb": 632.8125,
     "input_data_per_event_mb": 0.29296875,
-    "output_data_per_event_mb": 0.29296875,
-    "stored_data_per_event_mb": 0.1953125,
+    "output_data_per_event_mb": 0.537109375,
+    "stored_data_per_event_mb": 0.341796875,
     "initial_input_events": 1440,
     "num_groups": 2,
     "groups": [
@@ -114,8 +114,8 @@
         "output_data_mb": 703.125,
         "stored_data_mb": 421.875,
         "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.244140625,
-        "stored_data_per_event_mb": 0.146484375
+        "output_data_per_event_mb": 0.48828125,
+        "stored_data_per_event_mb": 0.29296875
       },
       {
         "group_id": "group_2",
