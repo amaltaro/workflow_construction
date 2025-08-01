@@ -23,6 +23,15 @@ Complete documentation of all metrics calculated for individual task groups, inc
 - Detailed mathematical formulas for all metrics
 - Usage examples and integration with visualization tools
 
+### [Visualization and Analysis Documentation](visualization_analysis.md)
+Comprehensive guide to the visualization and analysis capabilities, including:
+- Available visualization types and their insights
+- Metrics tracked for groups and workflow constructions
+- Usage examples for Python API and command line interface
+- Toy model mode for simplified analysis
+- Integration with core analysis tools
+- Analysis benefits and key insights
+
 ## Key Concepts
 
 ### Workflow Constructions
