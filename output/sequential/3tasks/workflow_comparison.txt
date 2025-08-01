@@ -7,13 +7,13 @@ Construction 1:
   Event Throughput: 0.0125 events/second
   Total CPU Time: 86400.00 seconds
   Total Data Volumes for one job of each group:
-    Input Data: 0.00 MB
-    Output Data: 580.08 MB
-    Stored Data: 52.73 MB
+    Remote Read Data: 0.00 MB
+    Local Write Data: 580.08 MB
+    Remote Write Data: 52.73 MB
   Data Flow Metrics (per event):
-    Input Data: 0.000 MB/event
-    Output Data: 0.537 MB/event
-    Stored Data: 0.049 MB/event
+    Remote Read Data: 0.000 MB/event
+    Local Write Data: 0.537 MB/event
+    Remote Write Data: 0.049 MB/event
   Memory Utilization: 0.81
   Network Transfer: 0.54 MB
   Parallel Execution Metrics:
@@ -26,9 +26,9 @@ Construction 1:
       Events per Task: 1080
       CPU Time: 86400.00 seconds
       Data Flow (per event):
-        Input: 0.000 MB/event
-        Output: 0.537 MB/event
-        Stored: 0.049 MB/event
+        Remote Read: 0.000 MB/event
+        Local Write: 0.537 MB/event
+        Remote Write: 0.049 MB/event
 
 Construction 2:
   Groups: ['group_0', 'group_4']
@@ -36,13 +36,13 @@ Construction 2:
   Event Throughput: 0.0143 events/second
   Total CPU Time: 129600.00 seconds
   Total Data Volumes for one job of each group:
-    Input Data: 281.25 MB
-    Output Data: 1335.94 MB
-    Stored Data: 914.06 MB
+    Remote Read Data: 281.25 MB
+    Local Write Data: 1335.94 MB
+    Remote Write Data: 914.06 MB
   Data Flow Metrics (per event):
-    Input Data: 0.195 MB/event
-    Output Data: 0.537 MB/event
-    Stored Data: 0.244 MB/event
+    Remote Read Data: 0.195 MB/event
+    Local Write Data: 0.537 MB/event
+    Remote Write Data: 0.244 MB/event
   Memory Utilization: 0.96
   Network Transfer: 0.73 MB
   Parallel Execution Metrics:
@@ -55,17 +55,17 @@ Construction 2:
       Events per Task: 4320
       CPU Time: 43200.00 seconds
       Data Flow (per event):
-        Input: 0.000 MB/event
-        Output: 0.195 MB/event
-        Stored: 0.195 MB/event
+        Remote Read: 0.000 MB/event
+        Local Write: 0.195 MB/event
+        Remote Write: 0.195 MB/event
     group_4:
       Tasks: ['Taskset2', 'Taskset3']
       Events per Task: 1440
       CPU Time: 86400.00 seconds
       Data Flow (per event):
-        Input: 0.195 MB/event
-        Output: 0.342 MB/event
-        Stored: 0.049 MB/event
+        Remote Read: 0.195 MB/event
+        Local Write: 0.342 MB/event
+        Remote Write: 0.049 MB/event
 
 Construction 3:
   Groups: ['group_3', 'group_2']
@@ -73,13 +73,13 @@ Construction 3:
   Event Throughput: 0.0125 events/second
   Total CPU Time: 172800.00 seconds
   Total Data Volumes for one job of each group:
-    Input Data: 1265.62 MB
-    Output Data: 914.06 MB
-    Stored Data: 632.81 MB
+    Remote Read Data: 1265.62 MB
+    Local Write Data: 914.06 MB
+    Remote Write Data: 632.81 MB
   Data Flow Metrics (per event):
-    Input Data: 0.293 MB/event
-    Output Data: 0.537 MB/event
-    Stored Data: 0.342 MB/event
+    Remote Read Data: 0.293 MB/event
+    Local Write Data: 0.537 MB/event
+    Remote Write Data: 0.342 MB/event
   Memory Utilization: 0.92
   Network Transfer: 0.83 MB
   Parallel Execution Metrics:
@@ -92,17 +92,17 @@ Construction 3:
       Events per Task: 1440
       CPU Time: 86400.00 seconds
       Data Flow (per event):
-        Input: 0.000 MB/event
-        Output: 0.488 MB/event
-        Stored: 0.293 MB/event
+        Remote Read: 0.000 MB/event
+        Local Write: 0.488 MB/event
+        Remote Write: 0.293 MB/event
     group_2:
       Tasks: ['Taskset3']
       Events per Task: 4320
       CPU Time: 86400.00 seconds
       Data Flow (per event):
-        Input: 0.293 MB/event
-        Output: 0.049 MB/event
-        Stored: 0.049 MB/event
+        Remote Read: 0.293 MB/event
+        Local Write: 0.049 MB/event
+        Remote Write: 0.049 MB/event
 
 Construction 4:
   Groups: ['group_0', 'group_1', 'group_2']
@@ -110,13 +110,13 @@ Construction 4:
   Event Throughput: 0.0143 events/second
   Total CPU Time: 216000.00 seconds
   Total Data Volumes for one job of each group:
-    Input Data: 1687.50 MB
-    Output Data: 1687.50 MB
-    Stored Data: 1687.50 MB
+    Remote Read Data: 1687.50 MB
+    Local Write Data: 1687.50 MB
+    Remote Write Data: 1687.50 MB
   Data Flow Metrics (per event):
-    Input Data: 0.488 MB/event
-    Output Data: 0.537 MB/event
-    Stored Data: 0.537 MB/event
+    Remote Read Data: 0.488 MB/event
+    Local Write Data: 0.537 MB/event
+    Remote Write Data: 0.537 MB/event
   Memory Utilization: 1.00
   Network Transfer: 1.03 MB
   Parallel Execution Metrics:
@@ -129,23 +129,23 @@ Construction 4:
       Events per Task: 4320
       CPU Time: 43200.00 seconds
       Data Flow (per event):
-        Input: 0.000 MB/event
-        Output: 0.195 MB/event
-        Stored: 0.195 MB/event
+        Remote Read: 0.000 MB/event
+        Local Write: 0.195 MB/event
+        Remote Write: 0.195 MB/event
     group_1:
       Tasks: ['Taskset2']
       Events per Task: 2160
       CPU Time: 86400.00 seconds
       Data Flow (per event):
-        Input: 0.195 MB/event
-        Output: 0.293 MB/event
-        Stored: 0.293 MB/event
+        Remote Read: 0.195 MB/event
+        Local Write: 0.293 MB/event
+        Remote Write: 0.293 MB/event
     group_2:
       Tasks: ['Taskset3']
       Events per Task: 4320
       CPU Time: 86400.00 seconds
       Data Flow (per event):
-        Input: 0.293 MB/event
-        Output: 0.049 MB/event
-        Stored: 0.049 MB/event
+        Remote Read: 0.293 MB/event
+        Local Write: 0.049 MB/event
+        Remote Write: 0.049 MB/event
 

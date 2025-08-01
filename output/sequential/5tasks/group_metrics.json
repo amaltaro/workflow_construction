@@ -23,12 +23,12 @@
         "min_eps": 0.1
       },
       "io": {
-        "input_data_mb": 0.0,
-        "output_data_mb": 843.75,
-        "stored_data_mb": 843.75,
-        "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.1953125,
-        "stored_data_per_event_mb": 0.1953125
+        "read_remote_mb": 0.0,
+        "write_local_mb": 843.75,
+        "write_remote_mb": 843.75,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.1953125,
+        "write_remote_per_event_mb": 0.1953125
       },
       "accelerator": {
         "types": []
@@ -65,12 +65,12 @@
         "min_eps": 0.025
       },
       "io": {
-        "input_data_mb": 421.875,
-        "output_data_mb": 632.8125,
-        "stored_data_mb": 632.8125,
-        "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.29296875,
-        "stored_data_per_event_mb": 0.29296875
+        "read_remote_mb": 421.875,
+        "write_local_mb": 632.8125,
+        "write_remote_mb": 632.8125,
+        "read_remote_per_event_mb": 0.1953125,
+        "write_local_per_event_mb": 0.29296875,
+        "write_remote_per_event_mb": 0.29296875
       },
       "accelerator": {
         "types": []
@@ -109,12 +109,12 @@
         "min_eps": 0.016666666666666666
       },
       "io": {
-        "input_data_mb": 187.5,
-        "output_data_mb": 421.875,
-        "stored_data_mb": 93.75,
-        "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.439453125,
-        "stored_data_per_event_mb": 0.09765625
+        "read_remote_mb": 187.5,
+        "write_local_mb": 421.875,
+        "write_remote_mb": 93.75,
+        "read_remote_per_event_mb": 0.1953125,
+        "write_local_per_event_mb": 0.439453125,
+        "write_remote_per_event_mb": 0.09765625
       },
       "accelerator": {
         "types": []
@@ -126,6 +126,7 @@
     },
     "dependency_paths": [
       [
+        "Taskset2",
         "Taskset3",
         "Taskset4"
       ],
@@ -134,7 +135,6 @@
         "Taskset3"
       ],
       [
-        "Taskset2",
         "Taskset3",
         "Taskset4"
       ]
@@ -167,12 +167,12 @@
         "min_eps": 0.01
       },
       "io": {
-        "input_data_mb": 253.125,
-        "output_data_mb": 189.84375,
-        "stored_data_mb": 63.28125,
-        "input_data_per_event_mb": 0.29296875,
-        "output_data_per_event_mb": 0.2197265625,
-        "stored_data_per_event_mb": 0.0732421875
+        "read_remote_mb": 253.125,
+        "write_local_mb": 189.84375,
+        "write_remote_mb": 63.28125,
+        "read_remote_per_event_mb": 0.29296875,
+        "write_local_per_event_mb": 0.2197265625,
+        "write_remote_per_event_mb": 0.0732421875
       },
       "accelerator": {
         "types": []
@@ -226,12 +226,12 @@
         "min_eps": 0.016666666666666666
       },
       "io": {
-        "input_data_mb": 0.0,
-        "output_data_mb": 498.291015625,
-        "stored_data_mb": 76.66015625,
-        "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.634765625,
-        "stored_data_per_event_mb": 0.09765625
+        "read_remote_mb": 0.0,
+        "write_local_mb": 498.291015625,
+        "write_remote_mb": 76.66015625,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.634765625,
+        "write_remote_per_event_mb": 0.09765625
       },
       "accelerator": {
         "types": []
@@ -243,10 +243,13 @@
     },
     "dependency_paths": [
       [
-        "Taskset1",
         "Taskset2",
         "Taskset3",
         "Taskset4"
+      ],
+      [
+        "Taskset2",
+        "Taskset3"
       ],
       [
         "Taskset1",
@@ -255,14 +258,11 @@
       [
         "Taskset1",
         "Taskset2",
-        "Taskset3"
-      ],
-      [
-        "Taskset2",
         "Taskset3",
         "Taskset4"
       ],
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3"
       ],
@@ -300,12 +300,12 @@
         "min_eps": 0.01
       },
       "io": {
-        "input_data_mb": 120.5078125,
-        "output_data_mb": 316.3330078125,
-        "stored_data_mb": 45.1904296875,
-        "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.5126953125,
-        "stored_data_per_event_mb": 0.0732421875
+        "read_remote_mb": 120.5078125,
+        "write_local_mb": 316.3330078125,
+        "write_remote_mb": 45.1904296875,
+        "read_remote_per_event_mb": 0.1953125,
+        "write_local_per_event_mb": 0.5126953125,
+        "write_remote_per_event_mb": 0.0732421875
       },
       "accelerator": {
         "types": []
@@ -317,17 +317,9 @@
     },
     "dependency_paths": [
       [
+        "Taskset2",
         "Taskset3",
         "Taskset4"
-      ],
-      [
-        "Taskset3",
-        "Taskset4",
-        "Taskset5"
-      ],
-      [
-        "Taskset4",
-        "Taskset5"
       ],
       [
         "Taskset2",
@@ -336,10 +328,18 @@
       [
         "Taskset2",
         "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset3",
         "Taskset4"
       ],
       [
-        "Taskset2",
         "Taskset3",
         "Taskset4",
         "Taskset5"
@@ -375,12 +375,12 @@
         "min_eps": 0.01
       },
       "io": {
-        "input_data_mb": 0.0,
-        "output_data_mb": 382.32421875,
-        "stored_data_mb": 39.55078125,
-        "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.7080078125,
-        "stored_data_per_event_mb": 0.0732421875
+        "read_remote_mb": 0.0,
+        "write_local_mb": 382.32421875,
+        "write_remote_mb": 39.55078125,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.7080078125,
+        "write_remote_per_event_mb": 0.0732421875
       },
       "accelerator": {
         "types": []
@@ -392,8 +392,15 @@
     },
     "dependency_paths": [
       [
-        "Taskset2",
         "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
         "Taskset4",
         "Taskset5"
       ],
@@ -402,6 +409,23 @@
         "Taskset3"
       ],
       [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset1",
         "Taskset2",
         "Taskset3",
         "Taskset4"
@@ -414,30 +438,6 @@
         "Taskset1",
         "Taskset2",
         "Taskset3",
-        "Taskset4",
-        "Taskset5"
-      ],
-      [
-        "Taskset1",
-        "Taskset2",
-        "Taskset3"
-      ],
-      [
-        "Taskset1",
-        "Taskset2",
-        "Taskset3",
-        "Taskset4"
-      ],
-      [
-        "Taskset3",
-        "Taskset4",
-        "Taskset5"
-      ],
-      [
-        "Taskset3",
-        "Taskset4"
-      ],
-      [
         "Taskset4",
         "Taskset5"
       ]
@@ -468,12 +468,12 @@
         "min_eps": 0.05
       },
       "io": {
-        "input_data_mb": 1265.625,
-        "output_data_mb": 210.9375,
-        "stored_data_mb": 210.9375,
-        "input_data_per_event_mb": 0.29296875,
-        "output_data_per_event_mb": 0.048828125,
-        "stored_data_per_event_mb": 0.048828125
+        "read_remote_mb": 1265.625,
+        "write_local_mb": 210.9375,
+        "write_remote_mb": 210.9375,
+        "read_remote_per_event_mb": 0.29296875,
+        "write_local_per_event_mb": 0.048828125,
+        "write_remote_per_event_mb": 0.048828125
       },
       "accelerator": {
         "types": []
@@ -510,12 +510,12 @@
         "min_eps": 0.016666666666666666
       },
       "io": {
-        "input_data_mb": 140.625,
-        "output_data_mb": 281.25,
-        "stored_data_mb": 281.25,
-        "input_data_per_event_mb": 0.048828125,
-        "output_data_per_event_mb": 0.09765625,
-        "stored_data_per_event_mb": 0.09765625
+        "read_remote_mb": 140.625,
+        "write_local_mb": 281.25,
+        "write_remote_mb": 281.25,
+        "read_remote_per_event_mb": 0.048828125,
+        "write_local_per_event_mb": 0.09765625,
+        "write_remote_per_event_mb": 0.09765625
       },
       "accelerator": {
         "types": []
@@ -552,12 +552,12 @@
         "min_eps": 0.01
       },
       "io": {
-        "input_data_mb": 168.75,
-        "output_data_mb": 126.5625,
-        "stored_data_mb": 126.5625,
-        "input_data_per_event_mb": 0.09765625,
-        "output_data_per_event_mb": 0.0732421875,
-        "stored_data_per_event_mb": 0.0732421875
+        "read_remote_mb": 168.75,
+        "write_local_mb": 126.5625,
+        "write_remote_mb": 126.5625,
+        "read_remote_per_event_mb": 0.09765625,
+        "write_local_per_event_mb": 0.0732421875,
+        "write_remote_per_event_mb": 0.0732421875
       },
       "accelerator": {
         "types": []
@@ -595,12 +595,12 @@
         "min_eps": 0.025
       },
       "io": {
-        "input_data_mb": 0.0,
-        "output_data_mb": 703.125,
-        "stored_data_mb": 421.875,
-        "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.48828125,
-        "stored_data_per_event_mb": 0.29296875
+        "read_remote_mb": 0.0,
+        "write_local_mb": 703.125,
+        "write_remote_mb": 421.875,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.48828125,
+        "write_remote_per_event_mb": 0.29296875
       },
       "accelerator": {
         "types": []
@@ -643,12 +643,12 @@
         "min_eps": 0.025
       },
       "io": {
-        "input_data_mb": 281.25,
-        "output_data_mb": 492.1875,
-        "stored_data_mb": 70.3125,
-        "input_data_per_event_mb": 0.1953125,
-        "output_data_per_event_mb": 0.341796875,
-        "stored_data_per_event_mb": 0.048828125
+        "read_remote_mb": 281.25,
+        "write_local_mb": 492.1875,
+        "write_remote_mb": 70.3125,
+        "read_remote_per_event_mb": 0.1953125,
+        "write_local_per_event_mb": 0.341796875,
+        "write_remote_per_event_mb": 0.048828125
       },
       "accelerator": {
         "types": []
@@ -691,12 +691,12 @@
         "min_eps": 0.016666666666666666
       },
       "io": {
-        "input_data_mb": 506.25,
-        "output_data_mb": 253.125,
-        "stored_data_mb": 168.75,
-        "input_data_per_event_mb": 0.29296875,
-        "output_data_per_event_mb": 0.146484375,
-        "stored_data_per_event_mb": 0.09765625
+        "read_remote_mb": 506.25,
+        "write_local_mb": 253.125,
+        "write_remote_mb": 168.75,
+        "read_remote_per_event_mb": 0.29296875,
+        "write_local_per_event_mb": 0.146484375,
+        "write_remote_per_event_mb": 0.09765625
       },
       "accelerator": {
         "types": []
@@ -739,12 +739,12 @@
         "min_eps": 0.01
       },
       "io": {
-        "input_data_mb": 52.734375,
-        "output_data_mb": 184.5703125,
-        "stored_data_mb": 79.1015625,
-        "input_data_per_event_mb": 0.048828125,
-        "output_data_per_event_mb": 0.1708984375,
-        "stored_data_per_event_mb": 0.0732421875
+        "read_remote_mb": 52.734375,
+        "write_local_mb": 184.5703125,
+        "write_remote_mb": 79.1015625,
+        "read_remote_per_event_mb": 0.048828125,
+        "write_local_per_event_mb": 0.1708984375,
+        "write_remote_per_event_mb": 0.0732421875
       },
       "accelerator": {
         "types": []
@@ -788,12 +788,12 @@
         "min_eps": 0.025
       },
       "io": {
-        "input_data_mb": 0.0,
-        "output_data_mb": 580.078125,
-        "stored_data_mb": 52.734375,
-        "input_data_per_event_mb": 0.0,
-        "output_data_per_event_mb": 0.537109375,
-        "stored_data_per_event_mb": 0.048828125
+        "read_remote_mb": 0.0,
+        "write_local_mb": 580.078125,
+        "write_remote_mb": 52.734375,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.537109375,
+        "write_remote_per_event_mb": 0.048828125
       },
       "accelerator": {
         "types": []
@@ -805,15 +805,15 @@
     },
     "dependency_paths": [
       [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
         "Taskset1",
         "Taskset2"
       ],
       [
         "Taskset1",
-        "Taskset2",
-        "Taskset3"
-      ],
-      [
         "Taskset2",
         "Taskset3"
       ]
