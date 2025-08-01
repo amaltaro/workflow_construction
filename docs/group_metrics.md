@@ -15,7 +15,7 @@ Group metrics analyze the performance and resource characteristics of individual
 | **CPU** | `max_cores`, `cpu_seconds`, `utilization_ratio` | CPU allocation and efficiency |
 | **Memory** | `max_mb`, `min_mb`, `occupancy` | Memory requirements and usage |
 | **Throughput** | `total_eps`, `max_eps`, `min_eps` | Event processing rates |
-| **I/O** | `input_data_mb`, `output_data_mb`, `stored_data_mb` | Data volumes and storage |
+| **I/O** | `read_remote_mb`, `write_local_mb`, `write_remote_mb` | Data volumes and storage |
 | **Utilization** | `resource_utilization`, `event_throughput` | Overall efficiency metrics |
 
 ### Example Group Metrics
@@ -44,12 +44,12 @@ Group metrics analyze the performance and resource characteristics of individual
       "min_eps": 0.025
     },
     "io": {
-      "input_data_mb": 281.25,
-      "output_data_mb": 492.1875,
-      "stored_data_mb": 70.3125,
-      "input_data_per_event_mb": 0.1953125,
-      "output_data_per_event_mb": 0.1708984375,
-      "stored_data_per_event_mb": 0.0244140625
+      "read_remote_mb": 281.25,
+      "write_local_mb": 492.1875,
+      "write_remote_mb": 70.3125,
+      "read_remote_per_event_mb": 0.1953125,
+      "write_local_per_event_mb": 0.1708984375,
+      "write_remote_per_event_mb": 0.0244140625
     },
     "accelerator": {
       "types": []
@@ -175,50 +175,50 @@ min_throughput = min(task_throughput for all tasks)
 
 ### I/O Metrics with Storage Rules
 
-#### Input Data Volume (`io.input_data_mb`)
-**Description:** Data volume of input data, in megabytes, that is read from the shared storage by the entry point taskset.
+#### Remote Read Data Volume (`io.read_remote_mb`)
+**Description:** Data volume of remote read data, in megabytes, that is read from the shared storage by the entry point taskset.
 
 **Formula:**
 ```
 If entry_point_task has a parent task:
     parent_task = tasks[entry_point_task.input_task]
-    input_data_mb = (events_per_job × parent_task.size_per_event) / 1024.0
+    read_remote_mb = (events_per_job × parent_task.size_per_event) / 1024.0
 Else:
-    input_data_mb = 0.0
+    read_remote_mb = 0.0
 
-input_data_per_event_mb = input_data_mb / events_per_job
+read_remote_per_event_mb = read_remote_mb / events_per_job
 ```
 
-**Example:** 281.25 MB input data
+**Example:** 281.25 MB remote read data
 
-#### Output Data Volume (`io.output_data_mb`)
-**Description:** Data volume of output data, in megabytes, that all tasks in the group write to the local storage. For the output data per event, it keeps consistency with throughput, hence it is given for events per job of the whole group.
+#### Local Write Data Volume (`io.write_local_mb`)
+**Description:** Data volume of local write data, in megabytes, that all tasks in the group write to the local storage. For the local write data per event, it keeps consistency with throughput, hence it is given for events per job of the whole group.
 
 **Formula:**
 ```
 For each task t:
     task_output_size = (events_per_job × task.size_per_event) / 1024.0
-    output_data_mb += task_output_size
+    write_local_mb += task_output_size
 
-output_data_per_event_mb = output_data_mb / events_per_job
+write_local_per_event_mb = write_local_mb / events_per_job
 ```
 
-**Example:** 492.1875 MB output data
+**Example:** 492.1875 MB local write data
 
-#### Stored Data Volume (`io.stored_data_mb`)
-**Description:** Data volume of stored data, in megabytes, that all tasks in the group write to the shared storage. For the stored data per event, to keep it consistent with the throughput calculation, we calculate it for events per job of the whole group.
+#### Remote Write Data Volume (`io.write_remote_mb`)
+**Description:** Data volume of remote write data, in megabytes, that all tasks in the group write to the shared storage. For the remote write data per event, to keep it consistent with the throughput calculation, we calculate it for events per job of the whole group.
 
 **Formula:**
 ```
 For each task t:
     task_output_size = (events_per_job × task.size_per_event) / 1024.0
     If task.keep_output == True OR task.id == exit_point_task:
-        stored_data_mb += task_output_size
+        write_remote_mb += task_output_size
 
-stored_data_per_event_mb = stored_data_mb / events_per_job
+write_remote_per_event_mb = write_remote_mb / events_per_job
 ```
 
-**Example:** 70.3125 MB stored data
+**Example:** 70.3125 MB remote write data
 
 ### Resource Utilization Metrics
 
@@ -329,12 +329,12 @@ groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_da
             "occupancy": 0.6
         },
         "io": {
-            "input_data_mb": 100.0,
-            "output_data_mb": 200.0,
-            "stored_data_mb": 150.0,
-            "input_data_per_event_mb": 0.1,
-            "output_data_per_event_mb": 0.2,
-            "stored_data_per_event_mb": 0.15
+            "read_remote_mb": 100.0,
+            "write_local_mb": 200.0,
+            "write_remote_mb": 150.0,
+            "read_remote_per_event_mb": 0.1,
+            "write_local_per_event_mb": 0.2,
+            "write_remote_per_event_mb": 0.15
         }
         # ... other metrics
     },

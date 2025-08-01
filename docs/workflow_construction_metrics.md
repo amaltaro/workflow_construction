@@ -21,17 +21,17 @@ Workflow construction metrics provide insights into the performance, resource ut
 
 | Metric | Description | Formula | Example Value |
 |--------|-------------|---------|---------------|
-| `total_input_data_mb` | Total input data | `sum(group.input_data_mb)` | 241.015625 |
-| `total_output_data_mb` | Total output data | `sum(group.output_data_mb)` | 786.71875 |
-| `total_stored_data_mb` | Total stored data | `sum(group.stored_data_mb)` | 190.8203125 |
+| `total_read_remote_mb` | Total remote read data | `sum(group.read_remote_mb)` | 241.015625 |
+| `total_write_local_mb` | Total local write data | `sum(group.write_local_mb)` | 786.71875 |
+| `total_write_remote_mb` | Total remote write data | `sum(group.write_remote_mb)` | 190.8203125 |
 
 ### Per-Event Metrics
 
 | Metric | Description | Formula | Example Value |
 |--------|-------------|---------|---------------|
-| `input_data_per_event_mb` | Input per event | `sum(group.input_data_per_event_mb)` | 0.1953125 |
-| `output_data_per_event_mb` | Output per event | `sum(group.output_data_per_event_mb)` | 0.7080078125 |
-| `stored_data_per_event_mb` | Stored per event | `sum(group.stored_data_per_event_mb)` | 0.1708984375 |
+| `read_remote_per_event_mb` | Remote read per event | `sum(group.read_remote_per_event_mb)` | 0.1953125 |
+| `write_local_per_event_mb` | Local write per event | `sum(group.write_local_per_event_mb)` | 0.7080078125 |
+| `write_remote_per_event_mb` | Remote write per event | `sum(group.write_remote_per_event_mb)` | 0.1708984375 |
 
 ### Key Insights
 
@@ -104,79 +104,79 @@ initial_input_events = construction[0].events_per_job
 
 ### 2. Data Volume Metrics
 
-#### `total_input_data_mb` (FIXME: factor in overall requested events, as each group may process a different number of events)
-**Description:** Total input data volume in MB across all groups, for a single instance of each group.
+#### `total_read_remote_mb` (FIXME: factor in overall requested events, as each group may process a different number of events)
+**Description:** Total remote read data volume in MB across all groups, for a single instance of each group.
 
 **Calculation:**
 ```python
-total_input_data_mb = sum(group.input_data_mb for group in construction)
+total_read_remote_mb = sum(group.read_remote_mb for group in construction)
 ```
 
 **Example:** 241.015625 MB
 
-**Formula:** Sum of input data volumes from all groups
+**Formula:** Sum of remote read data volumes from all groups
 
-#### `total_output_data_mb` (FIXME)
-**Description:** Total output data volume in MB across all groups, for a single instance of each group.
+#### `total_write_local_mb` (FIXME)
+**Description:** Total local write data volume in MB across all groups, for a single instance of each group.
 
 **Calculation:**
 ```python
-total_output_data_mb = sum(group.output_data_mb for group in construction)
+total_write_local_mb = sum(group.write_local_mb for group in construction)
 ```
 
 **Example:** 786.71875 MB
 
-**Formula:** Sum of output data volumes from all groups
+**Formula:** Sum of local write data volumes from all groups
 
-#### `total_stored_data_mb` (FIXME)
-**Description:** Total data volume in MB that needs to be stored in shared storage, for a single instance of each group.
+#### `total_write_remote_mb` (FIXME)
+**Description:** Total remote write data volume in MB that needs to be stored in shared storage, for a single instance of each group.
 
 **Calculation:**
 ```python
-total_stored_data_mb = sum(group.stored_data_mb for group in construction)
+total_write_remote_mb = sum(group.write_remote_mb for group in construction)
 ```
 
 **Example:** 190.8203125 MB
 
-**Formula:** Sum of stored data volumes from all groups
+**Formula:** Sum of remote write data volumes from all groups
 
 ### 3. Per-Event Data Metrics
 
-#### `input_data_per_event_mb`
-**Description:** Input data volume per event for the entire workflow construction.
+#### `read_remote_per_event_mb`
+**Description:** Remote read data volume per event for the entire workflow construction.
 
 **Calculation:**
 ```python
-input_data_per_event_mb = sum(group.input_data_per_event_mb for group in construction)
+read_remote_per_event_mb = sum(group.read_remote_per_event_mb for group in construction)
 ```
 
 **Example:** 0.1953125 MB/event
 
-**Formula:** Sum of per-event input data from all groups
+**Formula:** Sum of per-event remote read data from all groups
 
-#### `output_data_per_event_mb`
-**Description:** Output data volume per event for the entire workflow construction. Note that this value is constant across all constructions because every event is processed by all tasks, generating the same total output volume regardless of grouping.
+#### `write_local_per_event_mb`
+**Description:** Local write data volume per event for the entire workflow construction. Note that this value is constant across all constructions because every event is processed by all tasks, generating the same total output volume regardless of grouping.
 
 **Calculation:**
 ```python
-output_data_per_event_mb = sum(group.output_data_per_event_mb for group in construction)
+write_local_per_event_mb = sum(group.write_local_per_event_mb for group in construction)
 ```
 
 **Example:** 0.7080078125 MB/event
 
-**Formula:** Sum of per-event output data from all groups
+**Formula:** Sum of per-event local write data from all groups
 
-#### `stored_data_per_event_mb`
-**Description:** Stored data volume per event for the entire workflow construction.
+#### `write_remote_per_event_mb`
+**Description:** Remote write data volume per event for the entire workflow construction.
 
 **Calculation:**
 ```python
-stored_data_per_event_mb = sum(group.stored_data_per_event_mb for group in construction)
+write_remote_per_event_mb = sum(group.write_remote_per_event_mb for group in construction)
 ```
 
 **Example:** 0.1708984375 MB/event
 
-**Formula:** Sum of per-event stored data from all groups
+**Formula:** Sum of per-event remote write data from all groups
 
 ### 4. Construction Metadata
 
@@ -292,12 +292,12 @@ From the provided JSON file, here's an analysis of the first construction:
   "total_events": 5348,
   "total_cpu_time": 345560,
   "event_throughput": 0.003125,
-  "total_input_data_mb": 241.015625,
-  "total_output_data_mb": 786.71875,
-  "total_stored_data_mb": 190.8203125,
-  "input_data_per_event_mb": 0.1953125,
-  "output_data_per_event_mb": 0.7080078125,
-  "stored_data_per_event_mb": 0.1708984375,
+  "total_read_remote_mb": 241.015625,
+  "total_write_local_mb": 786.71875,
+  "total_write_remote_mb": 190.8203125,
+  "read_remote_per_event_mb": 0.1953125,
+  "write_local_per_event_mb": 0.7080078125,
+  "write_remote_per_event_mb": 0.1708984375,
   "initial_input_events": 960,
   "num_groups": 2,
   "groups": ["group_10", "group_7"]

@@ -103,9 +103,9 @@ The visualization tool tracks and analyzes comprehensive metrics for both indivi
 - **Note**: For single-task groups, all three throughput values are identical
 
 #### I/O Metrics
-- **`input_data_mb`**: Total input data volume for the group
-- **`output_data_mb`**: Total output data volume from all tasks
-- **`stored_data_mb`**: Data volume that needs persistent storage
+- **`read_remote_mb`**: Total remote read data volume for the group
+- **`write_local_mb`**: Total local write data volume from all tasks
+- **`write_remote_mb`**: Data volume that needs persistent remote storage
 - **`*_per_event_mb`**: Per-event data volumes for each category
 
 #### Resource Utilization Metrics
