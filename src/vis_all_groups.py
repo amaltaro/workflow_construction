@@ -522,7 +522,7 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
     ax.set_title(f"Group-level Data Volume Analysis\n(Data Volumes per Group - {len(construction_metrics)} Constructions)", fontsize=14, fontweight='bold')
     ax.set_yticks(group_positions)
     ax.set_yticklabels(group_labels, fontsize=8)  # Reduced font size for better fit
-    ax.legend(loc='upper right', fontsize=10)  # or "best" for dynamic placement
+    ax.legend(loc='best', fontsize=10)  # or "upper right", etc
     ax.grid(True, which='major', alpha=0.2)
     ax.set_xlim(left=0)  # Start x-axis at 0
 
