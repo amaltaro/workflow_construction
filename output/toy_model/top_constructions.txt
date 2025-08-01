@@ -9,10 +9,10 @@ Separated:
   Stored Data per Event: 0.708 MB/event
 
 Grouped:
-  Groups: ['group_8']
+  Groups: ['group_14']
   Number of Groups: 1
   Total Events: 2700
   Total CPU Time: 172800.00 seconds
   Event Throughput: 0.0031 events/second
-  Stored Data per Event: 0.015 MB/event
+  Stored Data per Event: 0.073 MB/event
 

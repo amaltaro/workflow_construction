@@ -2,7 +2,7 @@ Workflow Construction Comparison
 ==============================
 
 Grouped:
-  Groups: ['group_8']
+  Groups: ['group_14']
   Number of Groups: 1
   Event Throughput: 0.0031 events/second
   Total CPU Time: 172800.00 seconds
@@ -12,23 +12,23 @@ Grouped:
     Stored Data: 39.55 MB
   Data Flow Metrics (per event):
     Input Data: 0.000 MB/event
-    Output Data: 0.142 MB/event
-    Stored Data: 0.015 MB/event
+    Output Data: 0.708 MB/event
+    Stored Data: 0.073 MB/event
   Memory Utilization: 0.74
-  Network Transfer: 0.14 MB
+  Network Transfer: 0.71 MB
   Parallel Execution Metrics:
     Sequential Time: 172800.00 seconds
     Parallel Time: 172800.00 seconds
     Parallel Efficiency: 1.000
   Group Details:
-    group_8:
+    group_14:
       Tasks: ['Taskset1', 'Taskset2', 'Taskset3', 'Taskset4', 'Taskset5']
       Events per Task: 540
       CPU Time: 172800.00 seconds
       Data Flow (per event):
         Input: 0.000 MB/event
-        Output: 0.142 MB/event
-        Stored: 0.015 MB/event
+        Output: 0.708 MB/event
+        Stored: 0.073 MB/event
 
 Separated:
   Groups: ['group_0', 'group_1', 'group_2', 'group_3', 'group_4']
