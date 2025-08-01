@@ -439,6 +439,49 @@ groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_da
    - Enables comparison of different workflow strategies
 
 
+## 📊 Metrics Documentation
+
+The workflow construction analysis system calculates comprehensive metrics for both individual task groups and complete workflow constructions. These metrics provide insights into performance, resource utilization, and data flow characteristics.
+
+### Workflow Construction Metrics
+
+**Core Metrics:**
+- **Event Throughput**: Events processed per second through the entire workflow
+- **Total Events**: Total events processed across all groups
+- **CPU Time**: Total CPU time required across all groups
+- **Data Volumes**: Input, output, and stored data totals
+
+**Key Insights:**
+- Output data per event is constant across all constructions
+- Throughput generally decreases with more groups due to overhead
+  - However, more groups are meant to improve CPU utilization and Memory occupancy
+- Stored data per event varies based on grouping strategy and exit points
+
+📖 **[Detailed Workflow Construction Metrics Documentation](docs/workflow_construction_metrics.md)**
+
+### Group Metrics (Future)
+
+**Core Metrics:**
+- **Resource Utilization**: CPU and memory efficiency ratios
+- **Event Throughput**: Events processed per second per group
+- **I/O Analysis**: Data volumes and storage requirements
+- **Dependency Analysis**: Task relationships and execution paths
+
+📖 **[Detailed Group Metrics Documentation](docs/group_metrics.md)** *(Coming Soon)*
+
+### Usage in Analysis
+
+These metrics enable:
+- **Performance Comparison**: Compare throughput across different grouping strategies
+- **Resource Planning**: Estimate CPU time and data storage requirements
+- **Cost Analysis**: Calculate resource costs based on CPU time and storage
+- **Optimization**: Identify optimal grouping strategies for specific requirements
+
+### Example Data
+
+All examples in the documentation are based on real data from `output/fork/5tasks/construction_metrics.json`, providing concrete values for understanding the metrics in practice.
+
+
 ## Metrics Analysis and Visualization
 
 The module includes comprehensive metrics analysis and visualization capabilities through `vis_all_groups.py`. This tool generates detailed visualizations to analyze different aspects of task grouping strategies and workflow constructions.
