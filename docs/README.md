@@ -13,13 +13,15 @@ Complete documentation of all metrics calculated for workflow constructions, inc
 - Group-level details and calculations
 - Example analysis with real data
 
-### Group Metrics Documentation (Coming Soon)
-Future documentation for group-level metrics analysis, including:
-- Resource utilization calculations
-- Event throughput analysis
+### [Group Metrics Documentation](group_metrics.md)
+Complete documentation of all metrics calculated for individual task groups, including:
+- Resource utilization calculations and formulas
+- Event throughput analysis and calculations
 - I/O requirements and storage rules
 - Dependency path analysis
 - Group performance characteristics
+- Detailed mathematical formulas for all metrics
+- Usage examples and integration with visualization tools
 
 ## Key Concepts
 
@@ -34,12 +36,15 @@ A workflow construction represents a valid way to organize tasks into groups for
 2. **Data Volume:** Input, output, and stored data totals
 3. **Per-Event Analysis:** Data flow per individual event
 4. **Construction Metadata:** Number of groups, group IDs
+5. **Group-Level Metrics:** Resource utilization, I/O analysis, dependency patterns
 
 ### Analysis Insights
 - Output data per event is constant across all constructions
 - Throughput generally decreases with more groups
 - Stored data per event varies based on grouping strategy
 - Resource trade-offs between parallelism and overhead
+- Group-level resource utilization affects overall workflow efficiency
+- Memory occupancy and CPU utilization ratios guide optimal grouping
 
 ## Usage
 
@@ -51,4 +56,4 @@ These metrics enable:
 
 ## Example Data
 
-All examples in the documentation are based on real data from `output/fork/5tasks/construction_metrics.json`, providing concrete values for understanding the metrics in practice. 
+All examples in the documentation are based on real data from `output/fork/5tasks/construction_metrics.json`, providing concrete values for understanding the metrics in practice.

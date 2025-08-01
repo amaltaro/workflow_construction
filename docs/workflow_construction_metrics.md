@@ -324,4 +324,4 @@ These metrics enable:
 - **Performance Comparison:** Compare throughput across different grouping strategies
 - **Resource Planning:** Estimate CPU time and data storage requirements
 - **Cost Analysis:** Calculate resource costs based on CPU time and storage
-- **Optimization:** Identify optimal grouping strategies for specific requirements 
+- **Optimization:** Identify optimal grouping strategies for specific requirements
