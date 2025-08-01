@@ -305,60 +305,52 @@ class TaskGrouper:
         events_per_job = int(target_wallclock_seconds / total_time_per_event)
         events_per_job = max(1, events_per_job)
 
-        # Update events_per_job for all tasks in the group
+        # NOTE: Update events_per_job for all tasks in the group
         for task in tasks:
             task.resources.input_events = events_per_job
 
         # Calculate CPU metrics
         max_cores = max(t.resources.cpu_cores for t in tasks)
 
-        # Calculate CPU utilization ratio
-        # For each task: (cores_used * duration) / (max_cores * total_duration)
-        total_duration = 0.0
-        weighted_cpu_utilization = 0.0
-        for task in tasks:
-            task_duration = task.resources.input_events * task.resources.time_per_event
-            total_duration += task_duration
-            weighted_cpu_utilization += task.resources.cpu_cores * task_duration
-
-        # CPU utilization ratio is the ratio of weighted CPU utilization to maximum possible utilization
-        max_possible_utilization = max_cores * total_duration
-        cpu_utilization_ratio = weighted_cpu_utilization / max_possible_utilization if max_possible_utilization > 0 else 0.0
-
         # Calculate CPU seconds (total CPU time used)
         # The group is allocated max_cores for the entire duration
         total_wallclock_time = events_per_job * total_time_per_event
         cpu_seconds = max_cores * total_wallclock_time
 
+        # Calculate CPU utilization ratio and time-weighted memory occupancy
+        # For each task: (cores_used * duration) / (max_cores * total_duration)
+        total_duration = 0.0
+        weighted_cpu_utilization = 0.0
+        weighted_memory = 0.0
+        for task in tasks:
+            task_duration = events_per_job * task.resources.time_per_event
+            total_duration += task_duration
+            weighted_cpu_utilization += task.resources.cpu_cores * task_duration
+            weighted_memory += task.resources.memory_mb * task_duration
+
+        # CPU utilization ratio is the ratio of weighted CPU utilization to maximum possible utilization
+        max_possible_utilization = max_cores * total_duration
+        cpu_utilization_ratio = weighted_cpu_utilization / max_possible_utilization
+
         # Calculate memory metrics
         max_memory = max(t.resources.memory_mb for t in tasks)
         min_memory = min(t.resources.memory_mb for t in tasks)
 
-        # Calculate time-weighted memory occupancy
-        total_duration = 0.0
-        weighted_memory = 0.0
-        for task in tasks:
-            task_duration = task.resources.input_events * task.resources.time_per_event
-            total_duration += task_duration
-            weighted_memory += task.resources.memory_mb * task_duration
-
         # Calculate time-weighted average memory
-        time_weighted_avg_memory = weighted_memory / total_duration if total_duration > 0 else 0.0
-
+        time_weighted_avg_memory = weighted_memory / total_duration
         # Memory occupancy is the ratio of time-weighted average memory to max memory
-        memory_occupancy = time_weighted_avg_memory / max_memory if max_memory > 0 else 0.0
+        memory_occupancy = time_weighted_avg_memory / max_memory
 
         # Calculate throughput metrics
-        total_events = sum(task.resources.input_events for task in tasks)
-        total_throughput = total_events / cpu_seconds if cpu_seconds > 0 else 0.0
+        # Use events_per_job for consistency with workflow construction metrics
+        total_throughput = events_per_job / cpu_seconds
 
-        # For individual task throughput
+        # For individual task throughput (note that all tasks process the same number of events)
         task_throughputs = []
         for task in tasks:
-            task_cpu_seconds = task.resources.cpu_cores * task.resources.time_per_event * task.resources.input_events
-            task_throughput = task.resources.input_events / task_cpu_seconds if task_cpu_seconds > 0 else 0.0
+            task_cpu_seconds = task.resources.cpu_cores * task.resources.time_per_event * events_per_job
+            task_throughput = events_per_job / task_cpu_seconds
             task_throughputs.append(task_throughput)
-
         max_throughput = max(task_throughputs)
         min_throughput = min(task_throughputs)
 
@@ -371,18 +363,16 @@ class TaskGrouper:
         if entry_task.input_task and entry_task.input_task in self.tasks:
             # Get the parent task that feeds into this group's entry point
             parent_task = self.tasks[entry_task.input_task]
-            # Input data is based on the entry point task's events in this group
-            # and the parent task's size per event
             input_data_mb = (events_per_job * parent_task.resources.size_per_event) / 1024.0
         # normalize the data volume per event
-        input_data_per_event_mb = input_data_mb / events_per_job if events_per_job > 0 else 0.0
+        input_data_per_event_mb = input_data_mb / events_per_job
 
         # Calculate output sizes of all tasks in the group based on storage rules
         output_data_mb = 0.0
         stored_data_mb = 0.0
         for task in tasks:
             # Convert KB to MB for consistency with other memory metrics
-            task_output_size = (task.resources.input_events * task.resources.size_per_event) / 1024.0
+            task_output_size = (events_per_job * task.resources.size_per_event) / 1024.0
             output_data_mb += task_output_size
 
             # Add to stored data if:
@@ -391,8 +381,9 @@ class TaskGrouper:
             if task.resources.keep_output or task.id == exit_point_task:
                 stored_data_mb += task_output_size
         # normalize the output and stored data volume per event
-        output_data_per_event_mb = output_data_mb / total_events if total_events > 0 else 0.0
-        stored_data_per_event_mb = stored_data_mb / total_events if total_events > 0 else 0.0
+        # Use events_per_job for consistency with throughput and workflow construction metrics
+        output_data_per_event_mb = output_data_mb / events_per_job
+        stored_data_per_event_mb = stored_data_mb / events_per_job
 
         # Calculate accelerator metrics
         accelerators = set(t.resources.accelerator for t in tasks if t.resources.accelerator)
@@ -410,7 +401,7 @@ class TaskGrouper:
         resource_utilization = (cpu_utilization_ratio + memory_occupancy) / 2.0
 
         # Calculate event throughput
-        # This is the total number of events processed per second
+        # This is the number of events processed per second (consistent with workflow construction)
         event_throughput = total_throughput
 
         return GroupMetrics(
@@ -688,6 +679,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
 
     # Calculate total events and total CPU time
     # Each task in a group processes the same number of events
+    # Note: This is for display purposes only - the actual throughput calculation uses events_per_job
     total_events = sum(len(group.task_ids) * group.events_per_job for group in construction)
     total_cpu_time = sum(group.cpu_seconds for group in construction)
 
@@ -696,6 +688,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
     # 2. Calculate how many jobs each group needs to run to process that many events
     # 3. Calculate total CPU time across all jobs
     # 4. Event throughput = common_events / total_cpu_time
+    # This approach ensures consistency with group-level throughput calculations
 
     # Find the maximum events_per_job (this becomes our common baseline)
     max_events_per_job = max(group.events_per_job for group in construction)
