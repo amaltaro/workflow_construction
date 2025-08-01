@@ -678,9 +678,9 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
         raise RuntimeError("No construction provided")
 
     # Calculate total events and total CPU time
-    # Each task in a group processes the same number of events
+    # Each group processes events_per_job events as a unit
     # Note: This is for display purposes only - the actual throughput calculation uses events_per_job
-    total_events = sum(len(group.task_ids) * group.events_per_job for group in construction)
+    total_events = sum(group.events_per_job for group in construction)
     total_cpu_time = sum(group.cpu_seconds for group in construction)
 
     # Calculate overall event throughput using the new approach:
@@ -724,7 +724,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
             "group_id": group.group_id,
             "tasks": sorted(list(group.task_ids)),
             "events_per_task": group.events_per_job,
-            "total_events": len(group.task_ids) * group.events_per_job,
+            "total_events": group.events_per_job,  # Fixed: use events_per_job, not len(group.task_ids) * group.events_per_job
             "cpu_seconds": group.cpu_seconds,
             "input_data_mb": group.input_data_mb,
             "output_data_mb": group.output_data_mb,
