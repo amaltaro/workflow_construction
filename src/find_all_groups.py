@@ -720,15 +720,24 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
     # Event throughput is the common number of events divided by total CPU time
     event_throughput = max_events_per_job / total_cpu_time_all_jobs if total_cpu_time_all_jobs > 0 else 0.0
 
-    # Calculate total data volumes
-    total_read_remote = sum(group.read_remote_mb for group in construction)
-    total_write_local = sum(group.write_local_mb for group in construction)
-    total_write_remote = sum(group.write_remote_mb for group in construction)
+    # Calculate total data volumes (accounting for job scaling)
+    total_read_remote = sum(
+        group.read_remote_mb * group_jobs_needed[group.group_id]
+        for group in construction
+    )
+    total_write_local = sum(
+        group.write_local_mb * group_jobs_needed[group.group_id]
+        for group in construction
+    )
+    total_write_remote = sum(
+        group.write_remote_mb * group_jobs_needed[group.group_id]
+        for group in construction
+    )
 
-    # Calculate per-event metrics by summing up each group's per-event metrics
-    read_remote_per_event = sum(group.read_remote_per_event_mb for group in construction)
-    write_local_per_event = sum(group.write_local_per_event_mb for group in construction)
-    write_remote_per_event = sum(group.write_remote_per_event_mb for group in construction)
+    # Calculate per-event metrics by normalizing the total data volumes
+    read_remote_per_event = total_read_remote / request_num_events
+    write_local_per_event = total_write_local / request_num_events
+    write_remote_per_event = total_write_remote / request_num_events
 
     # Create detailed group information
     group_details = []
