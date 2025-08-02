@@ -25,6 +25,10 @@ For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23
 - Mermaid-based HTML workflow topology visualization
 - Storage rules and data volume calculation
 - Events per job calculation based on target wallclock time
+- RequestNumEvents integration for proper metric normalization
+- Job scaling analysis and efficiency metrics
+- Time analysis with resource constraints (baseline, 100 grid slots, 1000 grid slots)
+- Event dependency calculation for realistic time estimation
 
 
 ## Installation
@@ -42,14 +46,14 @@ pip install -r requirements.txt
 ## Usage
 
 ```python
-from src.group_tasks import create_workflow_from_json
+from src.find_all_groups import create_workflow_from_json
 
 # Load your workflow JSON
 with open("workflow.json", "r") as file:
     workflow_data = json.load(file)
 
-# Create groups with custom minimum score
-groups, tasks = create_workflow_from_json(workflow_data, min_group_score=0.7)
+# Generate all possible groups and workflow constructions
+groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_data)
 ```
 
 
@@ -140,10 +144,12 @@ The `find_all_groups.py` module provides a comprehensive framework for analyzing
    - Finds all possible combinations of groups that cover all tasks
    - Respects task dependencies between groups
    - Calculates workflow-level metrics including:
-     - Event throughput
-     - Total data volumes
-     - Resource utilization
-     - Parallel execution efficiency
+     - Event throughput and CPU time per event
+     - Total data volumes (remote read, local write, remote write)
+     - Memory scaling and network transfer metrics
+     - Job scaling and efficiency metrics
+     - Time analysis with resource constraints (baseline, 100 grid slots, 1000 grid slots)
+     - Event dependency calculation for realistic time estimation
 
 4. **Storage Rules**:
    - Input data volume based on parent task's size per event
@@ -155,6 +161,12 @@ The `find_all_groups.py` module provides a comprehensive framework for analyzing
    - Based on target wallclock time (default: 12 hours)
    - Calculates optimal events per job for each group
    - Ensures consistent event processing across workflow
+
+6. **RequestNumEvents Integration**:
+   - Enables proper normalization of workflow metrics
+   - Scales all metrics (CPU time, I/O, memory) with job requirements
+   - Calculates group_jobs_needed for each group
+   - Provides realistic workflow-level analysis
 
 
 ## 📊 Metrics Documentation
@@ -202,7 +214,7 @@ python src/vis_all_groups.py tests/sequential/5tasks.json --toy-model
 
 ### Available Visualizations
 
-The tool generates 8 different visualization types including resource utilization analysis, throughput analysis, dependency analysis, and interactive workflow topology diagrams.
+The tool generates 10 different visualization types including resource utilization analysis, throughput analysis, dependency analysis, job scaling analysis, time analysis, and interactive workflow topology diagrams.
 
 📖 **[Detailed Visualization Documentation](docs/visualization_analysis.md)** - Complete guide to visualization capabilities and usage
 

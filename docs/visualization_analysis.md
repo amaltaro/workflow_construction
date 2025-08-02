@@ -36,13 +36,13 @@ pip install matplotlib seaborn pandas
 
 ### 5. Workflow Construction Analysis (`workflow_comparison.png`)
 - **Group Size Distribution**: Shows the distribution of tasks per group in each construction
+- **Data Flow Analysis**: Bar plot comparing read and write local/remote data volumes across constructions (per-event metrics)
+- **Total Data Volume Analysis**: Stacked bar chart showing total data volumes in GB across constructions
 - **Performance vs Storage Efficiency**: Scatter plot showing the trade-off between event throughput and stored data per event
-- **Data Flow Analysis**: Bar plot comparing input, output, and stored data volumes across constructions
 - **Network Transfer Analysis**: Shows the total data transferred between groups in each construction
 - **CPU Utilization Analysis**: Box plot showing the distribution of CPU utilization ratios across groups
 - **Memory Utilization Analysis**: Bar plot with error bars showing average memory occupancy and its variation
 - **Event Processing Distribution**: Box plot showing the distribution of events processed per group
-- **Parallel Execution Analysis**: Shows the parallel efficiency of each construction based on DAG dependencies
 
 ### 6. Storage Efficiency Analysis (`storage_efficiency.png`)
 - Storage Efficiency vs Number of Groups
@@ -63,12 +63,25 @@ pip install matplotlib seaborn pandas
 - Color-coded groups with legend
 - Side-by-side comparison of all constructions
 
+### 9. Job Scaling Analysis (`job_scaling_analysis.png`)
+- **Total Jobs per Construction**: Bar plot showing total jobs needed for each workflow construction
+- **Job Distribution Across Groups**: Stacked bar chart showing how jobs are distributed across groups within each construction
+- **Job Scaling Report**: Detailed text report with job requirements per group and efficiency metrics
+
+### 10. Time Analysis (`time_analysis.png`)
+- **Comprehensive Time Analysis**: Bar plot comparing execution time across three scenarios, while being compliant with dependency and resource constraints (including availability of events required for a given group to process):
+  - **Baseline (Infinite Resources)**: Ideal execution time considering infinite resources, hence maximum job parallelization.
+  - **100 Grid Slots**: Realistic constraint showing workflow execution time with limited resources
+  - **1000 Grid Slots**: More generous constraint showing workflow execution time with limited resources, but a larger pool.
+- **Resource vs Dependency Constraints**: Shows how different constructions are affected by resource limitations vs. dependency constraints
+- **Time Analysis Report**: Detailed text report with execution times and job requirements per group
+
 ## Analysis Insights
 
 Each visualization provides unique insights into different aspects of the workflow constructions:
 - Resource utilization and efficiency
 - Data flow and storage patterns
-- Parallel execution potential
+- Time analysis and resource constraints
 - Performance characteristics
 - Group size distributions
 - Network transfer requirements
@@ -78,7 +91,7 @@ The visualizations help in:
 2. Identifying optimal group sizes and compositions
 3. Understanding resource utilization patterns
 4. Analyzing data flow and storage requirements
-5. Evaluating parallel execution potential
+5. Evaluating time analysis and resource constraints
 6. Making informed decisions about workflow optimization
 
 ## Metrics Tracked
@@ -95,9 +108,25 @@ The visualization tool tracks and analyzes comprehensive metrics for both indivi
 #### Memory Metrics
 - **`max_mb`/`min_mb`**: Maximum/minimum memory requirements across tasks (in megabytes)
 - **`occupancy`**: Time-weighted average memory usage / max memory allocated
+- **`total_memory_mb`**: Total memory required (accounting for job scaling)
+- **`memory_per_event_mb`**: Memory per event
+
+#### Network Transfer Metrics
+- **`total_network_transfer_mb`**: Total network transfer (remote read + remote write)
+- **`network_transfer_per_event_mb`**: Network transfer per event
 
 #### Throughput Metrics
 - **`total_eps`**: Group-level events per second (total events / total CPU time)
+
+#### Job Scaling Metrics
+- **`group_jobs_needed`**: Number of jobs required for each group to process the requested events
+- **`total_jobs`**: Total jobs needed across all groups in a construction
+- **`jobs_per_event`**: Jobs per event (efficiency metric)
+
+#### Time Analysis Metrics
+- **`baseline_time_hours`**: Ideal execution time with infinite resources
+- **`grid_100_time_hours`**: Execution time with 100 grid slots
+- **`grid_1000_time_hours`**: Execution time with 1000 grid slots
 - **`max_eps`**: Highest events/second achieved by any single task in the group
 - **`min_eps`**: Lowest events/second achieved by any single task in the group
 - **Note**: For single-task groups, all three throughput values are identical
@@ -130,7 +159,7 @@ For each workflow construction, the following metrics are calculated and analyze
 #### 2. Performance Metrics
 - Event throughput (events processed per second)
 - Total CPU time across all groups
-- Parallel execution efficiency (ratio of sequential to parallel execution time)
+- Time analysis efficiency (baseline vs. constrained execution time)
 - Critical path length (longest path in terms of CPU time)
 
 #### 3. Data Flow Metrics
@@ -162,11 +191,11 @@ For each workflow construction, the following metrics are calculated and analyze
 - Input/output data ratios
 - Network transfer efficiency
 
-#### 8. Parallel Execution Metrics
-- Maximum parallel groups possible
-- Sequential execution time
-- Parallel execution time
-- Parallel efficiency ratio
+#### 8. Time Analysis Metrics
+- Baseline execution time (infinite resources)
+- Execution time with 100 grid slots
+- Execution time with 1000 grid slots
+- Event dependency constraints
 
 These metrics help in:
 1. Evaluating the efficiency of different workflow constructions
@@ -261,7 +290,7 @@ This integration allows for:
 - Identification of optimal group sizes
 - Understanding of tradeoffs between different metrics
 - Analysis of workflow construction alternatives
-- Evaluation of parallel execution potential
+- Evaluation of time analysis and resource constraints
 
 ## Key Insights
 
@@ -272,6 +301,12 @@ The visualization and analysis tools provide:
 - **Resource Efficiency**: Find optimal balance between CPU and memory utilization
 - **Bottleneck Detection**: Identify tasks or groups that limit overall performance
 
+### Time Analysis
+- **Resource Constraints**: Understand how grid slot limitations affect execution time
+- **Dependency Impact**: Analyze how task dependencies influence parallelization
+- **Baseline Comparison**: Compare ideal vs. realistic execution scenarios
+- **Scalability Assessment**: Evaluate how constructions scale with different resource levels
+
 ### Resource Planning
 - **CPU Allocation**: Understand CPU requirements across different grouping strategies
 - **Memory Management**: Analyze memory usage patterns and requirements
@@ -281,6 +316,12 @@ The visualization and analysis tools provide:
 - **Resource Costs**: Calculate costs based on CPU time and storage requirements
 - **Efficiency Metrics**: Compare resource utilization across different strategies
 - **Optimization Opportunities**: Identify areas for cost reduction
+
+### Job Scaling Analysis
+- **Job Distribution**: Understand how jobs are distributed across groups
+- **Scaling Efficiency**: Compare total jobs needed across different constructions
+- **Resource Planning**: Estimate job requirements for different workflow strategies
+- **Scheduling Impact**: Assess the impact of job scaling on scheduling efficiency
 
 ### Decision Support
 - **Strategy Comparison**: Compare different workflow construction approaches

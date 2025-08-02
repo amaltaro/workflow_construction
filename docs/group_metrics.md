@@ -360,7 +360,7 @@ groups, tasks, construction_metrics, dag = create_workflow_from_json(workflow_da
    - Throughput analysis
    - I/O requirements with storage rules
    - Dependency patterns
-   - Parallel execution efficiency
+   - Time analysis and resource constraints
 
 4. **Output Generation**:
    - Returns detailed metrics for all groups
@@ -393,4 +393,4 @@ This integration allows for:
 - Identification of optimal group sizes
 - Understanding of tradeoffs between different metrics
 - Analysis of workflow construction alternatives
-- Evaluation of parallel execution potential
+- Evaluation of time analysis and resource constraints

@@ -69,6 +69,14 @@ Workflow construction metrics provide insights into the performance, resource ut
 | `total_wallclock_time` | Total wallclock time (accounting for job scaling) | `sum(wallclock_time_per_job * jobs_needed)` | 40000000 |
 | `wallclock_time_per_event` | Wallclock time per event | `total_wallclock_time / request_num_events` | 40.0 |
 
+### Time Analysis Metrics
+
+| Metric | Description | Formula | Example Value |
+|--------|-------------|---------|---------------|
+| `baseline_time_hours` | Ideal execution time (infinite resources) | Based on DAG dependencies | 12.0 |
+| `grid_100_time_hours` | Execution time with 100 grid slots | Resource-constrained calculation | 228.0 |
+| `grid_1000_time_hours` | Execution time with 1000 grid slots | Resource-constrained calculation | 24.0 |
+
 ### Key Insights
 
 - **Local write data per event is constant** across all constructions (example 0.537109375 MB/event)
@@ -526,6 +534,33 @@ From the provided JSON file, here's an analysis of the first construction:
 6. **Network Efficiency:** Network transfer varies significantly based on data flow patterns between groups
 7. **Job Efficiency:** Jobs per event is a key metric for comparing processing efficiency across constructions
 8. **Time Consistency:** Wallclock time per event is consistent since all jobs target the same wallclock time
+9. **Time Utilization Factor:** Single-group constructions achieve much higher time utilization factor (1852) compared to multi-group constructions (370) due to better time resource utilization
+
+## Workflow Time Analysis
+
+The time analysis provides comprehensive insights into execution time under different resource constraints and considers task dependencies:
+
+### **Time Analysis Visualization (`time_analysis.png`)**
+This dedicated plot shows execution time for three scenarios:
+- **Baseline (Infinite Resources):** Ideal execution time considering task dependencies
+- **100 Grid Slots:** Realistic constraint showing execution time with limited resources  
+- **1000 Grid Slots:** More generous constraint showing improved execution time
+
+### **Key Insights:**
+- **Single-Group Constructions:** Complete in ~12 hours baseline, but resource constraints can significantly increase execution time
+- **Multi-Group Constructions:** Take 5x longer baseline (~60 hours) due to sequential dependencies
+- **Resource Impact:** Grid slot limitations can dramatically affect execution time, especially for single-group constructions
+- **Event Dependencies:** The calculation properly accounts for event dependencies between groups (jobs can only start once enough events have been processed from previous groups). This is crucial for realistic time estimation as subsequent groups must wait for sufficient events from preceding groups before they can begin processing.
+
+### **Example Results:**
+- **"Grouped" (1 group):** 
+  - Baseline: 12.0 hours
+  - 100 Grid Slots: 228.0 hours (resource constrained)
+  - 1000 Grid Slots: 24.0 hours (improved)
+- **"Separated" (5 groups):**
+  - Baseline: 60.0 hours
+  - 100 Grid Slots: 252.0 hours (resource constrained)
+  - 1000 Grid Slots: 60.0 hours (dependency constrained)
 
 ## Usage in Analysis
 
@@ -534,3 +569,4 @@ These metrics enable:
 - **Resource Planning:** Estimate CPU time and data storage requirements
 - **Cost Analysis:** Calculate resource costs based on CPU time and storage
 - **Optimization:** Identify optimal grouping strategies for specific requirements
+- **Time Utilization Factor:** Evaluate how efficiently constructions use time resources compared to turnaround time
