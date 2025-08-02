@@ -693,8 +693,8 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
     # Calculate normalized CPU time per event
     cpu_time_per_event = total_cpu_time / request_num_events
 
-    # Keep the original events metric for backward compatibility
-    total_events = sum(group.events_per_job for group in construction)
+    # Calculate total events (should be the requested number of events)
+    total_events = request_num_events
 
     # Calculate overall event throughput using the new approach:
     # 1. Find the maximum events_per_job across all groups (this will be our common baseline)
@@ -739,6 +739,28 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
     write_local_per_event = total_write_local / request_num_events
     write_remote_per_event = total_write_remote / request_num_events
 
+    # Calculate memory scaling metrics
+    total_memory_mb = sum(
+        group.max_memory_mb * group_jobs_needed[group.group_id]
+        for group in construction
+    )
+    memory_per_event_mb = total_memory_mb / request_num_events
+
+    # Calculate network transfer metrics
+    total_network_transfer_mb = total_read_remote + total_write_remote
+    network_transfer_per_event_mb = total_network_transfer_mb / request_num_events
+
+    # Calculate efficiency metrics
+    total_jobs = sum(group_jobs_needed.values())
+    jobs_per_event = total_jobs / request_num_events
+
+    # Calculate wallclock time (assuming 12-hour target)
+    total_wallclock_time = sum(
+        (TARGET_WALLCLOCK_TIME_HOURS * 3600) * group_jobs_needed[group.group_id]
+        for group in construction
+    )
+    wallclock_time_per_event = total_wallclock_time / request_num_events
+
     # Create detailed group information
     group_details = []
     for group in construction:
@@ -746,7 +768,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
             "group_id": group.group_id,
             "tasks": sorted(list(group.task_ids)),
             "events_per_task": group.events_per_job,
-            "total_events": group.events_per_job,  # Fixed: use events_per_job, not len(group.task_ids) * group.events_per_job
+            "total_events": group.events_per_job,  # Events processed by this group per job
             "cpu_seconds": group.cpu_seconds,
             "read_remote_mb": group.read_remote_mb,
             "write_local_mb": group.write_local_mb,
@@ -768,6 +790,14 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
         "read_remote_per_event_mb": read_remote_per_event,
         "write_local_per_event_mb": write_local_per_event,
         "write_remote_per_event_mb": write_remote_per_event,
+        "total_memory_mb": total_memory_mb,
+        "memory_per_event_mb": memory_per_event_mb,
+        "total_network_transfer_mb": total_network_transfer_mb,
+        "network_transfer_per_event_mb": network_transfer_per_event_mb,
+        "total_jobs": total_jobs,
+        "jobs_per_event": jobs_per_event,
+        "total_wallclock_time": total_wallclock_time,
+        "wallclock_time_per_event": wallclock_time_per_event,
         "group_jobs_needed": group_jobs_needed,
         "initial_input_events": construction[0].events_per_job,
         "num_groups": len(construction),
@@ -867,6 +897,14 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Remote Read Data per Event: {metrics['read_remote_per_event_mb']:.3f} MB/event")
         print(f"  Local Write Data per Event: {metrics['write_local_per_event_mb']:.3f} MB/event")
         print(f"  Remote Write Data per Event: {metrics['write_remote_per_event_mb']:.3f} MB/event")
+        print(f"  Total Memory: {metrics['total_memory_mb']:,.0f} MB")
+        print(f"  Memory per Event: {metrics['memory_per_event_mb']:.3f} MB/event")
+        print(f"  Total Network Transfer: {metrics['total_network_transfer_mb']:,.0f} MB")
+        print(f"  Network Transfer per Event: {metrics['network_transfer_per_event_mb']:.3f} MB/event")
+        print(f"  Total Jobs: {metrics['total_jobs']:.0f}")
+        print(f"  Jobs per Event: {metrics['jobs_per_event']:.6f}")
+        print(f"  Total Wallclock Time: {metrics['total_wallclock_time']:,.0f} seconds")
+        print(f"  Wallclock Time per Event: {metrics['wallclock_time_per_event']:.6f} seconds/event")
         print("  Group Jobs Needed:")
         for group_id, jobs_needed in metrics['group_jobs_needed'].items():
             print(f"    {group_id}: {jobs_needed:.1f} jobs")
