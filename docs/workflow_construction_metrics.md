@@ -74,13 +74,12 @@ Workflow construction metrics provide insights into the performance, resource ut
 - **Local write data per event is constant** across all constructions (example 0.537109375 MB/event)
 - **Remote read/write data per event varies** based on grouping strategy and data flow patterns
 - **Total data volumes account for job scaling** - groups that process fewer events per job need more jobs, increasing total data volumes
-- **Throughput decreases** with more groups due to overhead
+- **Throughput depends on resource utilization** - more groups can improve CPU utilization through parallelization, but may increase overhead for homogeneous workflows
 - **Total CPU time accounts for job scaling** - groups that process fewer events per job need more jobs to complete the workflow
 - **CPU time per event provides fair comparison** across different workflow constructions
 - **Job scaling reveals efficiency differences** - some constructions require more total jobs than others
-- **Memory requirements scale with job scaling** - groups with higher memory requirements and more jobs needed will have higher total memory usage
 - **Network transfer varies significantly** - constructions with more data flow between groups have higher network transfer requirements
-- **Jobs per event is a key efficiency metric** - lower values indicate more efficient processing (fewer jobs needed per event)
+- **Jobs per event indicates scheduling efficiency** - higher values may lead to inefficiencies in job scheduling, pre/post-processing, and bookkeeping overhead
 - **Wallclock time is consistent** across constructions since all jobs target the same wallclock time (12 hours)
 
 ## Metric Categories
