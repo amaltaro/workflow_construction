@@ -1,0 +1,117 @@
+Job Scaling Analysis Report
+==========================
+
+Requested Events: 1,000,000
+
+Const 1:
+  Groups: ['group_10', 'group_7']
+  Total Jobs: 1852
+  CPU Time per Event: 320.0000 seconds/event
+  Jobs per Group:
+    group_10: 1041.7 jobs
+    group_7: 810.4 jobs
+
+Const 2:
+  Groups: ['group_9', 'group_8']
+  Total Jobs: 1852
+  CPU Time per Event: 320.0000 seconds/event
+  Jobs per Group:
+    group_9: 1041.7 jobs
+    group_8: 810.4 jobs
+
+Const 3:
+  Groups: ['group_0', 'group_7', 'group_8']
+  Total Jobs: 1852
+  CPU Time per Event: 290.0000 seconds/event
+  Jobs per Group:
+    group_0: 231.5 jobs
+    group_7: 810.4 jobs
+    group_8: 810.4 jobs
+
+Const 4:
+  Groups: ['group_9', 'group_2', 'group_4']
+  Total Jobs: 1852
+  CPU Time per Event: 300.0000 seconds/event
+  Jobs per Group:
+    group_9: 1041.7 jobs
+    group_2: 231.5 jobs
+    group_4: 578.7 jobs
+
+Const 5:
+  Groups: ['group_10', 'group_1', 'group_3']
+  Total Jobs: 1852
+  CPU Time per Event: 280.0000 seconds/event
+  Jobs per Group:
+    group_10: 1041.7 jobs
+    group_1: 463.0 jobs
+    group_3: 347.2 jobs
+
+Const 6:
+  Groups: ['group_6', 'group_4', 'group_7']
+  Total Jobs: 1852
+  CPU Time per Event: 280.0000 seconds/event
+  Jobs per Group:
+    group_6: 463.0 jobs
+    group_4: 578.7 jobs
+    group_7: 810.4 jobs
+
+Const 7:
+  Groups: ['group_5', 'group_3', 'group_8']
+  Total Jobs: 1852
+  CPU Time per Event: 260.0000 seconds/event
+  Jobs per Group:
+    group_5: 694.4 jobs
+    group_3: 347.2 jobs
+    group_8: 810.4 jobs
+
+Const 8:
+  Groups: ['group_0', 'group_2', 'group_4', 'group_7']
+  Total Jobs: 1852
+  CPU Time per Event: 270.0000 seconds/event
+  Jobs per Group:
+    group_0: 231.5 jobs
+    group_2: 231.5 jobs
+    group_4: 578.7 jobs
+    group_7: 810.4 jobs
+
+Const 9:
+  Groups: ['group_0', 'group_1', 'group_3', 'group_8']
+  Total Jobs: 1852
+  CPU Time per Event: 250.0000 seconds/event
+  Jobs per Group:
+    group_0: 231.5 jobs
+    group_1: 463.0 jobs
+    group_3: 347.2 jobs
+    group_8: 810.4 jobs
+
+Const 10:
+  Groups: ['group_5', 'group_2', 'group_3', 'group_4']
+  Total Jobs: 1852
+  CPU Time per Event: 240.0000 seconds/event
+  Jobs per Group:
+    group_5: 694.4 jobs
+    group_2: 231.5 jobs
+    group_3: 347.2 jobs
+    group_4: 578.7 jobs
+
+Const 11:
+  Groups: ['group_6', 'group_1', 'group_3', 'group_4']
+  Total Jobs: 1852
+  CPU Time per Event: 240.0000 seconds/event
+  Jobs per Group:
+    group_6: 463.0 jobs
+    group_1: 463.0 jobs
+    group_3: 347.2 jobs
+    group_4: 578.7 jobs
+
+Const 12:
+  Groups: ['group_0', 'group_1', 'group_2', 'group_3', 'group_4']
+  Total Jobs: 1852
+  CPU Time per Event: 230.0000 seconds/event
+  Jobs per Group:
+    group_0: 231.5 jobs
+    group_1: 463.0 jobs
+    group_2: 231.5 jobs
+    group_3: 347.2 jobs
+    group_4: 578.7 jobs
+

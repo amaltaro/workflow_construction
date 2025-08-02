@@ -5,21 +5,22 @@ Construction 1:
   Groups: ['group_14']
   Number of Groups: 1
   Event Throughput: 0.0031 events/second
-  Total CPU Time: 172800.00 seconds
+  Total CPU Time: 320000000.00 seconds
   Total Data Volumes for one job of each group:
     Remote Read Data: 0.00 MB
-    Local Write Data: 382.32 MB
-    Remote Write Data: 39.55 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 73242.19 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.000 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.073 MB/event
   Memory Utilization: 0.74
   Network Transfer: 0.71 MB
-  Parallel Execution Metrics:
-    Sequential Time: 172800.00 seconds
-    Parallel Time: 172800.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 320000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 11,111,111 MB
+    Total Network Transfer: 73,242 MB
   Group Details:
     group_14:
       Tasks: ['Taskset1', 'Taskset2', 'Taskset3', 'Taskset4', 'Taskset5']
@@ -34,21 +35,22 @@ Construction 2:
   Groups: ['group_0', 'group_13']
   Number of Groups: 2
   Event Throughput: 0.0034 events/second
-  Total CPU Time: 215960.00 seconds
+  Total CPU Time: 290000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 120.51 MB
-    Local Write Data: 1160.08 MB
-    Remote Write Data: 888.94 MB
+    Remote Read Data: 195312.50 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 268554.69 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.195 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.269 MB/event
   Memory Utilization: 0.90
   Network Transfer: 0.90 MB
-  Parallel Execution Metrics:
-    Sequential Time: 215960.00 seconds
-    Parallel Time: 215960.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 290000000.00 seconds
+    Total Wallclock Time: 80016207.46 seconds
+    Total Memory: 10,187,436 MB
+    Total Network Transfer: 463,867 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']
@@ -71,21 +73,22 @@ Construction 3:
   Groups: ['group_5', 'group_11']
   Number of Groups: 2
   Event Throughput: 0.0038 events/second
-  Total CPU Time: 259200.00 seconds
+  Total CPU Time: 260000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 253.12 MB
-    Local Write Data: 892.97 MB
-    Remote Write Data: 485.16 MB
+    Remote Read Data: 292968.75 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 366210.94 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.293 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.366 MB/event
   Memory Utilization: 0.84
   Network Transfer: 1.00 MB
-  Parallel Execution Metrics:
-    Sequential Time: 259200.00 seconds
-    Parallel Time: 259200.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 260000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 9,722,222 MB
+    Total Network Transfer: 659,180 MB
   Group Details:
     group_5:
       Tasks: ['Taskset1', 'Taskset2']
@@ -108,21 +111,22 @@ Construction 4:
   Groups: ['group_9', 'group_8']
   Number of Groups: 2
   Event Throughput: 0.0042 events/second
-  Total CPU Time: 259200.00 seconds
+  Total CPU Time: 240000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 52.73 MB
-    Local Write Data: 764.65 MB
-    Remote Write Data: 131.84 MB
+    Remote Read Data: 48828.12 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 122070.31 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.049 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.122 MB/event
   Memory Utilization: 0.88
   Network Transfer: 0.76 MB
-  Parallel Execution Metrics:
-    Sequential Time: 259200.00 seconds
-    Parallel Time: 259200.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 240000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 9,259,259 MB
+    Total Network Transfer: 170,898 MB
   Group Details:
     group_9:
       Tasks: ['Taskset1', 'Taskset2', 'Taskset3']
@@ -145,21 +149,22 @@ Construction 5:
   Groups: ['group_12', 'group_4']
   Number of Groups: 2
   Event Throughput: 0.0031 events/second
-  Total CPU Time: 345500.00 seconds
+  Total CPU Time: 320000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 168.75 MB
-    Local Write Data: 624.85 MB
-    Remote Write Data: 203.22 MB
+    Remote Read Data: 97656.25 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 170898.44 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.098 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.171 MB/event
   Memory Utilization: 0.87
   Network Transfer: 0.81 MB
-  Parallel Execution Metrics:
-    Sequential Time: 345500.00 seconds
-    Parallel Time: 345500.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 320000000.00 seconds
+    Total Wallclock Time: 80031847.13 seconds
+    Total Memory: 9,841,649 MB
+    Total Network Transfer: 268,555 MB
   Group Details:
     group_12:
       Tasks: ['Taskset1', 'Taskset2', 'Taskset3', 'Taskset4']
@@ -182,21 +187,22 @@ Construction 6:
   Groups: ['group_0', 'group_1', 'group_11']
   Number of Groups: 3
   Event Throughput: 0.0040 events/second
-  Total CPU Time: 302400.00 seconds
+  Total CPU Time: 250000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 675.00 MB
-    Local Write Data: 1666.41 MB
-    Remote Write Data: 1539.84 MB
+    Remote Read Data: 488281.25 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 561523.44 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.488 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.562 MB/event
   Memory Utilization: 0.95
   Network Transfer: 1.20 MB
-  Parallel Execution Metrics:
-    Sequential Time: 302400.00 seconds
-    Parallel Time: 302400.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 250000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 9,259,259 MB
+    Total Network Transfer: 1,049,805 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']
@@ -227,21 +233,22 @@ Construction 7:
   Groups: ['group_0', 'group_6', 'group_8']
   Number of Groups: 3
   Event Throughput: 0.0043 events/second
-  Total CPU Time: 302400.00 seconds
+  Total CPU Time: 230000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 333.98 MB
-    Local Write Data: 1520.51 MB
-    Remote Write Data: 993.16 MB
+    Remote Read Data: 244140.62 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 317382.81 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.244 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.317 MB/event
   Memory Utilization: 0.95
   Network Transfer: 0.95 MB
-  Parallel Execution Metrics:
-    Sequential Time: 302400.00 seconds
-    Parallel Time: 302400.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 230000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 8,796,296 MB
+    Total Network Transfer: 561,523 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']
@@ -272,21 +279,22 @@ Construction 8:
   Groups: ['group_0', 'group_10', 'group_4']
   Number of Groups: 3
   Event Throughput: 0.0034 events/second
-  Total CPU Time: 388800.00 seconds
+  Total CPU Time: 290000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 356.25 MB
-    Local Write Data: 1392.19 MB
-    Remote Write Data: 1064.06 MB
+    Remote Read Data: 292968.75 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 366210.94 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.293 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.366 MB/event
   Memory Utilization: 0.94
   Network Transfer: 1.00 MB
-  Parallel Execution Metrics:
-    Sequential Time: 388800.00 seconds
-    Parallel Time: 388800.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 290000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 9,143,519 MB
+    Total Network Transfer: 659,180 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']
@@ -317,21 +325,22 @@ Construction 9:
   Groups: ['group_5', 'group_2', 'group_8']
   Number of Groups: 3
   Event Throughput: 0.0042 events/second
-  Total CPU Time: 345600.00 seconds
+  Total CPU Time: 240000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 1318.36 MB
-    Local Write Data: 1098.63 MB
-    Remote Write Data: 711.91 MB
+    Remote Read Data: 341796.88 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 415039.06 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.342 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.415 MB/event
   Memory Utilization: 0.92
   Network Transfer: 1.05 MB
-  Parallel Execution Metrics:
-    Sequential Time: 345600.00 seconds
-    Parallel Time: 345600.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 240000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 9,027,778 MB
+    Total Network Transfer: 756,836 MB
   Group Details:
     group_5:
       Tasks: ['Taskset1', 'Taskset2']
@@ -362,21 +371,22 @@ Construction 10:
   Groups: ['group_9', 'group_3', 'group_4']
   Number of Groups: 3
   Event Throughput: 0.0042 events/second
-  Total CPU Time: 432000.00 seconds
+  Total CPU Time: 240000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 309.38 MB
-    Local Write Data: 987.89 MB
-    Remote Write Data: 460.55 MB
+    Remote Read Data: 146484.38 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 219726.56 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.146 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.220 MB/event
   Memory Utilization: 0.94
   Network Transfer: 0.85 MB
-  Parallel Execution Metrics:
-    Sequential Time: 432000.00 seconds
-    Parallel Time: 432000.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 240000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 8,912,037 MB
+    Total Network Transfer: 366,211 MB
   Group Details:
     group_9:
       Tasks: ['Taskset1', 'Taskset2', 'Taskset3']
@@ -407,21 +417,22 @@ Construction 11:
   Groups: ['group_5', 'group_7', 'group_4']
   Number of Groups: 3
   Event Throughput: 0.0038 events/second
-  Total CPU Time: 432000.00 seconds
+  Total CPU Time: 260000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 675.00 MB
-    Local Write Data: 1082.81 MB
-    Remote Write Data: 717.19 MB
+    Remote Read Data: 390625.00 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 463867.19 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.391 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.464 MB/event
   Memory Utilization: 0.89
   Network Transfer: 1.10 MB
-  Parallel Execution Metrics:
-    Sequential Time: 432000.00 seconds
-    Parallel Time: 432000.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 260000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 9,143,519 MB
+    Total Network Transfer: 854,492 MB
   Group Details:
     group_5:
       Tasks: ['Taskset1', 'Taskset2']
@@ -452,21 +463,22 @@ Construction 12:
   Groups: ['group_0', 'group_1', 'group_2', 'group_8']
   Number of Groups: 4
   Event Throughput: 0.0043 events/second
-  Total CPU Time: 388800.00 seconds
+  Total CPU Time: 230000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 1740.23 MB
-    Local Write Data: 1872.07 MB
-    Remote Write Data: 1766.60 MB
+    Remote Read Data: 537109.38 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 610351.56 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.537 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.610 MB/event
   Memory Utilization: 0.98
   Network Transfer: 1.25 MB
-  Parallel Execution Metrics:
-    Sequential Time: 388800.00 seconds
-    Parallel Time: 388800.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 230000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 8,564,815 MB
+    Total Network Transfer: 1,147,461 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']
@@ -505,21 +517,22 @@ Construction 13:
   Groups: ['group_0', 'group_1', 'group_7', 'group_4']
   Number of Groups: 4
   Event Throughput: 0.0040 events/second
-  Total CPU Time: 475200.00 seconds
+  Total CPU Time: 250000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 1096.88 MB
-    Local Write Data: 1856.25 MB
-    Remote Write Data: 1771.88 MB
+    Remote Read Data: 585937.50 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 659179.69 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.586 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.659 MB/event
   Memory Utilization: 0.96
   Network Transfer: 1.29 MB
-  Parallel Execution Metrics:
-    Sequential Time: 475200.00 seconds
-    Parallel Time: 475200.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 250000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 8,680,556 MB
+    Total Network Transfer: 1,245,117 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']
@@ -558,21 +571,22 @@ Construction 14:
   Groups: ['group_0', 'group_6', 'group_3', 'group_4']
   Number of Groups: 4
   Event Throughput: 0.0043 events/second
-  Total CPU Time: 475200.00 seconds
+  Total CPU Time: 230000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 590.62 MB
-    Local Write Data: 1743.75 MB
-    Remote Write Data: 1321.88 MB
+    Remote Read Data: 341796.88 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 415039.06 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.342 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.415 MB/event
   Memory Utilization: 0.98
   Network Transfer: 1.05 MB
-  Parallel Execution Metrics:
-    Sequential Time: 475200.00 seconds
-    Parallel Time: 475200.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 230000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 8,449,074 MB
+    Total Network Transfer: 756,836 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']
@@ -611,21 +625,22 @@ Construction 15:
   Groups: ['group_5', 'group_2', 'group_3', 'group_4']
   Number of Groups: 4
   Event Throughput: 0.0042 events/second
-  Total CPU Time: 518400.00 seconds
+  Total CPU Time: 240000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 1575.00 MB
-    Local Write Data: 1321.88 MB
-    Remote Write Data: 1040.62 MB
+    Remote Read Data: 439453.12 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 512695.31 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.439 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.513 MB/event
   Memory Utilization: 0.96
   Network Transfer: 1.15 MB
-  Parallel Execution Metrics:
-    Sequential Time: 518400.00 seconds
-    Parallel Time: 518400.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 240000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 8,680,556 MB
+    Total Network Transfer: 952,148 MB
   Group Details:
     group_5:
       Tasks: ['Taskset1', 'Taskset2']
@@ -664,21 +679,22 @@ Construction 16:
   Groups: ['group_0', 'group_1', 'group_2', 'group_3', 'group_4']
   Number of Groups: 5
   Event Throughput: 0.0043 events/second
-  Total CPU Time: 561600.00 seconds
+  Total CPU Time: 230000000.00 seconds
   Total Data Volumes for one job of each group:
-    Remote Read Data: 1996.88 MB
-    Local Write Data: 2095.31 MB
-    Remote Write Data: 2095.31 MB
+    Remote Read Data: 634765.62 MB
+    Local Write Data: 708007.81 MB
+    Remote Write Data: 708007.81 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.635 MB/event
     Local Write Data: 0.708 MB/event
     Remote Write Data: 0.708 MB/event
   Memory Utilization: 1.00
   Network Transfer: 1.34 MB
-  Parallel Execution Metrics:
-    Sequential Time: 561600.00 seconds
-    Parallel Time: 561600.00 seconds
-    Parallel Efficiency: 1.000
+  Workflow Performance Metrics:
+    Total CPU Time: 230000000.00 seconds
+    Total Wallclock Time: 80000000.00 seconds
+    Total Memory: 8,217,593 MB
+    Total Network Transfer: 1,342,773 MB
   Group Details:
     group_0:
       Tasks: ['Taskset1']

@@ -131,12 +131,12 @@
       ],
       [
         "Taskset1",
-        "Taskset3",
-        "Taskset5"
+        "Taskset3"
       ],
       [
         "Taskset1",
-        "Taskset3"
+        "Taskset3",
+        "Taskset5"
       ]
     ],
     "events_per_job": 960

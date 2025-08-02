@@ -184,17 +184,17 @@
     },
     "dependency_paths": [
       [
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
         "Taskset3",
         "Taskset4"
-      ],
-      [
-        "Taskset3",
-        "Taskset4",
-        "Taskset5"
-      ],
-      [
-        "Taskset4",
-        "Taskset5"
       ]
     ],
     "events_per_job": 864
@@ -243,11 +243,13 @@
     },
     "dependency_paths": [
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3",
         "Taskset4"
       ],
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3"
       ],
@@ -256,19 +258,17 @@
         "Taskset2"
       ],
       [
-        "Taskset1",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
         "Taskset2",
         "Taskset3",
         "Taskset4"
       ],
       [
-        "Taskset1",
         "Taskset2",
         "Taskset3"
-      ],
-      [
-        "Taskset3",
-        "Taskset4"
       ]
     ],
     "events_per_job": 785
@@ -319,6 +319,12 @@
       [
         "Taskset2",
         "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
         "Taskset4"
       ],
       [
@@ -326,23 +332,17 @@
         "Taskset3"
       ],
       [
-        "Taskset2",
-        "Taskset3",
         "Taskset4",
         "Taskset5"
       ],
       [
+        "Taskset3",
         "Taskset4",
         "Taskset5"
       ],
       [
         "Taskset3",
         "Taskset4"
-      ],
-      [
-        "Taskset3",
-        "Taskset4",
-        "Taskset5"
       ]
     ],
     "events_per_job": 617
@@ -393,14 +393,16 @@
     "dependency_paths": [
       [
         "Taskset3",
-        "Taskset4"
-      ],
-      [
-        "Taskset3",
         "Taskset4",
         "Taskset5"
       ],
       [
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
         "Taskset4",
         "Taskset5"
       ],
@@ -414,6 +416,11 @@
         "Taskset4"
       ],
       [
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset1",
         "Taskset2",
         "Taskset3",
         "Taskset4",
@@ -423,12 +430,6 @@
         "Taskset1",
         "Taskset2",
         "Taskset3"
-      ],
-      [
-        "Taskset1",
-        "Taskset2",
-        "Taskset3",
-        "Taskset4"
       ],
       [
         "Taskset1",
@@ -438,8 +439,7 @@
         "Taskset1",
         "Taskset2",
         "Taskset3",
-        "Taskset4",
-        "Taskset5"
+        "Taskset4"
       ]
     ],
     "events_per_job": 540
@@ -805,6 +805,7 @@
     },
     "dependency_paths": [
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3"
       ],
@@ -813,7 +814,6 @@
         "Taskset2"
       ],
       [
-        "Taskset1",
         "Taskset2",
         "Taskset3"
       ]

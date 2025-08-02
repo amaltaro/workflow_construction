@@ -264,17 +264,17 @@
     },
     "dependency_paths": [
       [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
         "Taskset1",
         "Taskset2"
-      ],
-      [
-        "Taskset1",
-        "Taskset2",
-        "Taskset3"
-      ],
-      [
-        "Taskset2",
-        "Taskset3"
       ]
     ],
     "events_per_job": 1080
