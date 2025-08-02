@@ -696,29 +696,10 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
     # Calculate total events (should be the requested number of events)
     total_events = request_num_events
 
-    # Calculate overall event throughput using the new approach:
-    # 1. Find the maximum events_per_job across all groups (this will be our common baseline)
-    # 2. Calculate how many jobs each group needs to run to process that many events
-    # 3. Calculate total CPU time across all jobs
-    # 4. Event throughput = common_events / total_cpu_time
-    # This approach ensures consistency with group-level throughput calculations
-
-    # Find the maximum events_per_job (this becomes our common baseline)
-    max_events_per_job = max(group.events_per_job for group in construction)
-
-    # Calculate total CPU time across all jobs needed
-    total_cpu_time_all_jobs = 0.0
-    for group in construction:
-        # Calculate how many jobs this group needs to run
-        # If group processes 1440 events per job and we need 4320 events total,
-        # then we need 4320 / 1440 = 3 jobs
-        jobs_needed = max_events_per_job / group.events_per_job
-
-        # Add CPU time for all jobs of this group
-        total_cpu_time_all_jobs += group.cpu_seconds * jobs_needed
-
-    # Event throughput is the common number of events divided by total CPU time
-    event_throughput = max_events_per_job / total_cpu_time_all_jobs if total_cpu_time_all_jobs > 0 else 0.0
+    # Calculate overall event throughput using the total CPU time
+    # Event throughput = request_num_events / total_cpu_time
+    # This provides a consistent measure of events processed per second
+    event_throughput = request_num_events / total_cpu_time
 
     # Calculate total data volumes (accounting for job scaling)
     total_read_remote = sum(

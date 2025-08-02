@@ -13,7 +13,7 @@ Workflow construction metrics provide insights into the performance, resource ut
 | Metric | Description | Formula | Example Value |
 |--------|-------------|---------|---------------|
 | `total_events` | Total events processed | `request_num_events` | 1000000 |
-| `event_throughput` | Events per second | `max_events_per_job / total_cpu_time_all_jobs` | 0.003125 |
+| `event_throughput` | Events per second | `request_num_events / total_cpu_time` | 0.0125 |
 | `total_cpu_time` | Total CPU seconds (accounting for job scaling) | `sum(group.cpu_seconds * jobs_needed)` | 320000000 |
 | `num_groups` | Number of groups | `len(construction)` | 2 |
 | `cpu_time_per_event` | CPU time per event | `total_cpu_time / request_num_events` | 320.0 |
@@ -100,26 +100,16 @@ total_events = request_num_events
 **Formula:** Sum of events per job for each group (each group processes events_per_job as a unit)
 
 #### `event_throughput`
-**Description:** Number of events processed per second through the entire workflow construction. This accounts for groups of different sizes (events_per_job) and potential bottlenecks imposed by them. So this calculation considers scaling factor for groups that might need multiple jobs to process the same number of events processed by different groups.
+**Description:** Number of events processed per second through the entire workflow construction. This provides a consistent measure of overall workflow performance, accounting for job scaling across all groups.
 
 **Calculation:**
 ```python
-# Find the maximum events_per_job across all groups (common baseline)
-max_events_per_job = max(group.events_per_job for group in construction)
-
-# Calculate total CPU time across all jobs needed
-total_cpu_time_all_jobs = 0.0
-for group in construction:
-    jobs_needed = max_events_per_job / group.events_per_job
-    total_cpu_time_all_jobs += group.cpu_seconds * jobs_needed
-
-# Event throughput is the common number of events divided by total CPU time
-event_throughput = max_events_per_job / total_cpu_time_all_jobs
+event_throughput = request_num_events / total_cpu_time
 ```
 
-**Example:** 0.003125 events/second
+**Example:** 0.0125 events/second
 
-**Formula:** `max_events_per_job / total_cpu_time_all_jobs`
+**Formula:** `request_num_events / total_cpu_time`
 
 #### `total_cpu_time`
 **Description:** Total workflow CPU time required across all groups in the construction, accounting for the number of jobs each group needs to run to process the requested number of events.
