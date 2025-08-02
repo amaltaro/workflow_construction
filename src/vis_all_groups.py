@@ -10,7 +10,7 @@ import pandas as pd
 import seaborn as sns
 from pathlib import Path
 from vis_constructions import plot_workflow_topology
-from find_all_groups import create_workflow_from_json
+from find_all_groups import create_workflow_from_json, TARGET_WALLCLOCK_TIME_HOURS
 import networkx as nx
 
 
@@ -299,7 +299,7 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
     axes[0, 1].set_ylabel("Remote Write Data per Event (MB)")
     axes[0, 1].grid(True)
 
-    # Plot 3: Total Stored Data vs Total Events
+    # Plot 3: Total Remote Write Data vs Total Events
     # Create discrete color bins for number of groups
     num_groups_array = np.array(num_groups)
     unique_num_groups = np.unique(num_groups_array)
@@ -308,8 +308,11 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
     n_groups = len(unique_num_groups)
     cmap = plt.colormaps['cool'].resampled(n_groups)
 
+    # Convert MB to GB for better readability
+    total_stored_data_gb = [data / 1024.0 for data in total_stored_data]
+
     # Create scatter plot with discrete colors
-    scatter = axes[1, 0].scatter(total_events, total_stored_data,
+    scatter = axes[1, 0].scatter(total_events, total_stored_data_gb,
                                 c=num_groups_array, cmap=cmap, s=100, alpha=0.7)
 
     # Add colorbar with discrete ticks
@@ -319,7 +322,7 @@ def plot_storage_efficiency(construction_metrics: List[Dict], output_dir: str = 
 
     axes[1, 0].set_title("Total Remote Write Data vs Total Events\n(color indicates number of groups)")
     axes[1, 0].set_xlabel("Total Events")
-    axes[1, 0].set_ylabel("Total Remote Write Data (MB)")
+    axes[1, 0].set_ylabel("Total Remote Write Data (GB)")
     axes[1, 0].grid(True)
 
     # Plot 4: Remote Write Data per Event Distribution
@@ -496,21 +499,21 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
     # Plot remote read data
     input_data = [group["read_remote_mb"] for metrics in construction_metrics
                  for group in metrics["group_details"]]
-    ax.barh(group_positions, input_data, bar_height, label='Remote Read Data', left=left, alpha=0.8,
+    ax.barh(group_positions, input_data, bar_height, label='Remote Read', left=left, alpha=0.8,
             edgecolor='black', linewidth=0.4)
     left += input_data
 
     # Plot local write data
     output_data = [group["write_local_mb"] for metrics in construction_metrics
                   for group in metrics["group_details"]]
-    ax.barh(group_positions, output_data, bar_height, label='Local Write Data', left=left, alpha=0.8,
+    ax.barh(group_positions, output_data, bar_height, label='Local Write', left=left, alpha=0.8,
             edgecolor='black', linewidth=0.4)
     left += output_data
 
     # Plot remote write data
     stored_data = [group["write_remote_mb"] for metrics in construction_metrics
                   for group in metrics["group_details"]]
-    ax.barh(group_positions, stored_data, bar_height, label='Remote Write Data', left=left, alpha=0.8,
+    ax.barh(group_positions, stored_data, bar_height, label='Remote Write', left=left, alpha=0.8,
             edgecolor='black', linewidth=0.4)
 
     for i, (pos, input_val, output_val, stored_val) in enumerate(zip(group_positions, input_data, output_data, stored_data)):
@@ -633,6 +636,196 @@ def plot_job_scaling_analysis(construction_metrics: List[Dict], output_dir: str 
             f.write("\n")
 
 
+def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
+    """Create dedicated time analysis plots for workflow constructions.
+
+    This function creates a comprehensive time analysis considering:
+    1. Baseline (infinite resources) - ideal execution time
+    2. Realistic grid slot constraints (100 and 1000 slots)
+    3. Impact of task dependencies on parallelization
+    """
+    print(f"Creating dedicated time analysis for {len(construction_metrics)} constructions")
+
+    # Helper function to get construction labels
+    if custom_labels:
+        construction_labels = custom_labels
+    else:
+        construction_labels = [f"Const {i+1}" for i in range(len(construction_metrics))]
+
+    # Calculate time metrics for different scenarios
+    baseline_times = []  # Infinite resources
+    grid_100_times = []  # 100 grid slots
+    grid_1000_times = []  # 1000 grid slots
+
+    for metrics in construction_metrics:
+        group_details = metrics["group_details"]
+        group_jobs_needed = metrics["group_jobs_needed"]
+
+        # Calculate baseline time (infinite resources)
+        # This considers task dependencies and group structure
+        baseline_time = calculate_baseline_time(group_details, group_jobs_needed)
+        baseline_times.append(baseline_time)
+
+        # Calculate time with 100 grid slots
+        grid_100_time = calculate_constrained_time(group_details, group_jobs_needed, 100)
+        grid_100_times.append(grid_100_time)
+
+        # Calculate time with 1000 grid slots
+        grid_1000_time = calculate_constrained_time(group_details, group_jobs_needed, 1000)
+        grid_1000_times.append(grid_1000_time)
+
+    # Convert seconds to hours for plotting
+    baseline_hours = [t / 3600 for t in baseline_times]
+    grid_100_hours = [t / 3600 for t in grid_100_times]
+    grid_1000_hours = [t / 3600 for t in grid_1000_times]
+
+    # Create figure with single plot
+    fig, ax = plt.subplots(1, 1, figsize=(16, 8))
+
+    # Set up bar positions
+    x = np.arange(len(construction_metrics))
+    width = 0.25
+
+    # Plot three bars for each construction (using hours)
+    bars1 = ax.bar(x - width, baseline_hours, width, label='Baseline (Infinite)', color='lightgreen', alpha=0.8)
+    bars2 = ax.bar(x, grid_100_hours, width, label='100 Grid Slots', color='red', alpha=0.8)
+    bars3 = ax.bar(x + width, grid_1000_hours, width, label='1000 Grid Slots', color='orange', alpha=0.8)
+
+    ax.set_xlabel("Workflow Construction")
+    ax.set_ylabel("Execution Time (hours)")
+    ax.set_title("Workflow Execution Time Analysis\n(Considering Task Dependencies and Grid Constraints)")
+    ax.set_xticks(x)
+    ax.set_xticklabels(construction_labels, rotation=45)
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    # Set y-axis to hours
+    ax.set_ylabel("Execution Time (hours)")
+
+    # Add value labels on bars
+    for i, (bar1, bar2, bar3, h1, h2, h3) in enumerate(zip(bars1, bars2, bars3, baseline_hours, grid_100_hours, grid_1000_hours)):
+        ax.text(bar1.get_x() + bar1.get_width()/2, bar1.get_height() + max(baseline_hours)*0.01,
+                f'{h1:.1f}h', ha='center', va='bottom', fontsize=8, fontweight='bold')
+        ax.text(bar2.get_x() + bar2.get_width()/2, bar2.get_height() + max(grid_100_hours)*0.01,
+                f'{h2:.1f}h', ha='center', va='bottom', fontsize=8, fontweight='bold')
+        ax.text(bar3.get_x() + bar3.get_width()/2, bar3.get_height() + max(grid_1000_hours)*0.01,
+                f'{h3:.1f}h', ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "time_analysis.png"))
+    plt.close()
+
+    # Create a detailed time analysis report
+    with open(os.path.join(output_dir, "time_analysis.txt"), "w") as f:
+        f.write("Workflow Time Analysis Report\n")
+        f.write("===========================\n\n")
+
+        for i, metrics in enumerate(construction_metrics, 1):
+            # Use custom label if provided, otherwise use default "Construction" label
+            if custom_labels and i <= len(custom_labels):
+                construction_label = custom_labels[i-1]
+            else:
+                construction_label = f"Construction {i}"
+            f.write(f"{construction_label}:\n")
+            f.write(f"  Groups: {metrics['groups']}\n")
+            f.write(f"  Number of Groups: {metrics['num_groups']}\n")
+            f.write(f"  Baseline Time (Infinite Resources): {baseline_hours[i-1]:.1f} hours\n")
+            f.write(f"  Time with 100 Grid Slots: {grid_100_hours[i-1]:.1f} hours\n")
+            f.write(f"  Time with 1000 Grid Slots: {grid_1000_hours[i-1]:.1f} hours\n")
+            f.write("  Group Jobs Needed:\n")
+            for group_id, jobs_needed in metrics['group_jobs_needed'].items():
+                f.write(f"    {group_id}: {jobs_needed:.1f} jobs\n")
+            f.write("\n")
+
+
+def calculate_baseline_time(group_details: List[Dict], group_jobs_needed: Dict[str, float]) -> float:
+    """Calculate baseline execution time with infinite resources.
+
+    This considers task dependencies and group structure to determine
+    the minimum time needed to complete the workflow.
+    """
+    if len(group_details) == 1:
+        # Single group: all jobs can run in parallel
+        # Time = wallclock time for one job
+        return TARGET_WALLCLOCK_TIME_HOURS * 3600
+    else:
+        # Multiple groups: must consider dependencies
+        # For now, assume sequential execution of groups
+        # TODO: Implement proper DAG-based dependency analysis
+        total_time = 0
+        for group in group_details:
+            group_id = group["group_id"]
+            jobs_needed = group_jobs_needed[group_id]
+            # Each group takes wallclock time to complete all its jobs
+            group_time = TARGET_WALLCLOCK_TIME_HOURS * 3600
+            total_time += group_time
+        return total_time
+
+
+def calculate_constrained_time(group_details: List[Dict], group_jobs_needed: Dict[str, float], grid_slots: int) -> float:
+    """Calculate execution time with limited grid slots.
+
+    This simulates realistic grid constraints and job scheduling,
+    accounting for event dependencies between groups.
+    """
+    if len(group_details) == 1:
+        # Single group: all jobs can run in parallel up to grid slot limit
+        group_id = group_details[0]["group_id"]
+        jobs_needed = group_jobs_needed[group_id]
+
+        # Calculate how many job batches we need (ceiling division)
+        batches_needed = max(1, int((jobs_needed + grid_slots - 1) / grid_slots))
+        return batches_needed * TARGET_WALLCLOCK_TIME_HOURS * 3600
+    else:
+        # Multiple groups: must account for event dependencies
+        total_time = 0
+        cumulative_events_processed = 0
+
+        for i, group in enumerate(group_details):
+            group_id = group["group_id"]
+            jobs_needed = group_jobs_needed[group_id]
+            events_per_job = group["events_per_task"]  # events per job for this group
+
+            if i == 0:
+                # First group: can start immediately
+                # Calculate batches needed for this group
+                batches_needed = max(1, int((jobs_needed + grid_slots - 1) / grid_slots))
+                group_time = batches_needed * TARGET_WALLCLOCK_TIME_HOURS * 3600
+                total_time += group_time
+                cumulative_events_processed = jobs_needed * events_per_job
+            else:
+                # Subsequent groups: must wait for enough events from previous group
+                # Find the previous group that feeds into this one
+                prev_group = group_details[i-1]
+                prev_events_per_job = prev_group["events_per_task"]
+
+                # Calculate how many events this group needs to start
+                # This is typically the events_per_job of the current group
+                events_needed_to_start = events_per_job
+
+                # Calculate how many jobs from previous group must complete
+                jobs_from_prev_needed = max(1, int((events_needed_to_start + prev_events_per_job - 1) / prev_events_per_job))
+
+                # Calculate time to get enough events from previous group
+                # We need to calculate how long it takes for the previous group to produce enough events
+                # This is the time it takes for the required number of jobs from the previous group to complete
+                time_for_prev_events = (jobs_from_prev_needed / grid_slots) * TARGET_WALLCLOCK_TIME_HOURS * 3600
+
+                # Time for current group to complete
+                current_batches_needed = max(1, int((jobs_needed + grid_slots - 1) / grid_slots))
+                time_for_current_group = current_batches_needed * TARGET_WALLCLOCK_TIME_HOURS * 3600
+
+                # Total time is the maximum of:
+                # 1. Time to get enough events from previous group
+                # 2. Time for current group to complete
+                group_total_time = max(time_for_prev_events, time_for_current_group)
+                total_time += group_total_time
+
+                cumulative_events_processed += jobs_needed * events_per_job
+
+        return total_time
+
+
 def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
     """Create a comprehensive comparison of workflow constructions.
 
@@ -672,7 +865,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
 
     # Create a figure with multiple subplots - now with fixed, professional proportions
     fig = plt.figure(figsize=(20, 20))
-    gs = fig.add_gridspec(5, 2, height_ratios=[1, 1, 1, 1, 1])  # Equal height ratios for all rows
+    gs = fig.add_gridspec(4, 2, height_ratios=[1, 1, 1, 1])  # Equal height ratios for all rows
 
     # Helper function to get construction labels
     if custom_labels:
@@ -853,74 +1046,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax5.set_xticklabels(construction_labels, rotation=45)
     ax5.grid(True)
 
-    # 9. Parallelism Analysis
-    ax9 = fig.add_subplot(gs[4, 0])
-    parallelism_metrics = []
 
-    for metrics in construction_metrics:
-        # Calculate metrics for parallel execution analysis
-        group_details = metrics["group_details"]
-
-        # Calculate sequential execution time (sum of all CPU times)
-        sequential_time = sum(group["cpu_seconds"] for group in group_details)
-
-        # Calculate parallel execution time by following the DAG dependencies
-        parallel_time = 0
-
-        # Create a mapping of group dependencies
-        group_deps = {}
-        for i, group in enumerate(group_details):
-            deps = []
-            for j, prev_group in enumerate(group_details[:i]):
-                # If this group needs input from a previous group
-                if group["read_remote_mb"] > 0 and prev_group["write_local_mb"] > 0:
-                    deps.append(j)
-            group_deps[i] = deps
-
-        # Calculate the longest path through the DAG
-        def get_longest_path(group_idx, visited=None):
-            if visited is None:
-                visited = set()
-            if group_idx in visited:
-                return 0
-            visited.add(group_idx)
-
-            # Get all dependent groups
-            next_groups = [i for i, deps in group_deps.items() if group_idx in deps]
-            if not next_groups:
-                return group_details[group_idx]["cpu_seconds"]
-
-            # Recursively find the longest path
-            max_path = 0
-            for next_group in next_groups:
-                path_length = get_longest_path(next_group, visited.copy())
-                max_path = max(max_path, path_length)
-
-            return group_details[group_idx]["cpu_seconds"] + max_path
-
-        # Find the longest path starting from each group
-        parallel_time = max(get_longest_path(i) for i in range(len(group_details)))
-
-        # Calculate parallel efficiency as ratio of sequential to parallel time
-        # Higher ratio means better parallelization
-        parallel_efficiency = sequential_time / parallel_time if parallel_time > 0 else 1.0
-
-        # Store metrics
-        parallelism_metrics.append({
-            "sequential_time": sequential_time,
-            "parallel_time": parallel_time,
-            "parallel_efficiency": parallel_efficiency
-        })
-
-    # Plot parallel efficiency
-    parallel_efficiency = [m["parallel_efficiency"] for m in parallelism_metrics]
-    ax9.bar(range(len(construction_metrics)), parallel_efficiency)
-    ax9.set_xlabel("Workflow Construction")
-    ax9.set_ylabel("Parallel Efficiency")
-    ax9.set_title("Parallel Execution Analysis\n(Efficiency = Sequential Time / Parallel Time)")
-    ax9.set_xticks(range(len(construction_metrics)))
-    ax9.set_xticklabels(construction_labels, rotation=45)
-    ax9.grid(True)
 
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "workflow_comparison.png"))
@@ -953,10 +1079,11 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             f.write(f"  Memory Utilization: {memory_utilization[i-1]:.2f}\n")
             f.write(f"  Network Transfer: {network_transfer[i-1]:.2f} MB\n")
            # f.write(f"  Estimated Cost: ${costs[i-1]:.2f}\n")
-            f.write("  Parallel Execution Metrics:\n")
-            f.write(f"    Sequential Time: {parallelism_metrics[i-1]['sequential_time']:.2f} seconds\n")
-            f.write(f"    Parallel Time: {parallelism_metrics[i-1]['parallel_time']:.2f} seconds\n")
-            f.write(f"    Parallel Efficiency: {parallelism_metrics[i-1]['parallel_efficiency']:.3f}\n")
+            f.write("  Workflow Performance Metrics:\n")
+            f.write(f"    Total CPU Time: {metrics['total_cpu_time']:.2f} seconds\n")
+            f.write(f"    Total Wallclock Time: {metrics['total_wallclock_time']:.2f} seconds\n")
+            f.write(f"    Total Memory: {metrics['total_memory_mb']:,.0f} MB\n")
+            f.write(f"    Total Network Transfer: {metrics['total_network_transfer_mb']:,.0f} MB\n")
             f.write("  Group Details:\n")
             for group in metrics["group_details"]:
                 f.write(f"    {group['group_id']}:\n")
@@ -1052,16 +1179,19 @@ def visualize_toy_model(groups: List[Dict],
     # 4. Workflow constructions overview
     plot_workflow_constructions(toy_constructions, str(output_path), custom_labels)
 
-    # 5. Resource utilization analysis (using filtered groups)
+    # 5. Time analysis (dedicated plots)
+    plot_time_analysis(toy_constructions, str(output_path), custom_labels)
+
+    # 6. Resource utilization analysis (using filtered groups)
     plot_resource_utilization(toy_groups, str(output_path))
 
-    # 6. Throughput analysis (using filtered groups)
+    # 7. Throughput analysis (using filtered groups)
     plot_throughput_analysis(toy_groups, str(output_path))
 
-    # 7. Dependency analysis (using filtered groups)
+    # 8. Dependency analysis (using filtered groups)
     plot_dependency_analysis(toy_groups, str(output_path))
 
-    # 8. Workflow topology visualization
+    # 9. Workflow topology visualization
     plot_workflow_topology(toy_constructions, str(output_path),
                           Path(template_path).name, dag)
 
@@ -1104,6 +1234,7 @@ def visualize_groups(groups: List[Dict],
     plot_workflow_comparison(construction_metrics, output_path)
     plot_group_data_volume_analysis(construction_metrics, output_path)  # New dedicated plot
     plot_job_scaling_analysis(construction_metrics, output_path)  # New job scaling analysis
+    plot_time_analysis(construction_metrics, output_path)  # New dedicated time analysis
     plot_workflow_topology(construction_metrics, output_path, template_path, dag)
 
     # Save raw data for further analysis
