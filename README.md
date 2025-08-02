@@ -164,8 +164,11 @@ The workflow construction analysis system calculates comprehensive metrics for b
 ### Available Documentation
 
 📖 **[Workflow Construction Metrics](docs/workflow_construction_metrics.md)** - Detailed metrics for workflow-level analysis
+
 📖 **[Group Metrics](docs/group_metrics.md)** - Comprehensive group-level metrics and calculations
+
 📖 **[Visualization and Analysis](docs/visualization_analysis.md)** - Visualization tools and analysis capabilities
+
 
 ### Key Insights
 

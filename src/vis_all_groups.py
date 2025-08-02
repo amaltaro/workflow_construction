@@ -542,6 +542,97 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
     plt.close()
 
 
+def plot_job_scaling_analysis(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
+    """Create a visualization showing job scaling for different workflow constructions.
+
+    This plot shows how many jobs each group needs to run to process the requested
+    number of events, helping to understand the scaling behavior of different
+    workflow constructions.
+    """
+    print(f"Creating job scaling analysis for {len(construction_metrics)} constructions")
+
+    # Helper function to get construction labels
+    if custom_labels:
+        construction_labels = custom_labels
+    else:
+        construction_labels = [f"Const {i+1}" for i in range(len(construction_metrics))]
+
+    # Create figure
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
+
+    # Plot 1: Total jobs needed per construction
+    total_jobs = []
+    for metrics in construction_metrics:
+        total_jobs.append(sum(metrics["group_jobs_needed"].values()))
+
+    bars = ax1.bar(range(len(construction_metrics)), total_jobs, alpha=0.7)
+    ax1.set_xlabel("Workflow Construction")
+    ax1.set_ylabel("Total Jobs Needed")
+    ax1.set_title("Total Jobs Required per Workflow Construction")
+    ax1.set_xticks(range(len(construction_metrics)))
+    ax1.set_xticklabels(construction_labels, rotation=45)
+    ax1.grid(True, alpha=0.3)
+
+    # Add value labels on bars
+    for i, (bar, total) in enumerate(zip(bars, total_jobs)):
+        ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(total_jobs)*0.01,
+                f'{total:.0f}', ha='center', va='bottom', fontweight='bold')
+
+    # Plot 2: Jobs per group (stacked bar chart)
+    # Get all unique group IDs across all constructions
+    all_group_ids = set()
+    for metrics in construction_metrics:
+        all_group_ids.update(metrics["group_jobs_needed"].keys())
+    all_group_ids = sorted(all_group_ids)
+
+    # Create stacked bar chart
+    bottom = np.zeros(len(construction_metrics))
+    colors = plt.cm.Set3(np.linspace(0, 1, len(all_group_ids)))
+
+    for i, group_id in enumerate(all_group_ids):
+        jobs_data = []
+        for metrics in construction_metrics:
+            jobs_data.append(metrics["group_jobs_needed"].get(group_id, 0))
+
+        ax2.bar(range(len(construction_metrics)), jobs_data, bottom=bottom,
+                label=group_id, color=colors[i], alpha=0.8)
+        bottom += np.array(jobs_data)
+
+    ax2.set_xlabel("Workflow Construction")
+    ax2.set_ylabel("Jobs per Group")
+    ax2.set_title("Job Distribution Across Groups")
+    ax2.set_xticks(range(len(construction_metrics)))
+    ax2.set_xticklabels(construction_labels, rotation=45)
+    ax2.legend(title="Group ID", bbox_to_anchor=(1.05, 1), loc='upper left')
+    ax2.grid(True, alpha=0.3)
+
+    # Add total value labels on stacked bars
+    for i, total in enumerate(total_jobs):
+        ax2.text(i, total + max(total_jobs)*0.01, f'{total:.0f}',
+                ha='center', va='bottom', fontweight='bold')
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "job_scaling_analysis.png"), dpi=300, bbox_inches='tight')
+    plt.close()
+
+    # Create a detailed text report
+    with open(os.path.join(output_dir, "job_scaling_report.txt"), "w") as f:
+        f.write("Job Scaling Analysis Report\n")
+        f.write("==========================\n\n")
+        f.write(f"Requested Events: {construction_metrics[0]['request_num_events']:,}\n\n")
+
+        for i, metrics in enumerate(construction_metrics, 1):
+            construction_label = construction_labels[i-1] if i <= len(construction_labels) else f"Construction {i}"
+            f.write(f"{construction_label}:\n")
+            f.write(f"  Groups: {metrics['groups']}\n")
+            f.write(f"  Total Jobs: {sum(metrics['group_jobs_needed'].values()):.0f}\n")
+            f.write(f"  CPU Time per Event: {metrics['cpu_time_per_event']:.4f} seconds/event\n")
+            f.write("  Jobs per Group:\n")
+            for group_id, jobs_needed in metrics['group_jobs_needed'].items():
+                f.write(f"    {group_id}: {jobs_needed:.1f} jobs\n")
+            f.write("\n")
+
+
 def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
     """Create a comprehensive comparison of workflow constructions.
 
@@ -954,6 +1045,9 @@ def visualize_toy_model(groups: List[Dict],
     # 3. Storage efficiency analysis
     plot_storage_efficiency(toy_constructions, str(output_path))
 
+    # 4. Job scaling analysis
+    plot_job_scaling_analysis(toy_constructions, str(output_path), custom_labels)
+
     # 4. Workflow constructions overview
     plot_workflow_constructions(toy_constructions, str(output_path), custom_labels)
 
@@ -1008,6 +1102,7 @@ def visualize_groups(groups: List[Dict],
     plot_storage_efficiency(construction_metrics, output_path)
     plot_workflow_comparison(construction_metrics, output_path)
     plot_group_data_volume_analysis(construction_metrics, output_path)  # New dedicated plot
+    plot_job_scaling_analysis(construction_metrics, output_path)  # New job scaling analysis
     plot_workflow_topology(construction_metrics, output_path, template_path, dag)
 
     # Save raw data for further analysis

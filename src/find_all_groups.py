@@ -665,11 +665,12 @@ def find_all_workflow_constructions(grouper: TaskGrouper) -> List[List[GroupMetr
     return valid_constructions
 
 
-def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
+def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_events: int) -> dict:
     """Calculate overall workflow metrics for a given construction.
 
     Args:
         construction: List of groups representing a workflow construction
+        request_num_events: Total number of events to process in the workflow
 
     Returns:
         Dictionary containing workflow metrics
@@ -677,11 +678,23 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
     if not construction:
         raise RuntimeError("No construction provided")
 
-    # Calculate total events and total CPU time
-    # Each group processes events_per_job events as a unit
-    # Note: This is for display purposes only - the actual throughput calculation uses events_per_job
+    # Calculate how many jobs each group needs to run to process the requested events
+    group_jobs_needed = {}
+    for group in construction:
+        jobs_needed = request_num_events / group.events_per_job
+        group_jobs_needed[group.group_id] = jobs_needed
+
+    # Calculate total CPU time for the entire workflow (accounting for job scaling)
+    total_cpu_time = sum(
+        group.cpu_seconds * group_jobs_needed[group.group_id]
+        for group in construction
+    )
+
+    # Calculate normalized CPU time per event
+    cpu_time_per_event = total_cpu_time / request_num_events
+
+    # Keep the original events metric for backward compatibility
     total_events = sum(group.events_per_job for group in construction)
-    total_cpu_time = sum(group.cpu_seconds for group in construction)
 
     # Calculate overall event throughput using the new approach:
     # 1. Find the maximum events_per_job across all groups (this will be our common baseline)
@@ -735,8 +748,10 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
         })
 
     return {
+        "request_num_events": request_num_events,
         "total_events": total_events,
         "total_cpu_time": total_cpu_time,
+        "cpu_time_per_event": cpu_time_per_event,
         "event_throughput": event_throughput,
         "total_read_remote_mb": total_read_remote,
         "total_write_local_mb": total_write_local,
@@ -744,6 +759,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics]) -> dict:
         "read_remote_per_event_mb": read_remote_per_event,
         "write_local_per_event_mb": write_local_per_event,
         "write_remote_per_event_mb": write_remote_per_event,
+        "group_jobs_needed": group_jobs_needed,
         "initial_input_events": construction[0].events_per_job,
         "num_groups": len(construction),
         "groups": [group.group_id for group in construction],
@@ -760,6 +776,8 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
     Returns:
         Tuple of (List of group metrics dictionaries, Dictionary of tasks, List of construction metrics, DAG)
     """
+    # Get RequestNumEvents with fallback for backward compatibility
+    request_num_events = workflow_data.get("RequestNumEvents", 1000000)
     # Create tasks dictionary
     tasks = {}
     for i in range(1, workflow_data["NumTasks"] + 1):
@@ -822,15 +840,17 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
     all_constructions = find_all_workflow_constructions(grouper)
 
     # Calculate metrics for each construction
-    construction_metrics = [calculate_workflow_metrics(construction) for construction in all_constructions]
+    construction_metrics = [calculate_workflow_metrics(construction, request_num_events) for construction in all_constructions]
 
     # Print the results
+    print(f"\nRequested Events: {request_num_events:,}")
     print("\nPossible workflow constructions and their metrics:")
     for i, metrics in enumerate(construction_metrics, 1):
         print(f"\nConstruction {i}:")
         print(f"  Groups: {metrics['groups']}")
-        print(f"  Total Events: {metrics['total_events']}")
-        print(f"  Total CPU Time: {metrics['total_cpu_time']:.2f} seconds")
+        print(f"  Requested Events: {metrics['request_num_events']:,}")
+        print(f"  Total CPU Time: {metrics['total_cpu_time']:,.2f} seconds")
+        print(f"  CPU Time per Event: {metrics['cpu_time_per_event']:.4f} seconds/event")
         print(f"  Event Throughput: {metrics['event_throughput']:.4f} events/second")
         print(f"  Total Remote Read Data: {metrics['total_read_remote_mb']:.2f} MB")
         print(f"  Total Local Write Data: {metrics['total_write_local_mb']:.2f} MB")
@@ -838,6 +858,9 @@ def create_workflow_from_json(workflow_data: dict) -> Tuple[List[dict], Dict[str
         print(f"  Remote Read Data per Event: {metrics['read_remote_per_event_mb']:.3f} MB/event")
         print(f"  Local Write Data per Event: {metrics['write_local_per_event_mb']:.3f} MB/event")
         print(f"  Remote Write Data per Event: {metrics['write_remote_per_event_mb']:.3f} MB/event")
+        print("  Group Jobs Needed:")
+        for group_id, jobs_needed in metrics['group_jobs_needed'].items():
+            print(f"    {group_id}: {jobs_needed:.1f} jobs")
         print("  Group Details:")
         for group in metrics['group_details']:
             print(f"    {group['group_id']}:")

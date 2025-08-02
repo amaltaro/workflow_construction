@@ -14,8 +14,9 @@ Workflow construction metrics provide insights into the performance, resource ut
 |--------|-------------|---------|---------------|
 | `total_events` | Total events processed | `sum(group.events_per_job)` | 5348 |
 | `event_throughput` | Events per second | `max_events_per_job / total_cpu_time_all_jobs` | 0.003125 |
-| `total_cpu_time` | Total CPU seconds | `sum(group.cpu_seconds)` | 345560 |
+| `total_cpu_time` | Total CPU seconds (accounting for job scaling) | `sum(group.cpu_seconds * jobs_needed)` | 320000000 |
 | `num_groups` | Number of groups | `len(construction)` | 2 |
+| `cpu_time_per_event` | CPU time per event | `total_cpu_time / request_num_events` | 320.0 |
 
 ### Data Volume Metrics
 
@@ -33,12 +34,21 @@ Workflow construction metrics provide insights into the performance, resource ut
 | `write_local_per_event_mb` | Local write per event | `sum(group.write_local_per_event_mb)` | 0.7080078125 |
 | `write_remote_per_event_mb` | Remote write per event | `sum(group.write_remote_per_event_mb)` | 0.1708984375 |
 
+### Job Scaling Metrics
+
+| Metric | Description | Formula | Example Value |
+|--------|-------------|---------|---------------|
+| `request_num_events` | Total events requested | From JSON template | 1000000 |
+| `group_jobs_needed` | Jobs needed per group | `request_num_events / group.events_per_job` | {"group_0": 231.5, "group_1": 463.0} |
+
 ### Key Insights
 
 - **Output data per event is constant** across all constructions (0.7080078125 MB/event)
 - **Throughput decreases** with more groups due to overhead
 - **Stored data per event varies** based on grouping strategy and exit points
-- **Total events varies** based on events_per_job of each group
+- **Total CPU time accounts for job scaling** - groups that process fewer events per job need more jobs to complete the workflow
+- **CPU time per event provides fair comparison** across different workflow constructions
+- **Job scaling reveals efficiency differences** - some constructions require more total jobs than others
 
 ## Metric Categories
 
@@ -78,17 +88,61 @@ event_throughput = max_events_per_job / total_cpu_time_all_jobs
 
 **Formula:** `max_events_per_job / total_cpu_time_all_jobs`
 
-#### `total_cpu_time` (FIXME: how about calculating this based on the total number of events requested?)
-**Description:** Total CPU time required across all groups in the construction, for a single instance of each group.
+#### `total_cpu_time`
+**Description:** Total workflow CPU time required across all groups in the construction, accounting for the number of jobs each group needs to run to process the requested number of events.
 
 **Calculation:**
 ```python
-total_cpu_time = sum(group.cpu_seconds for group in construction)
+# Calculate how many jobs each group needs to run
+group_jobs_needed = {}
+for group in construction:
+    jobs_needed = request_num_events / group.events_per_job
+    group_jobs_needed[group.group_id] = jobs_needed
+
+# Calculate total CPU time for the entire workflow
+total_cpu_time = sum(
+    group.cpu_seconds * group_jobs_needed[group.group_id]
+    for group in construction
+)
 ```
 
-**Example:** 345560 seconds
+**Example:** 320,000,000 seconds (for 1,000,000 requested events, accounting for job scaling)
 
-**Formula:** Sum of CPU seconds for all groups
+**Formula:** `sum(group.cpu_seconds * jobs_needed)` where `jobs_needed = request_num_events / group.events_per_job`
+
+#### `cpu_time_per_event`
+**Description:** Normalized CPU time per event, calculated by dividing the total CPU time by the requested number of events.
+
+**Calculation:**
+```python
+cpu_time_per_event = total_cpu_time / request_num_events
+```
+
+**Example:** 320.0 seconds/event (for 1,000,000 requested events)
+
+**Formula:** `total_cpu_time / request_num_events`
+
+#### `request_num_events`
+**Description:** Total number of events requested to be processed by the workflow, specified in the JSON template.
+
+**Example:** 1,000,000 events
+
+**Source:** `RequestNumEvents` field in the JSON template
+
+#### `group_jobs_needed`
+**Description:** Dictionary mapping each group to the number of jobs it needs to run to process the requested number of events.
+
+**Calculation:**
+```python
+group_jobs_needed = {}
+for group in construction:
+    jobs_needed = request_num_events / group.events_per_job
+    group_jobs_needed[group.group_id] = jobs_needed
+```
+
+**Example:** `{"group_0": 231.5, "group_1": 463.0, "group_2": 231.5}`
+
+**Formula:** `request_num_events / group.events_per_job` for each group
 
 #### `initial_input_events`
 **Description:** Number of events that enter the first group in the construction.
