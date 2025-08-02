@@ -519,7 +519,7 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
 
     ax.set_ylabel("Workflow Construction and Groups")
     ax.set_xlabel("Total Data Volume (MB)")
-    ax.set_title(f"Group-level Data Volume Analysis\n(Data Volumes per Group - {len(construction_metrics)} Constructions)", fontsize=14, fontweight='bold')
+    ax.set_title(f"Group-level Data Volume Analysis\n(One job per Group - {len(construction_metrics)} Constructions)", fontsize=14, fontweight='bold')
     ax.set_yticks(group_positions)
     ax.set_yticklabels(group_labels, fontsize=8)  # Reduced font size for better fit
     ax.legend(loc='best', fontsize=10)  # or "upper right", etc
@@ -700,12 +700,12 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax2 = fig.add_subplot(gs[0, 1])
     x = np.arange(len(construction_metrics))
     width = 0.25
-    ax2.bar(x - width, input_data_per_event, width, label='Remote Read Data/Event')
-    ax2.bar(x, output_data_per_event, width, label='Local Write Data/Event')
-    ax2.bar(x + width, stored_data_per_event, width, label='Remote Write Data/Event')
+    ax2.bar(x - width, input_data_per_event, width, label='Remote Read')
+    ax2.bar(x, output_data_per_event, width, label='Local Write')
+    ax2.bar(x + width, stored_data_per_event, width, label='Remote Write')
     ax2.set_xlabel("Workflow Construction")
     ax2.set_ylabel("Data Volume per Event (MB)")
-    ax2.set_title("Data Flow Analysis\n(Per-Event Data Volumes)")
+    ax2.set_title("Data Volume Analysis Per Event")
     ax2.set_xticks(x)
     ax2.set_xticklabels(construction_labels, rotation=45)
     ax2.legend()
@@ -717,27 +717,28 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     width = 0.6
     bottom = np.zeros(len(construction_metrics))
 
+    # Convert MB to GB for better readability
+    remote_read_gb = [m["total_read_remote_mb"] / 1024.0 for m in construction_metrics]
+    local_write_gb = [m["total_write_local_mb"] / 1024.0 for m in construction_metrics]
+    remote_write_gb = [m["total_write_remote_mb"] / 1024.0 for m in construction_metrics]
+
     # Plot each data type as a layer in the stack
-    ax10.bar(x, [m["total_read_remote_mb"] for m in construction_metrics], width,
-            label='Remote Read Data', bottom=bottom)
-    bottom += [m["total_read_remote_mb"] for m in construction_metrics]
+    ax10.bar(x, remote_read_gb, width, label='Remote Read', bottom=bottom)
+    bottom += remote_read_gb
 
-    ax10.bar(x, [m["total_write_local_mb"] for m in construction_metrics], width,
-            label='Local Write Data', bottom=bottom)
-    bottom += [m["total_write_local_mb"] for m in construction_metrics]
+    ax10.bar(x, local_write_gb, width, label='Local Write', bottom=bottom)
+    bottom += local_write_gb
 
-    ax10.bar(x, [m["total_write_remote_mb"] for m in construction_metrics], width,
-            label='Remote Write Data', bottom=bottom)
+    ax10.bar(x, remote_write_gb, width, label='Remote Write', bottom=bottom)
 
     # Add total value labels on top of each bar
-    totals = [m["total_read_remote_mb"] + m["total_write_local_mb"] + m["total_write_remote_mb"]
-             for m in construction_metrics]
-    for i, total in enumerate(totals):
+    totals_gb = [rr + lw + rw for rr, lw, rw in zip(remote_read_gb, local_write_gb, remote_write_gb)]
+    for i, total in enumerate(totals_gb):
         ax10.text(i, total, f'{total:.1f}', ha='center', va='bottom')
 
     ax10.set_xlabel("Workflow Construction")
-    ax10.set_ylabel("Total Data Volume (MB)")
-    ax10.set_title("Total Data Volume Analysis\n(Aggregated Data Volumes for one job of each group)")
+    ax10.set_ylabel("Total Data Volume (GB)")
+    ax10.set_title("Total Workflow Data Volume Analysis")
     ax10.set_xticks(x)
     ax10.set_xticklabels(construction_labels, rotation=45)
     ax10.legend()
