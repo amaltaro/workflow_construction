@@ -542,15 +542,36 @@ The time analysis provides comprehensive insights into execution time under diff
 
 ### **Time Analysis Visualization (`time_analysis.png`)**
 This dedicated plot shows execution time for three scenarios:
-- **Baseline (Infinite Resources):** Ideal execution time considering task dependencies
+- **Baseline (Infinite Resources):** Ideal execution time considering task dependencies and sequential workflow requirements
 - **100 Grid Slots:** Realistic constraint showing execution time with limited resources  
 - **1000 Grid Slots:** More generous constraint showing improved execution time
 
 ### **Key Insights:**
-- **Single-Group Constructions:** Complete in ~12 hours baseline, but resource constraints can significantly increase execution time
-- **Multi-Group Constructions:** Take 5x longer baseline (~60 hours) due to sequential dependencies
+- **Dependency-Aware Baseline:** The baseline calculation now properly considers that groups must wait for their input groups to complete enough jobs to provide the required events
+- **Event-Based Dependencies:** Groups can only start processing when their parent groups have produced enough events to meet the `events_per_job` requirement
+- **Sequential Execution:** Multi-group workflows with dependencies require sequential execution, leading to longer baseline times
 - **Resource Impact:** Grid slot limitations can dramatically affect execution time, especially for single-group constructions
-- **Event Dependencies:** The calculation properly accounts for event dependencies between groups (jobs can only start once enough events have been processed from previous groups). This is crucial for realistic time estimation as subsequent groups must wait for sufficient events from preceding groups before they can begin processing.
+- **Realistic Simulation:** The time calculation simulates actual job scheduling with event dependencies, providing realistic execution time estimates
+
+### **Time Simulation Logic**
+
+The time analysis uses a sophisticated simulation that models realistic workflow execution:
+
+1. **Baseline Calculation**: 
+   - Assumes infinite resources but respects task dependencies
+   - Groups must wait for their input groups to complete enough jobs to provide required events
+   - Calculates sequential execution time based on dependency chains
+
+2. **Constrained Calculation**:
+   - Simulates job scheduling with limited grid slots
+   - Tracks events produced by each group and consumed by dependent groups
+   - Only allows dependent groups to start when parent groups have produced enough events
+   - Allocates available grid slots to groups that can run (no dependencies or dependencies satisfied)
+
+3. **Event Dependency Tracking**:
+   - Each group tracks `events_consumed_from_parent` to avoid double-counting
+   - Dependent groups calculate available events as: `parent_processed_events - events_consumed_from_parent`
+   - Groups can only run jobs if: `available_events >= events_per_job`
 
 ### **Example Results:**
 - **"Grouped" (1 group):** 

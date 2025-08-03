@@ -28,7 +28,8 @@ For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23
 - RequestNumEvents integration for proper metric normalization
 - Job scaling analysis and efficiency metrics
 - Time analysis with resource constraints (baseline, 100 grid slots, 1000 grid slots)
-- Event dependency calculation for realistic time estimation
+- Event-based dependency simulation for realistic time estimation
+- Job scheduling simulation with event tracking
 
 
 ## Installation

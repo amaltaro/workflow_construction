@@ -69,10 +69,11 @@ pip install matplotlib seaborn pandas
 - **Job Scaling Report**: Detailed text report with job requirements per group and efficiency metrics
 
 ### 10. Time Analysis (`time_analysis.png`)
-- **Comprehensive Time Analysis**: Bar plot comparing execution time across three scenarios, while being compliant with dependency and resource constraints (including availability of events required for a given group to process):
-  - **Baseline (Infinite Resources)**: Ideal execution time considering infinite resources, hence maximum job parallelization.
-  - **100 Grid Slots**: Realistic constraint showing workflow execution time with limited resources
-  - **1000 Grid Slots**: More generous constraint showing workflow execution time with limited resources, but a larger pool.
+- **Comprehensive Time Analysis**: Bar plot comparing execution time across three scenarios with realistic dependency and resource constraints:
+  - **Baseline (Infinite Resources)**: Ideal execution time considering task dependencies and sequential workflow requirements. Groups must wait for their input groups to complete enough jobs to provide required events.
+  - **100 Grid Slots**: Realistic constraint showing workflow execution time with limited resources and event-based dependencies
+  - **1000 Grid Slots**: More generous constraint showing workflow execution time with limited resources, but a larger pool
+- **Event-Based Dependency Simulation**: Simulates actual job scheduling where dependent groups can only start when parent groups have produced enough events to meet the `events_per_job` requirement
 - **Resource vs Dependency Constraints**: Shows how different constructions are affected by resource limitations vs. dependency constraints
 - **Time Analysis Report**: Detailed text report with execution times and job requirements per group
 
@@ -85,6 +86,18 @@ Each visualization provides unique insights into different aspects of the workfl
 - Performance characteristics
 - Group size distributions
 - Network transfer requirements
+
+## Technical Notes
+
+### Time Analysis Simulation
+The time analysis uses a sophisticated simulation that models realistic workflow execution:
+
+- **Event Tracking**: Each group tracks events produced and consumed from parent groups
+- **Dependency Enforcement**: Groups can only start when parent groups have produced enough events
+- **Resource Allocation**: Grid slots are allocated to groups that can run (no dependencies or dependencies satisfied)
+- **Sequential Execution**: Multi-group workflows with dependencies require sequential execution
+
+This provides realistic execution time estimates that account for both resource constraints and workflow dependencies.
 
 The visualizations help in:
 1. Comparing different workflow construction strategies
