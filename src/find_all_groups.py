@@ -140,6 +140,8 @@ class GroupMetrics:
     event_throughput: float  # Events processed per second
     # Events per job
     events_per_job: int  # Number of events processed by each task in the group
+    # Dependency information
+    input_task: Optional[str] = None  # The task that this group depends on (if any)
 
     def to_dict(self) -> dict:
         """Convert metrics to a dictionary for easy serialization"""
@@ -148,6 +150,7 @@ class GroupMetrics:
             "task_ids": sorted(list(self.task_ids)),
             "entry_point_task": self.entry_point_task,
             "exit_point_task": self.exit_point_task,
+            "input_task": self.input_task,
             "resource_metrics": {
                 "cpu": {
                     "max_cores": self.max_cpu_cores,
@@ -409,6 +412,7 @@ class TaskGrouper:
             task_ids=sorted_group,
             entry_point_task=entry_point_task,
             exit_point_task=exit_point_task,
+            input_task=self.tasks[entry_point_task].input_task,  # The task that the entry point depends on
             max_cpu_cores=max_cores,
             cpu_seconds=cpu_seconds,
             cpu_utilization_ratio=cpu_utilization_ratio,
@@ -748,6 +752,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
         group_details.append({
             "group_id": group.group_id,
             "tasks": sorted(list(group.task_ids)),
+            "input_task": group.input_task,  # The task that this group depends on
             "events_per_task": group.events_per_job,
             "total_events": group.events_per_job,  # Events processed by this group per job
             "cpu_seconds": group.cpu_seconds,

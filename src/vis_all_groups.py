@@ -3,6 +3,7 @@ import json
 import os
 from typing import List, Dict
 from collections import defaultdict
+from math import ceil
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -656,22 +657,24 @@ def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plot
     baseline_times = []  # Infinite resources
     grid_100_times = []  # 100 grid slots
     grid_1000_times = []  # 1000 grid slots
-
     for metrics in construction_metrics:
         group_details = metrics["group_details"]
         group_jobs_needed = metrics["group_jobs_needed"]
+        unique_input_tasks = set([group.get("input_task") for group in group_details])
 
         # Calculate baseline time (infinite resources)
         # This considers task dependencies and group structure
-        baseline_time = calculate_baseline_time(group_details, group_jobs_needed)
+        baseline_time = len(unique_input_tasks) * TARGET_WALLCLOCK_TIME_HOURS * 3600
         baseline_times.append(baseline_time)
 
         # Calculate time with 100 grid slots
-        grid_100_time = calculate_constrained_time(group_details, group_jobs_needed, 100)
+        #print(f"\nTime series simulation for 100 grid slots")
+        grid_100_time = calculate_constrained_time(group_details, group_jobs_needed, unique_input_tasks, 100)
         grid_100_times.append(grid_100_time)
 
         # Calculate time with 1000 grid slots
-        grid_1000_time = calculate_constrained_time(group_details, group_jobs_needed, 1000)
+        #print(f"\nTime series simulation for 1000 grid slots")
+        grid_1000_time = calculate_constrained_time(group_details, group_jobs_needed, unique_input_tasks, 1000)
         grid_1000_times.append(grid_1000_time)
 
     # Convert seconds to hours for plotting
@@ -687,9 +690,9 @@ def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plot
     width = 0.25
 
     # Plot three bars for each construction (using hours)
-    bars1 = ax.bar(x - width, baseline_hours, width, label='Baseline (Infinite)', color='lightgreen', alpha=0.8)
-    bars2 = ax.bar(x, grid_100_hours, width, label='100 Grid Slots', color='red', alpha=0.8)
-    bars3 = ax.bar(x + width, grid_1000_hours, width, label='1000 Grid Slots', color='orange', alpha=0.8)
+    bars1 = ax.bar(x - width, baseline_hours, width, label='Baseline (Infinite)', color='green', alpha=0.8)
+    bars2 = ax.bar(x, grid_100_hours, width, label='100 Grid Slots', color='orange', alpha=0.8)
+    bars3 = ax.bar(x + width, grid_1000_hours, width, label='1000 Grid Slots', color='violet', alpha=0.8)
 
     ax.set_xlabel("Workflow Construction")
     ax.set_ylabel("Execution Time (hours)")
@@ -738,35 +741,19 @@ def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plot
             f.write("\n")
 
 
-def calculate_baseline_time(group_details: List[Dict], group_jobs_needed: Dict[str, float]) -> float:
-    """Calculate baseline execution time with infinite resources.
-
-    This considers task dependencies and group structure to determine
-    the minimum time needed to complete the workflow.
-    """
-    if len(group_details) == 1:
-        # Single group: all jobs can run in parallel
-        # Time = wallclock time for one job
-        return TARGET_WALLCLOCK_TIME_HOURS * 3600
-    else:
-        # Multiple groups: must consider dependencies
-        # For now, assume sequential execution of groups
-        # TODO: Implement proper DAG-based dependency analysis
-        total_time = 0
-        for group in group_details:
-            group_id = group["group_id"]
-            jobs_needed = group_jobs_needed[group_id]
-            # Each group takes wallclock time to complete all its jobs
-            group_time = TARGET_WALLCLOCK_TIME_HOURS * 3600
-            total_time += group_time
-        return total_time
-
-
-def calculate_constrained_time(group_details: List[Dict], group_jobs_needed: Dict[str, float], grid_slots: int) -> float:
-    """Calculate execution time with limited grid slots.
+def calculate_constrained_time(group_details: List[Dict], group_jobs_needed: Dict[str, float],
+                               unique_input_tasks: set, grid_slots: int) -> float:
+    """Calculate execution time with limited grid slots using execution control.
 
     This simulates realistic grid constraints and job scheduling,
-    accounting for event dependencies between groups.
+    accounting for event dependencies between groups using a sophisticated
+    execution control system.
+
+    Args:
+        group_details: List of group details with input_task information
+        group_jobs_needed: Dictionary mapping group_id to number of jobs needed
+        unique_input_tasks: Set of unique input task names that groups depend on
+        grid_slots: Number of available grid slots
     """
     if len(group_details) == 1:
         # Single group: all jobs can run in parallel up to grid slot limit
@@ -777,53 +764,89 @@ def calculate_constrained_time(group_details: List[Dict], group_jobs_needed: Dic
         batches_needed = max(1, int((jobs_needed + grid_slots - 1) / grid_slots))
         return batches_needed * TARGET_WALLCLOCK_TIME_HOURS * 3600
     else:
-        # Multiple groups: must account for event dependencies
-        total_time = 0
-        cumulative_events_processed = 0
+        # Build execution control structure
+        group_execution_control = []
 
-        for i, group in enumerate(group_details):
+        for group in group_details:
             group_id = group["group_id"]
-            jobs_needed = group_jobs_needed[group_id]
-            events_per_job = group["events_per_task"]  # events per job for this group
+            input_task = group.get("input_task")
 
-            if i == 0:
-                # First group: can start immediately
-                # Calculate batches needed for this group
-                batches_needed = max(1, int((jobs_needed + grid_slots - 1) / grid_slots))
-                group_time = batches_needed * TARGET_WALLCLOCK_TIME_HOURS * 3600
-                total_time += group_time
-                cumulative_events_processed = jobs_needed * events_per_job
-            else:
-                # Subsequent groups: must wait for enough events from previous group
-                # Find the previous group that feeds into this one
-                prev_group = group_details[i-1]
-                prev_events_per_job = prev_group["events_per_task"]
+            # Find the input group (group that produces the input_task)
+            input_group = None
+            if input_task is not None:
+                for other_group in group_details:
+                    if input_task in other_group.get("tasks", []):
+                        input_group = other_group["group_id"]
+                        break
 
-                # Calculate how many events this group needs to start
-                # This is typically the events_per_job of the current group
-                events_needed_to_start = events_per_job
+            control_entry = {
+                'group_id': group_id,
+                'input_group': input_group,
+                'events_per_job': group["events_per_task"],
+                'target_jobs': ceil(group_jobs_needed[group_id]),
+                'processed_jobs': 0,
+                'target_events': group["events_per_task"] * group_jobs_needed[group_id],
+                'processed_events': 0
+            }
 
-                # Calculate how many jobs from previous group must complete
-                jobs_from_prev_needed = max(1, int((events_needed_to_start + prev_events_per_job - 1) / prev_events_per_job))
+            group_execution_control.append(control_entry)
 
-                # Calculate time to get enough events from previous group
-                # We need to calculate how long it takes for the previous group to produce enough events
-                # This is the time it takes for the required number of jobs from the previous group to complete
-                time_for_prev_events = (jobs_from_prev_needed / grid_slots) * TARGET_WALLCLOCK_TIME_HOURS * 3600
+        # Simulate execution in time steps
+        batches = 0
+        while True:
+            # job updates need to be applied only at the end of the batch to avoid race conditions
+            job_updates = []  # format: [group_id, jobs_to_add, events_to_add]
+            available_slots = grid_slots
 
-                # Time for current group to complete
-                current_batches_needed = max(1, int((jobs_needed + grid_slots - 1) / grid_slots))
-                time_for_current_group = current_batches_needed * TARGET_WALLCLOCK_TIME_HOURS * 3600
+            for control in group_execution_control:
+                # first group: check which jobs can be added to the available slots
+                if control['input_group'] is None and control['processed_jobs'] < control['target_jobs']:
+                    run_jobs = min(available_slots, control['target_jobs'] - control['processed_jobs'])
+                    # update group numbers
+                    job_updates.append([control['group_id'], run_jobs, run_jobs * control['events_per_job']])
+                    available_slots = available_slots - run_jobs
+                # remaining groups: check which jobs can be added to the available slots
+                elif control['processed_jobs'] < control['target_jobs']:
+                    input_group_name = control['input_group']
+                    for parent_control in group_execution_control:
+                        if parent_control['group_id'] == input_group_name:
+                            if parent_control['processed_jobs'] >= parent_control['target_jobs']:
+                                # then this parent group has executed all its jobs
+                                # create jobs in the child group, even if child.events_per_job is not met
+                                run_jobs = min(available_slots, ceil((control['target_events'] - control['processed_events']) / control['events_per_job']))
+                                job_updates.append([control['group_id'], run_jobs, run_jobs * control['events_per_job']])
+                                parent_control['processed_events'] = parent_control['processed_events'] - run_jobs * control['events_per_job']
+                                available_slots = available_slots - run_jobs
+                                break
+                            elif parent_control['processed_events'] >= control['events_per_job']:
+                                # then we have jobs that can be run
+                                run_jobs = min(available_slots, int(parent_control['processed_events'] / control['events_per_job']))
+                                job_updates.append([control['group_id'], run_jobs, run_jobs * control['events_per_job']])
+                                parent_control['processed_events'] = parent_control['processed_events'] - run_jobs * control['events_per_job']
+                                available_slots = available_slots - run_jobs
+                                break
+                if available_slots == 0:
+                    break
 
-                # Total time is the maximum of:
-                # 1. Time to get enough events from previous group
-                # 2. Time for current group to complete
-                group_total_time = max(time_for_prev_events, time_for_current_group)
-                total_time += group_total_time
+            if not job_updates:
+                break
+            # increment the batch counter
+            batches += 1
+            for group_id, jobs_to_add, events_to_add in job_updates:
+                #print(f"Batch {batches}: Running {jobs_to_add} jobs, with {events_to_add} events, for group {group_id}")
+                for control in group_execution_control:
+                    if control['group_id'] == group_id:
+                        control['processed_jobs'] += jobs_to_add
+                        control['processed_events'] += events_to_add
 
-                cumulative_events_processed += jobs_needed * events_per_job
+        # Verify whether all jobs have really executed if all groups have completed their target jobs
+        for control in group_execution_control:
+            if control['processed_jobs'] != control['target_jobs']:
+                print(f"*****ERROR: Group {control['group_id']}:\n")
+                #from pprint import pprint
+                #pprint(group_execution_control)
 
-        return total_time
+        return batches * TARGET_WALLCLOCK_TIME_HOURS * 3600
 
 
 def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
