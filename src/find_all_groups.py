@@ -1,6 +1,7 @@
 # Standard library imports
 import logging
 import sys
+from math import ceil
 from dataclasses import dataclass
 from pprint import pformat
 from typing import Dict, List, Optional, Set, Tuple
@@ -288,6 +289,40 @@ class TaskGrouper:
                 return task.id
         raise ValueError("No exit point task found in the group")
 
+    def _needs_remote_write(self, task: Task, group: Set[str]) -> bool:
+        """
+        Determine if a task's output needs to be written to shared storage.
+
+        A task needs remote write if:
+        1. It has keep_output=True, OR
+        2. It is the exit point task of the group, OR
+        3. It has output tasks that are outside the current group (i.e., consumed by other groups)
+
+        Args:
+            task: The task to check
+            group: Set of task IDs in the current group
+
+        Returns:
+            True if the task's output needs to be written to shared storage
+        """
+        # Check if task has keep_output=True
+        if task.resources.keep_output:
+            return True
+
+        # Check if task is the exit point task of the group
+        group_tasks = [self.tasks[task_id] for task_id in group]
+        exit_point_task = self._find_exit_point_task(group_tasks)
+        if task.id == exit_point_task:
+            return True
+
+        # Check if task has output tasks outside the current group
+        if task.output_tasks:
+            for output_task_id in task.output_tasks:
+                if output_task_id not in group:
+                    return True
+
+        return False
+
     def _calculate_group_metrics(self, group: Set[str]) -> GroupMetrics:
         """Calculate detailed metrics for a group of tasks"""
         group_id = f"group_{len(self.all_possible_groups)}"
@@ -378,10 +413,8 @@ class TaskGrouper:
             task_output_size = (events_per_job * task.resources.size_per_event) / 1024.0
             write_local_mb += task_output_size
 
-            # Add to remote write data if:
-            # * it has to save the output to the storage
-            # * it is the exit point task of the group
-            if task.resources.keep_output or task.id == exit_point_task:
+            # Add to remote write data if the task needs to write to shared storage
+            if self._needs_remote_write(task, group):
                 write_remote_mb += task_output_size
         # normalize the local write and remote write data volume per event
         # Use events_per_job for consistency with throughput and workflow construction metrics
@@ -726,7 +759,7 @@ def calculate_workflow_metrics(construction: List[GroupMetrics], request_num_eve
 
     # Calculate memory scaling metrics
     total_memory_mb = sum(
-        group.max_memory_mb * group_jobs_needed[group.group_id]
+        group.max_memory_mb * ceil(group_jobs_needed[group.group_id])
         for group in construction
     )
     memory_per_event_mb = total_memory_mb / request_num_events
