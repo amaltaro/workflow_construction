@@ -4,8 +4,9 @@ Workflow Time Analysis Report
 Construction 1:
   Groups: ['group_10', 'group_7']
   Number of Groups: 2
+  Total Jobs: 1852.0 jobs
   Baseline Time (Infinite Resources): 24.0 hours
-  Time with 100 Grid Slots: 240.0 hours
+  Time with 100 Grid Slots: 228.0 hours
   Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_10: 1041.7 jobs
@@ -14,8 +15,9 @@ Construction 1:
 Construction 2:
   Groups: ['group_9', 'group_8']
   Number of Groups: 2
+  Total Jobs: 1852.0 jobs
   Baseline Time (Infinite Resources): 24.0 hours
-  Time with 100 Grid Slots: 240.0 hours
+  Time with 100 Grid Slots: 228.0 hours
   Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_9: 1041.7 jobs
@@ -24,8 +26,9 @@ Construction 2:
 Construction 3:
   Groups: ['group_0', 'group_7', 'group_8']
   Number of Groups: 3
-  Baseline Time (Infinite Resources): 36.0 hours
-  Time with 100 Grid Slots: 252.0 hours
+  Total Jobs: 1852.2 jobs
+  Baseline Time (Infinite Resources): 24.0 hours
+  Time with 100 Grid Slots: 228.0 hours
   Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_0: 231.5 jobs
@@ -35,8 +38,9 @@ Construction 3:
 Construction 4:
   Groups: ['group_9', 'group_2', 'group_4']
   Number of Groups: 3
+  Total Jobs: 1851.9 jobs
   Baseline Time (Infinite Resources): 36.0 hours
-  Time with 100 Grid Slots: 240.0 hours
+  Time with 100 Grid Slots: 228.0 hours
   Time with 1000 Grid Slots: 48.0 hours
   Group Jobs Needed:
     group_9: 1041.7 jobs
@@ -46,8 +50,9 @@ Construction 4:
 Construction 5:
   Groups: ['group_10', 'group_1', 'group_3']
   Number of Groups: 3
+  Total Jobs: 1851.9 jobs
   Baseline Time (Infinite Resources): 36.0 hours
-  Time with 100 Grid Slots: 240.0 hours
+  Time with 100 Grid Slots: 228.0 hours
   Time with 1000 Grid Slots: 48.0 hours
   Group Jobs Needed:
     group_10: 1041.7 jobs
@@ -57,8 +62,9 @@ Construction 5:
 Construction 6:
   Groups: ['group_6', 'group_4', 'group_7']
   Number of Groups: 3
-  Baseline Time (Infinite Resources): 36.0 hours
-  Time with 100 Grid Slots: 240.0 hours
+  Total Jobs: 1852.0 jobs
+  Baseline Time (Infinite Resources): 24.0 hours
+  Time with 100 Grid Slots: 228.0 hours
   Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_6: 463.0 jobs
@@ -68,8 +74,9 @@ Construction 6:
 Construction 7:
   Groups: ['group_5', 'group_3', 'group_8']
   Number of Groups: 3
-  Baseline Time (Infinite Resources): 36.0 hours
-  Time with 100 Grid Slots: 240.0 hours
+  Total Jobs: 1852.0 jobs
+  Baseline Time (Infinite Resources): 24.0 hours
+  Time with 100 Grid Slots: 228.0 hours
   Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_5: 694.4 jobs
@@ -79,9 +86,10 @@ Construction 7:
 Construction 8:
   Groups: ['group_0', 'group_2', 'group_4', 'group_7']
   Number of Groups: 4
-  Baseline Time (Infinite Resources): 48.0 hours
-  Time with 100 Grid Slots: 252.0 hours
-  Time with 1000 Grid Slots: 48.0 hours
+  Total Jobs: 1852.0 jobs
+  Baseline Time (Infinite Resources): 36.0 hours
+  Time with 100 Grid Slots: 228.0 hours
+  Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_0: 231.5 jobs
     group_2: 231.5 jobs
@@ -91,9 +99,10 @@ Construction 8:
 Construction 9:
   Groups: ['group_0', 'group_1', 'group_3', 'group_8']
   Number of Groups: 4
-  Baseline Time (Infinite Resources): 48.0 hours
-  Time with 100 Grid Slots: 252.0 hours
-  Time with 1000 Grid Slots: 48.0 hours
+  Total Jobs: 1852.0 jobs
+  Baseline Time (Infinite Resources): 36.0 hours
+  Time with 100 Grid Slots: 228.0 hours
+  Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_0: 231.5 jobs
     group_1: 463.0 jobs
@@ -103,9 +112,10 @@ Construction 9:
 Construction 10:
   Groups: ['group_5', 'group_2', 'group_3', 'group_4']
   Number of Groups: 4
-  Baseline Time (Infinite Resources): 48.0 hours
-  Time with 100 Grid Slots: 240.0 hours
-  Time with 1000 Grid Slots: 48.0 hours
+  Total Jobs: 1851.9 jobs
+  Baseline Time (Infinite Resources): 36.0 hours
+  Time with 100 Grid Slots: 228.0 hours
+  Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_5: 694.4 jobs
     group_2: 231.5 jobs
@@ -115,9 +125,10 @@ Construction 10:
 Construction 11:
   Groups: ['group_6', 'group_1', 'group_3', 'group_4']
   Number of Groups: 4
-  Baseline Time (Infinite Resources): 48.0 hours
-  Time with 100 Grid Slots: 240.0 hours
-  Time with 1000 Grid Slots: 48.0 hours
+  Total Jobs: 1851.9 jobs
+  Baseline Time (Infinite Resources): 36.0 hours
+  Time with 100 Grid Slots: 228.0 hours
+  Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_6: 463.0 jobs
     group_1: 463.0 jobs
@@ -127,9 +138,10 @@ Construction 11:
 Construction 12:
   Groups: ['group_0', 'group_1', 'group_2', 'group_3', 'group_4']
   Number of Groups: 5
-  Baseline Time (Infinite Resources): 60.0 hours
-  Time with 100 Grid Slots: 252.0 hours
-  Time with 1000 Grid Slots: 60.0 hours
+  Total Jobs: 1851.9 jobs
+  Baseline Time (Infinite Resources): 36.0 hours
+  Time with 100 Grid Slots: 228.0 hours
+  Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_0: 231.5 jobs
     group_1: 463.0 jobs

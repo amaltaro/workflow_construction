@@ -6,6 +6,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset1",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 1,
@@ -48,6 +49,7 @@
     ],
     "entry_point_task": "Taskset2",
     "exit_point_task": "Taskset2",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -92,6 +94,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset5",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -148,6 +151,7 @@
     ],
     "entry_point_task": "Taskset3",
     "exit_point_task": "Taskset3",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -190,6 +194,7 @@
     ],
     "entry_point_task": "Taskset4",
     "exit_point_task": "Taskset4",
+    "input_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -232,6 +237,7 @@
     ],
     "entry_point_task": "Taskset5",
     "exit_point_task": "Taskset5",
+    "input_task": "Taskset3",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -275,6 +281,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset2",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -323,6 +330,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset3",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -371,6 +379,7 @@
     ],
     "entry_point_task": "Taskset2",
     "exit_point_task": "Taskset4",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -419,6 +428,7 @@
     ],
     "entry_point_task": "Taskset3",
     "exit_point_task": "Taskset5",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -468,6 +478,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset4",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,

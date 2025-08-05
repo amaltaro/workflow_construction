@@ -4,6 +4,7 @@ Workflow Time Analysis Report
 Construction 1:
   Groups: ['group_5']
   Number of Groups: 1
+  Total Jobs: 925.9 jobs
   Baseline Time (Infinite Resources): 12.0 hours
   Time with 100 Grid Slots: 120.0 hours
   Time with 1000 Grid Slots: 12.0 hours
@@ -13,6 +14,7 @@ Construction 1:
 Construction 2:
   Groups: ['group_0', 'group_4']
   Number of Groups: 2
+  Total Jobs: 925.9 jobs
   Baseline Time (Infinite Resources): 24.0 hours
   Time with 100 Grid Slots: 120.0 hours
   Time with 1000 Grid Slots: 24.0 hours
@@ -23,6 +25,7 @@ Construction 2:
 Construction 3:
   Groups: ['group_3', 'group_2']
   Number of Groups: 2
+  Total Jobs: 925.9 jobs
   Baseline Time (Infinite Resources): 24.0 hours
   Time with 100 Grid Slots: 120.0 hours
   Time with 1000 Grid Slots: 24.0 hours
@@ -33,8 +36,9 @@ Construction 3:
 Construction 4:
   Groups: ['group_0', 'group_1', 'group_2']
   Number of Groups: 3
+  Total Jobs: 925.9 jobs
   Baseline Time (Infinite Resources): 36.0 hours
-  Time with 100 Grid Slots: 132.0 hours
+  Time with 100 Grid Slots: 120.0 hours
   Time with 1000 Grid Slots: 36.0 hours
   Group Jobs Needed:
     group_0: 231.5 jobs

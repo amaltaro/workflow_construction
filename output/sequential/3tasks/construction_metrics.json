@@ -35,6 +35,7 @@
           "Taskset2",
           "Taskset3"
         ],
+        "input_task": null,
         "events_per_task": 1080,
         "total_events": 1080,
         "cpu_seconds": 86400,
@@ -83,6 +84,7 @@
         "tasks": [
           "Taskset1"
         ],
+        "input_task": null,
         "events_per_task": 4320,
         "total_events": 4320,
         "cpu_seconds": 43200,
@@ -99,6 +101,7 @@
           "Taskset2",
           "Taskset3"
         ],
+        "input_task": "Taskset1",
         "events_per_task": 1440,
         "total_events": 1440,
         "cpu_seconds": 86400,
@@ -148,6 +151,7 @@
           "Taskset1",
           "Taskset2"
         ],
+        "input_task": null,
         "events_per_task": 1440,
         "total_events": 1440,
         "cpu_seconds": 86400,
@@ -163,6 +167,7 @@
         "tasks": [
           "Taskset3"
         ],
+        "input_task": "Taskset2",
         "events_per_task": 4320,
         "total_events": 4320,
         "cpu_seconds": 86400,
@@ -213,6 +218,7 @@
         "tasks": [
           "Taskset1"
         ],
+        "input_task": null,
         "events_per_task": 4320,
         "total_events": 4320,
         "cpu_seconds": 43200,
@@ -228,6 +234,7 @@
         "tasks": [
           "Taskset2"
         ],
+        "input_task": "Taskset1",
         "events_per_task": 2160,
         "total_events": 2160,
         "cpu_seconds": 86400,
@@ -243,6 +250,7 @@
         "tasks": [
           "Taskset3"
         ],
+        "input_task": "Taskset2",
         "events_per_task": 4320,
         "total_events": 4320,
         "cpu_seconds": 86400,

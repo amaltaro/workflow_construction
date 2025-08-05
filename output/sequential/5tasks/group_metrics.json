@@ -6,6 +6,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset1",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 1,
@@ -48,6 +49,7 @@
     ],
     "entry_point_task": "Taskset2",
     "exit_point_task": "Taskset2",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -92,6 +94,7 @@
     ],
     "entry_point_task": "Taskset2",
     "exit_point_task": "Taskset4",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -126,6 +129,10 @@
     },
     "dependency_paths": [
       [
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
         "Taskset2",
         "Taskset3",
         "Taskset4"
@@ -133,10 +140,6 @@
       [
         "Taskset2",
         "Taskset3"
-      ],
-      [
-        "Taskset3",
-        "Taskset4"
       ]
     ],
     "events_per_job": 960
@@ -150,6 +153,7 @@
     ],
     "entry_point_task": "Taskset3",
     "exit_point_task": "Taskset5",
+    "input_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -189,12 +193,12 @@
       ],
       [
         "Taskset3",
-        "Taskset4",
-        "Taskset5"
+        "Taskset4"
       ],
       [
         "Taskset3",
-        "Taskset4"
+        "Taskset4",
+        "Taskset5"
       ]
     ],
     "events_per_job": 864
@@ -209,6 +213,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset4",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -243,8 +248,6 @@
     },
     "dependency_paths": [
       [
-        "Taskset1",
-        "Taskset2",
         "Taskset3",
         "Taskset4"
       ],
@@ -258,10 +261,7 @@
         "Taskset2"
       ],
       [
-        "Taskset3",
-        "Taskset4"
-      ],
-      [
+        "Taskset1",
         "Taskset2",
         "Taskset3",
         "Taskset4"
@@ -269,6 +269,11 @@
       [
         "Taskset2",
         "Taskset3"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
       ]
     ],
     "events_per_job": 785
@@ -283,6 +288,7 @@
     ],
     "entry_point_task": "Taskset2",
     "exit_point_task": "Taskset5",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -317,7 +323,14 @@
     },
     "dependency_paths": [
       [
-        "Taskset2",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
         "Taskset3",
         "Taskset4",
         "Taskset5"
@@ -332,17 +345,10 @@
         "Taskset3"
       ],
       [
-        "Taskset4",
-        "Taskset5"
-      ],
-      [
+        "Taskset2",
         "Taskset3",
         "Taskset4",
         "Taskset5"
-      ],
-      [
-        "Taskset3",
-        "Taskset4"
       ]
     ],
     "events_per_job": 617
@@ -358,6 +364,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset5",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -401,42 +408,42 @@
         "Taskset4"
       ],
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3",
         "Taskset4",
         "Taskset5"
       ],
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3"
       ],
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3",
         "Taskset4"
-      ],
-      [
-        "Taskset4",
-        "Taskset5"
-      ],
-      [
-        "Taskset1",
-        "Taskset2",
-        "Taskset3",
-        "Taskset4",
-        "Taskset5"
-      ],
-      [
-        "Taskset1",
-        "Taskset2",
-        "Taskset3"
       ],
       [
         "Taskset1",
         "Taskset2"
       ],
       [
-        "Taskset1",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
         "Taskset2",
         "Taskset3",
         "Taskset4"
@@ -451,6 +458,7 @@
     ],
     "entry_point_task": "Taskset3",
     "exit_point_task": "Taskset3",
+    "input_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -493,6 +501,7 @@
     ],
     "entry_point_task": "Taskset4",
     "exit_point_task": "Taskset4",
+    "input_task": "Taskset3",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -535,6 +544,7 @@
     ],
     "entry_point_task": "Taskset5",
     "exit_point_task": "Taskset5",
+    "input_task": "Taskset4",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -578,6 +588,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset2",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -626,6 +637,7 @@
     ],
     "entry_point_task": "Taskset2",
     "exit_point_task": "Taskset3",
+    "input_task": "Taskset1",
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
@@ -674,6 +686,7 @@
     ],
     "entry_point_task": "Taskset3",
     "exit_point_task": "Taskset4",
+    "input_task": "Taskset2",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -722,6 +735,7 @@
     ],
     "entry_point_task": "Taskset4",
     "exit_point_task": "Taskset5",
+    "input_task": "Taskset3",
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
@@ -771,6 +785,7 @@
     ],
     "entry_point_task": "Taskset1",
     "exit_point_task": "Taskset3",
+    "input_task": null,
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
