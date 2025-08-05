@@ -662,9 +662,10 @@ def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plot
         group_jobs_needed = metrics["group_jobs_needed"]
         unique_input_tasks = set([group.get("input_task") for group in group_details])
 
-        # Calculate baseline time (infinite resources)
+        # Calculate baseline time (infinite resources = 999,999,999 jobs)
         # This considers task dependencies and group structure
-        baseline_time = len(unique_input_tasks) * TARGET_WALLCLOCK_TIME_HOURS * 3600
+        # baseline_time = len(unique_input_tasks) * TARGET_WALLCLOCK_TIME_HOURS * 3600
+        baseline_time = calculate_constrained_time(group_details, group_jobs_needed, unique_input_tasks, 999999999)
         baseline_times.append(baseline_time)
 
         # Calculate time with 100 grid slots
@@ -691,8 +692,8 @@ def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plot
 
     # Plot three bars for each construction (using hours)
     bars1 = ax.bar(x - width, baseline_hours, width, label='Baseline (Infinite)', color='green', alpha=0.8)
-    bars2 = ax.bar(x, grid_100_hours, width, label='100 Grid Slots', color='orange', alpha=0.8)
-    bars3 = ax.bar(x + width, grid_1000_hours, width, label='1000 Grid Slots', color='violet', alpha=0.8)
+    bars2 = ax.bar(x, grid_1000_hours, width, label='1000 Grid Slots', color='violet', alpha=0.8)
+    bars3 = ax.bar(x + width, grid_100_hours, width, label='100 Grid Slots', color='orange', alpha=0.8)
 
     ax.set_xlabel("Workflow Construction")
     ax.set_ylabel("Execution Time (hours)")
@@ -706,13 +707,13 @@ def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plot
     ax.set_ylabel("Execution Time (hours)")
 
     # Add value labels on bars
-    for i, (bar1, bar2, bar3, h1, h2, h3) in enumerate(zip(bars1, bars2, bars3, baseline_hours, grid_100_hours, grid_1000_hours)):
+    for i, (bar1, bar2, bar3, h1, h2, h3) in enumerate(zip(bars1, bars2, bars3, baseline_hours, grid_1000_hours, grid_100_hours)):
         ax.text(bar1.get_x() + bar1.get_width()/2, bar1.get_height() + max(baseline_hours)*0.01,
-                f'{h1:.1f}h', ha='center', va='bottom', fontsize=8, fontweight='bold')
-        ax.text(bar2.get_x() + bar2.get_width()/2, bar2.get_height() + max(grid_100_hours)*0.01,
-                f'{h2:.1f}h', ha='center', va='bottom', fontsize=8, fontweight='bold')
-        ax.text(bar3.get_x() + bar3.get_width()/2, bar3.get_height() + max(grid_1000_hours)*0.01,
-                f'{h3:.1f}h', ha='center', va='bottom', fontsize=8, fontweight='bold')
+                f'{int(h1)}', ha='center', va='bottom', fontsize=8, fontweight='bold')
+        ax.text(bar2.get_x() + bar2.get_width()/2, bar2.get_height() + max(grid_1000_hours)*0.01,
+                f'{int(h2)}', ha='center', va='bottom', fontsize=8, fontweight='bold')
+        ax.text(bar3.get_x() + bar3.get_width()/2, bar3.get_height() + max(grid_100_hours)*0.01,
+                f'{int(h3)}', ha='center', va='bottom', fontsize=8, fontweight='bold')
 
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "time_analysis.png"))
@@ -732,6 +733,11 @@ def plot_time_analysis(construction_metrics: List[Dict], output_dir: str = "plot
             f.write(f"{construction_label}:\n")
             f.write(f"  Groups: {metrics['groups']}\n")
             f.write(f"  Number of Groups: {metrics['num_groups']}\n")
+
+            # Calculate total jobs across all groups
+            total_jobs = sum(metrics['group_jobs_needed'].values())
+            f.write(f"  Total Jobs: {total_jobs:.1f} jobs\n")
+
             f.write(f"  Baseline Time (Infinite Resources): {baseline_hours[i-1]:.1f} hours\n")
             f.write(f"  Time with 100 Grid Slots: {grid_100_hours[i-1]:.1f} hours\n")
             f.write(f"  Time with 1000 Grid Slots: {grid_1000_hours[i-1]:.1f} hours\n")
