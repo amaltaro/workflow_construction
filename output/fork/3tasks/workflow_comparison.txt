@@ -9,18 +9,18 @@ Construction 1:
   Total Data Volumes for one job of each group:
     Remote Read Data: 195312.50 MB
     Local Write Data: 537109.38 MB
-    Remote Write Data: 341796.88 MB
+    Remote Write Data: 537109.38 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.195 MB/event
     Local Write Data: 0.537 MB/event
-    Remote Write Data: 0.342 MB/event
+    Remote Write Data: 0.537 MB/event
   Memory Utilization: 0.92
   Network Transfer: 0.73 MB
   Workflow Performance Metrics:
     Total CPU Time: 80000000.00 seconds
     Total Wallclock Time: 40000000.00 seconds
-    Total Memory: 3,472,222 MB
-    Total Network Transfer: 537,109 MB
+    Total Memory: 3,476,000 MB
+    Total Network Transfer: 732,422 MB
   Group Details:
     group_3:
       Tasks: ['Taskset1', 'Taskset2']
@@ -29,7 +29,7 @@ Construction 1:
       Data Flow (per event):
         Remote Read: 0.000 MB/event
         Local Write: 0.488 MB/event
-        Remote Write: 0.293 MB/event
+        Remote Write: 0.488 MB/event
     group_2:
       Tasks: ['Taskset3']
       Events per Task: 4320
@@ -47,18 +47,18 @@ Construction 2:
   Total Data Volumes for one job of each group:
     Remote Read Data: 195312.50 MB
     Local Write Data: 537109.38 MB
-    Remote Write Data: 341796.88 MB
+    Remote Write Data: 537109.38 MB
   Data Flow Metrics (per event):
     Remote Read Data: 0.195 MB/event
     Local Write Data: 0.537 MB/event
-    Remote Write Data: 0.342 MB/event
+    Remote Write Data: 0.537 MB/event
   Memory Utilization: 0.92
   Network Transfer: 0.73 MB
   Workflow Performance Metrics:
     Total CPU Time: 80000000.00 seconds
     Total Wallclock Time: 40000000.00 seconds
-    Total Memory: 3,240,741 MB
-    Total Network Transfer: 537,109 MB
+    Total Memory: 3,241,000 MB
+    Total Network Transfer: 732,422 MB
   Group Details:
     group_4:
       Tasks: ['Taskset1', 'Taskset3']
@@ -67,7 +67,7 @@ Construction 2:
       Data Flow (per event):
         Remote Read: 0.000 MB/event
         Local Write: 0.244 MB/event
-        Remote Write: 0.049 MB/event
+        Remote Write: 0.244 MB/event
     group_1:
       Tasks: ['Taskset2']
       Events per Task: 2160
@@ -95,7 +95,7 @@ Construction 3:
   Workflow Performance Metrics:
     Total CPU Time: 70000000.00 seconds
     Total Wallclock Time: 40000000.00 seconds
-    Total Memory: 3,009,259 MB
+    Total Memory: 3,012,000 MB
     Total Network Transfer: 927,734 MB
   Group Details:
     group_0:

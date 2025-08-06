@@ -14,7 +14,7 @@ Construction 2:
   Total Events: 1000000
   Total CPU Time: 80000000.00 seconds
   Event Throughput: 0.0125 events/second
-  Remote Write Data per Event: 0.342 MB/event
+  Remote Write Data per Event: 0.537 MB/event
 
 Construction 3:
   Groups: ['group_4', 'group_1']
@@ -22,5 +22,5 @@ Construction 3:
   Total Events: 1000000
   Total CPU Time: 80000000.00 seconds
   Event Throughput: 0.0125 events/second
-  Remote Write Data per Event: 0.342 MB/event
+  Remote Write Data per Event: 0.537 MB/event
 

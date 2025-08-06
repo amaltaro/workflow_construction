@@ -114,10 +114,10 @@
       "io": {
         "read_remote_mb": 0.0,
         "write_local_mb": 304.6875,
-        "write_remote_mb": 70.3125,
+        "write_remote_mb": 257.8125,
         "read_remote_per_event_mb": 0.0,
         "write_local_per_event_mb": 0.3173828125,
-        "write_remote_per_event_mb": 0.0732421875
+        "write_remote_per_event_mb": 0.2685546875
       },
       "accelerator": {
         "types": []
@@ -129,15 +129,15 @@
     },
     "dependency_paths": [
       [
-        "Taskset3",
-        "Taskset5"
-      ],
-      [
         "Taskset1",
         "Taskset3"
       ],
       [
         "Taskset1",
+        "Taskset3",
+        "Taskset5"
+      ],
+      [
         "Taskset3",
         "Taskset5"
       ]
@@ -301,10 +301,10 @@
       "io": {
         "read_remote_mb": 0.0,
         "write_local_mb": 703.125,
-        "write_remote_mb": 421.875,
+        "write_remote_mb": 703.125,
         "read_remote_per_event_mb": 0.0,
         "write_local_per_event_mb": 0.48828125,
-        "write_remote_per_event_mb": 0.29296875
+        "write_remote_per_event_mb": 0.48828125
       },
       "accelerator": {
         "types": []
@@ -350,10 +350,10 @@
       "io": {
         "read_remote_mb": 0.0,
         "write_local_mb": 527.34375,
-        "write_remote_mb": 105.46875,
+        "write_remote_mb": 527.34375,
         "read_remote_per_event_mb": 0.0,
         "write_local_per_event_mb": 0.244140625,
-        "write_remote_per_event_mb": 0.048828125
+        "write_remote_per_event_mb": 0.244140625
       },
       "accelerator": {
         "types": []
@@ -498,10 +498,10 @@
       "io": {
         "read_remote_mb": 0.0,
         "write_local_mb": 562.5,
-        "write_remote_mb": 93.75,
+        "write_remote_mb": 281.25,
         "read_remote_per_event_mb": 0.0,
         "write_local_per_event_mb": 0.5859375,
-        "write_remote_per_event_mb": 0.09765625
+        "write_remote_per_event_mb": 0.29296875
       },
       "accelerator": {
         "types": []
