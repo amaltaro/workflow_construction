@@ -14,7 +14,7 @@
         "TimePerEvent": 10
     },
     "Taskset2": {
-        "KeepOutput": false,
+        "KeepOutput": true,
         "Memory": 4000,
         "Multicore": 2,
         "RequiresGPU": "forbidden",
