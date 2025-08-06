@@ -855,6 +855,91 @@ def calculate_constrained_time(group_details: List[Dict], group_jobs_needed: Dic
         return batches * TARGET_WALLCLOCK_TIME_HOURS * 3600
 
 
+def plot_workflow_comparison_table(construction_metrics: List[Dict], output_dir: str = "plots"):
+    """Create a professional table comparing workflow construction performance metrics.
+
+    This function creates a standalone table showing:
+    - Workflow construction name
+    - Number of groups
+    - Group names with tasks
+    - Event throughput
+    - Remote write per event
+    - CPU time per event
+    """
+    print(f"Creating workflow construction comparison table for {len(construction_metrics)} constructions")
+
+    # Calculate CPU time per event
+    total_cpu_times = np.array([m["total_cpu_time"] for m in construction_metrics])
+    cpu_time_per_event = total_cpu_times / construction_metrics[0]['total_events']
+
+    # Extract other metrics
+    event_throughputs = [m["event_throughput"] for m in construction_metrics]
+    stored_data_per_event = [m["write_remote_per_event_mb"] for m in construction_metrics]
+
+    # Create figure for the table
+    fig, ax = plt.subplots(figsize=(14, 8))
+    ax.axis('tight')
+    ax.axis('off')
+
+    # Create table data
+    table_data = []
+    for i, metrics in enumerate(construction_metrics):
+        # Get group names for this construction
+        group_names = []
+        for group_id in metrics['groups']:
+            # Find the corresponding group details
+            for group_detail in metrics['group_details']:
+                if group_detail['group_id'] == group_id:
+                    tasks_str = ', '.join(group_detail['tasks'])
+                    group_names.append(f"{group_id} ({tasks_str})")
+                    break
+
+        # Join group names with line breaks for better formatting
+        groups_str = '\n'.join(group_names)
+
+        table_data.append([
+            f"Construction {i+1}",
+            f"{metrics['num_groups']}",
+            groups_str,
+            f"{event_throughputs[i]:.4f}",
+            f"{stored_data_per_event[i]:.3f}",
+            f"{cpu_time_per_event[i]:.1f}"
+        ])
+
+    # Create the table
+    table = ax.table(cellText=table_data,
+                     colLabels=['Workflow\nConstruction', 'Number of\nGroups', 'Groups\n(Tasks)',
+                              'Event\nThroughput\n(events/s)', 'Remote Write\nper Event\n(MB)',
+                              'CPU Time\nper Event\n(s)'],
+                     cellLoc='center',
+                     loc='center',
+                     bbox=[0, 0, 1, 1])  # Full table area
+
+    # Style the table
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1, 2.5)  # Adjust row height
+
+    # Style header row
+    for i in range(len(table_data[0])):
+        table[(0, i)].set_facecolor('#E6E6E6')
+        table[(0, i)].set_text_props(weight='bold')
+
+    # Style alternating rows for better readability
+    for i in range(1, len(table_data) + 1):
+        for j in range(len(table_data[0])):
+            if i % 2 == 0:
+                table[(i, j)].set_facecolor('#F8F8F8')
+
+    # Set title
+    ax.set_title("Workflow Construction Performance Comparison", pad=20, fontsize=14, fontweight='bold')
+
+    # Save the table
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "workflow_comparison_table.png"),
+                dpi=300, bbox_inches='tight', facecolor='white')
+    plt.close()
+
 def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str = "plots", custom_labels: List[str] = None):
     """Create a comprehensive comparison of workflow constructions.
 
@@ -966,29 +1051,25 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax10.legend()
     ax10.grid(True)
 
-    # 4. Performance vs Remote Write Efficiency
+    # 4. Performance vs Remote Write Efficiency (simplified scatter plot)
     ax1 = fig.add_subplot(gs[1, 1])
 
-    # Create a discrete colormap for number of groups
-    unique_groups = np.unique(num_groups)
-    n_groups = len(unique_groups)
-    cmap = plt.colormaps['viridis'].resampled(n_groups)
-
-    # Create scatter plot with discrete colors
+    # Create a simple scatter plot
     scatter = ax1.scatter(event_throughputs, stored_data_per_event,
-                         c=num_groups,  # This is already a numpy array of the right size
-                         cmap=cmap,
-                         s=total_cpu_times/1000, alpha=0.6)
+                         c=num_groups, cmap='viridis', s=100, alpha=0.7)
 
-    # Add colorbar with discrete ticks
+    # Add colorbar with discrete integer values
     cbar = plt.colorbar(scatter, ax=ax1, label="Number of Groups")
+
+    # Get unique values and set discrete ticks
+    unique_groups = np.unique(num_groups)
     cbar.set_ticks(unique_groups)
     cbar.set_ticklabels([f"{int(x)}" for x in unique_groups])
 
     ax1.set_xlabel("Event Throughput (events/second)")
     ax1.set_ylabel("Remote Write Data per Event (MB)")
-    ax1.set_title("Performance vs Remote Write Efficiency\n(size=CPU time, color=num groups)")
-    ax1.grid(True)
+    ax1.set_title("Performance vs Remote Write Efficiency")
+    ax1.grid(True, alpha=0.3)
 
     # set x-axis to start at 0 and add 10% padding to the right
     ax1.set_xlim(left=0, right=np.max(event_throughputs) * 1.1)
@@ -1265,6 +1346,9 @@ def visualize_groups(groups: List[Dict],
     plot_job_scaling_analysis(construction_metrics, output_path)  # New job scaling analysis
     plot_time_analysis(construction_metrics, output_path)  # New dedicated time analysis
     plot_workflow_topology(construction_metrics, output_path, template_path, dag)
+
+    # Create separate workflow construction comparison table
+    plot_workflow_comparison_table(construction_metrics, output_path)
 
     # Save raw data for further analysis
     print(f"Saving raw data for {len(groups)} groups and {len(construction_metrics)} constructions")
