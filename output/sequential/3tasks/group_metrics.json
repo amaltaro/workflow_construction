@@ -205,10 +205,10 @@
       "io": {
         "read_remote_mb": 281.25,
         "write_local_mb": 492.1875,
-        "write_remote_mb": 70.3125,
+        "write_remote_mb": 492.1875,
         "read_remote_per_event_mb": 0.1953125,
         "write_local_per_event_mb": 0.341796875,
-        "write_remote_per_event_mb": 0.048828125
+        "write_remote_per_event_mb": 0.341796875
       },
       "accelerator": {
         "types": []
@@ -255,10 +255,10 @@
       "io": {
         "read_remote_mb": 0.0,
         "write_local_mb": 580.078125,
-        "write_remote_mb": 52.734375,
+        "write_remote_mb": 369.140625,
         "read_remote_per_event_mb": 0.0,
         "write_local_per_event_mb": 0.537109375,
-        "write_remote_per_event_mb": 0.048828125
+        "write_remote_per_event_mb": 0.341796875
       },
       "accelerator": {
         "types": []
@@ -270,6 +270,7 @@
     },
     "dependency_paths": [
       [
+        "Taskset1",
         "Taskset2",
         "Taskset3"
       ],
@@ -278,7 +279,6 @@
         "Taskset2"
       ],
       [
-        "Taskset1",
         "Taskset2",
         "Taskset3"
       ]
