@@ -10,6 +10,7 @@ Research for: Optimizing Heterogeneous Workflow Construction for Enhanced Event 
 The Workflow Task Grouper analyzes workflow tasks and their relationships to create optimal task groups while respecting both hard constraints (OS compatibility, architecture requirements) and soft constraints (resource utilization, performance characteristics). The system also generates all possible workflow constructions and provides comprehensive analysis and visualization capabilities.
 
 For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23wmLHEGS`, please see [this](https://cmsweb.cern.ch/reqmgr2/fetch?rid=cmsunified_task_HIG-Run3Summer23wmLHEGS-00565__v1_T_250718_210653_3406) workflow.
+While a three-task real workflow under the campaign `Run3Summer22EEFSGenPremix` is available at [this](https://cmsweb.cern.ch/reqmgr2/data/request?name=pdmvserv_task_SUS-Run3Summer22EEFSGenPremix-00023__v1_T_250709_092301_5219) link.
 
 
 ## Features
