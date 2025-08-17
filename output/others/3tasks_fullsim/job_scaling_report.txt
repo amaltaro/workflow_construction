@@ -1,0 +1,37 @@
+Job Scaling Analysis Report
+==========================
+
+Requested Events: 2,666,667
+
+Const 1:
+  Groups: ['group_5']
+  Total Jobs: 143
+  CPU Time per Event: 9.2800 seconds/event
+  Jobs per Group:
+    group_5: 143.2 jobs
+
+Const 2:
+  Groups: ['group_3', 'group_2']
+  Total Jobs: 143
+  CPU Time per Event: 9.2800 seconds/event
+  Jobs per Group:
+    group_3: 122.2 jobs
+    group_2: 21.0 jobs
+
+Const 3:
+  Groups: ['group_0', 'group_4']
+  Total Jobs: 143
+  CPU Time per Event: 7.3200 seconds/event
+  Jobs per Group:
+    group_0: 60.5 jobs
+    group_4: 82.7 jobs
+
+Const 4:
+  Groups: ['group_0', 'group_1', 'group_2']
+  Total Jobs: 143
+  CPU Time per Event: 7.3200 seconds/event
+  Jobs per Group:
+    group_0: 60.5 jobs
+    group_1: 61.7 jobs
+    group_2: 21.0 jobs
+

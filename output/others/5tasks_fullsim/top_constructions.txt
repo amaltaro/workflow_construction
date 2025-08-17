@@ -1,0 +1,42 @@
+Top 5 Workflow Constructions by Event Throughput:
+
+Construction 1:
+  Groups: ['group_0', 'group_10', 'group_4']
+  Number of Groups: 3
+  Total Events: 2666667
+  Total CPU Time: 101555212.69 seconds
+  Event Throughput: 0.0263 events/second
+  Remote Write Data per Event: 1.291 MB/event
+
+Construction 2:
+  Groups: ['group_0', 'group_6', 'group_8']
+  Number of Groups: 3
+  Total Events: 2666667
+  Total CPU Time: 101555212.69 seconds
+  Event Throughput: 0.0263 events/second
+  Remote Write Data per Event: 1.291 MB/event
+
+Construction 3:
+  Groups: ['group_0', 'group_1', 'group_11']
+  Number of Groups: 3
+  Total Events: 2666667
+  Total CPU Time: 101555212.69 seconds
+  Event Throughput: 0.0263 events/second
+  Remote Write Data per Event: 1.682 MB/event
+
+Construction 4:
+  Groups: ['group_0', 'group_6', 'group_3', 'group_4']
+  Number of Groups: 4
+  Total Events: 2666667
+  Total CPU Time: 101555212.69 seconds
+  Event Throughput: 0.0263 events/second
+  Remote Write Data per Event: 1.291 MB/event
+
+Construction 5:
+  Groups: ['group_0', 'group_1', 'group_7', 'group_4']
+  Number of Groups: 4
+  Total Events: 2666667
+  Total CPU Time: 101555212.69 seconds
+  Event Throughput: 0.0263 events/second
+  Remote Write Data per Event: 1.682 MB/event
+

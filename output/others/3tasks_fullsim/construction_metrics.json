@@ -1,0 +1,266 @@
+[
+  {
+    "request_num_events": 2666667,
+    "total_events": 2666667,
+    "total_cpu_time": 24746669.759999998,
+    "cpu_time_per_event": 9.28,
+    "event_throughput": 0.10775862068965518,
+    "total_read_remote_mb": 0.0,
+    "total_write_local_mb": 1469062.6836328127,
+    "total_write_remote_mb": 470781.3088476563,
+    "read_remote_per_event_mb": 0.0,
+    "write_local_per_event_mb": 0.5508984375000001,
+    "write_remote_per_event_mb": 0.17654296875000003,
+    "total_memory_mb": 1296000,
+    "memory_per_event_mb": 0.4859999392500076,
+    "total_network_transfer_mb": 470781.3088476563,
+    "network_transfer_per_event_mb": 0.17654296875000003,
+    "total_jobs": 143.21519871106338,
+    "jobs_per_event": 5.3705692803437166e-05,
+    "total_wallclock_time": 6186896.584317938,
+    "wallclock_time_per_event": 2.320085929108486,
+    "group_jobs_needed": {
+      "group_5": 143.21519871106338
+    },
+    "initial_input_events": 18620,
+    "num_groups": 1,
+    "groups": [
+      "group_5"
+    ],
+    "group_details": [
+      {
+        "group_id": "group_5",
+        "tasks": [
+          "Taskset1",
+          "Taskset2",
+          "Taskset3"
+        ],
+        "input_task": null,
+        "events_per_task": 18620,
+        "total_events": 18620,
+        "cpu_seconds": 172793.59999999998,
+        "read_remote_mb": 0.0,
+        "write_local_mb": 10257.72890625,
+        "write_remote_mb": 3287.230078125,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.5508984375,
+        "write_remote_per_event_mb": 0.17654296875
+      }
+    ]
+  },
+  {
+    "request_num_events": 2666667,
+    "total_events": 2666667,
+    "total_cpu_time": 24746669.76,
+    "cpu_time_per_event": 9.280000000000001,
+    "event_throughput": 0.10775862068965517,
+    "total_read_remote_mb": 390625.048828125,
+    "total_write_local_mb": 1469062.6836328125,
+    "total_write_remote_mb": 470781.30884765624,
+    "read_remote_per_event_mb": 0.146484375,
+    "write_local_per_event_mb": 0.5508984375,
+    "write_remote_per_event_mb": 0.17654296875,
+    "total_memory_mb": 1275000,
+    "memory_per_event_mb": 0.47812494023438246,
+    "total_network_transfer_mb": 861406.3576757812,
+    "network_transfer_per_event_mb": 0.32302734375,
+    "total_jobs": 143.2110490035695,
+    "jobs_per_event": 5.370413666332149e-05,
+    "total_wallclock_time": 6186717.316954203,
+    "wallclock_time_per_event": 2.3200187038554883,
+    "group_jobs_needed": {
+      "group_3": 122.22325602713356,
+      "group_2": 20.98779297643596
+    },
+    "initial_input_events": 21818,
+    "num_groups": 2,
+    "groups": [
+      "group_3",
+      "group_2"
+    ],
+    "group_details": [
+      {
+        "group_id": "group_3",
+        "tasks": [
+          "Taskset1",
+          "Taskset2"
+        ],
+        "input_task": null,
+        "events_per_task": 21818,
+        "total_events": 21818,
+        "cpu_seconds": 172798.56,
+        "read_remote_mb": 0.0,
+        "write_local_mb": 11363.6837109375,
+        "write_remote_mb": 3195.99609375,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.5208398437499999,
+        "write_remote_per_event_mb": 0.146484375
+      },
+      {
+        "group_id": "group_2",
+        "tasks": [
+          "Taskset3"
+        ],
+        "input_task": "Taskset2",
+        "events_per_task": 127058,
+        "total_events": 127058,
+        "cpu_seconds": 172798.88,
+        "read_remote_mb": 18612.01171875,
+        "write_local_mb": 3819.1848046875,
+        "write_remote_mb": 3819.1848046875,
+        "read_remote_per_event_mb": 0.146484375,
+        "write_local_per_event_mb": 0.03005859375,
+        "write_remote_per_event_mb": 0.03005859375
+      }
+    ]
+  },
+  {
+    "request_num_events": 2666667,
+    "total_events": 2666667,
+    "total_cpu_time": 19520002.44,
+    "cpu_time_per_event": 7.32,
+    "event_throughput": 0.13661202185792348,
+    "total_read_remote_mb": 998281.3747851562,
+    "total_write_local_mb": 1469062.6836328125,
+    "total_write_remote_mb": 1469062.6836328125,
+    "read_remote_per_event_mb": 0.37435546875,
+    "write_local_per_event_mb": 0.5508984375,
+    "write_remote_per_event_mb": 0.5508984375,
+    "total_memory_mb": 1213000,
+    "memory_per_event_mb": 0.4548749431406321,
+    "total_network_transfer_mb": 2467344.0584179685,
+    "network_transfer_per_event_mb": 0.9252539062499999,
+    "total_jobs": 143.21283060865065,
+    "jobs_per_event": 5.37048047651434e-05,
+    "total_wallclock_time": 6186794.282293708,
+    "wallclock_time_per_event": 2.320047565854195,
+    "group_jobs_needed": {
+      "group_0": 60.49470293323654,
+      "group_4": 82.71812767541411
+    },
+    "initial_input_events": 44081,
+    "num_groups": 2,
+    "groups": [
+      "group_0",
+      "group_4"
+    ],
+    "group_details": [
+      {
+        "group_id": "group_0",
+        "tasks": [
+          "Taskset1"
+        ],
+        "input_task": null,
+        "events_per_task": 44081,
+        "total_events": 44081,
+        "cpu_seconds": 86398.76,
+        "read_remote_mb": 0.0,
+        "write_local_mb": 16501.96341796875,
+        "write_remote_mb": 16501.96341796875,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.37435546875,
+        "write_remote_per_event_mb": 0.37435546875
+      },
+      {
+        "group_id": "group_4",
+        "tasks": [
+          "Taskset2",
+          "Taskset3"
+        ],
+        "input_task": "Taskset1",
+        "events_per_task": 32238,
+        "total_events": 32238,
+        "cpu_seconds": 172795.68000000002,
+        "read_remote_mb": 12068.4716015625,
+        "write_local_mb": 5691.3922265625,
+        "write_remote_mb": 5691.3922265625,
+        "read_remote_per_event_mb": 0.37435546875,
+        "write_local_per_event_mb": 0.17654296875,
+        "write_remote_per_event_mb": 0.17654296875
+      }
+    ]
+  },
+  {
+    "request_num_events": 2666667,
+    "total_events": 2666667,
+    "total_cpu_time": 19520002.439999998,
+    "cpu_time_per_event": 7.319999999999999,
+    "event_throughput": 0.1366120218579235,
+    "total_read_remote_mb": 1388906.4236132812,
+    "total_write_local_mb": 1469062.6836328125,
+    "total_write_remote_mb": 1469062.6836328125,
+    "read_remote_per_event_mb": 0.52083984375,
+    "write_local_per_event_mb": 0.5508984375,
+    "write_remote_per_event_mb": 0.5508984375,
+    "total_memory_mb": 1151000,
+    "memory_per_event_mb": 0.43162494604688173,
+    "total_network_transfer_mb": 2857969.1072460935,
+    "network_transfer_per_event_mb": 1.0717382812499998,
+    "total_jobs": 143.21089868745028,
+    "jobs_per_event": 5.370408029478382e-05,
+    "total_wallclock_time": 6186710.823297852,
+    "wallclock_time_per_event": 2.3200162687346606,
+    "group_jobs_needed": {
+      "group_0": 60.49470293323654,
+      "group_1": 61.72840277777778,
+      "group_2": 20.98779297643596
+    },
+    "initial_input_events": 44081,
+    "num_groups": 3,
+    "groups": [
+      "group_0",
+      "group_1",
+      "group_2"
+    ],
+    "group_details": [
+      {
+        "group_id": "group_0",
+        "tasks": [
+          "Taskset1"
+        ],
+        "input_task": null,
+        "events_per_task": 44081,
+        "total_events": 44081,
+        "cpu_seconds": 86398.76,
+        "read_remote_mb": 0.0,
+        "write_local_mb": 16501.96341796875,
+        "write_remote_mb": 16501.96341796875,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.37435546875,
+        "write_remote_per_event_mb": 0.37435546875
+      },
+      {
+        "group_id": "group_1",
+        "tasks": [
+          "Taskset2"
+        ],
+        "input_task": "Taskset1",
+        "events_per_task": 43200,
+        "total_events": 43200,
+        "cpu_seconds": 172800,
+        "read_remote_mb": 16172.156249999998,
+        "write_local_mb": 6328.125,
+        "write_remote_mb": 6328.125,
+        "read_remote_per_event_mb": 0.37435546875,
+        "write_local_per_event_mb": 0.146484375,
+        "write_remote_per_event_mb": 0.146484375
+      },
+      {
+        "group_id": "group_2",
+        "tasks": [
+          "Taskset3"
+        ],
+        "input_task": "Taskset2",
+        "events_per_task": 127058,
+        "total_events": 127058,
+        "cpu_seconds": 172798.88,
+        "read_remote_mb": 18612.01171875,
+        "write_local_mb": 3819.1848046875,
+        "write_remote_mb": 3819.1848046875,
+        "read_remote_per_event_mb": 0.146484375,
+        "write_local_per_event_mb": 0.03005859375,
+        "write_remote_per_event_mb": 0.03005859375
+      }
+    ]
+  }
+]
