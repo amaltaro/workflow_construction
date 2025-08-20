@@ -466,7 +466,7 @@ def plot_group_data_volume_analysis(construction_metrics: List[Dict], output_dir
     print(f"Creating group-level analysis for total groups: {total_groups}, total constructions: {len(construction_metrics)}")
 
     # Calculate optimal figure height based on number of groups, bar height and spacing between constructions
-    bar_height = 0.2
+    bar_height = 0.2 if len(construction_metrics) > 6 else 0.4
     fig_height = max(3, (total_groups + len(construction_metrics)) * bar_height)
     fig, ax = plt.subplots(figsize=(14, fig_height))
 
@@ -978,7 +978,10 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     output_data_per_event = np.array(output_data_per_event)
 
     # Create a figure with multiple subplots - now with fixed, professional proportions
-    fig = plt.figure(figsize=(20, 20))
+    if len(construction_metrics) <= 2:
+        fig = plt.figure(figsize=(12, 16))
+    else:
+        fig = plt.figure(figsize=(20, 20))
     gs = fig.add_gridspec(4, 2, height_ratios=[1, 1, 1, 1])  # Equal height ratios for all rows
 
     # Helper function to get construction labels
