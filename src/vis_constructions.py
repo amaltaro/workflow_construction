@@ -105,15 +105,20 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
                     return False
         return True
 
+    # Determine if this is a sequential workflow for CSS styling (DAG structure doesn't change)
+    is_sequential = dag is not None and is_sequential_workflow(construction_metrics[0]) if construction_metrics else False
+    # Determine Mermaid direction
+    mermaid_direction = 'LR' if is_sequential else 'TD'
+    # Determine if this is a sequential workflow for CSS styling
+    sequential_class = " sequential" if is_sequential else ""
+
     # Add each construction's diagram
     for i, metrics in enumerate(construction_metrics, 1):
-        # Determine Mermaid direction
-        mermaid_direction = 'LR' if is_sequential_workflow(metrics) else 'TD'
         # Start the Mermaid diagram
         mermaid_content = f"""
-        <div class="construction">
+        <div class="construction{sequential_class}">
             <div class="construction-title">Workflow Construction {i}</div>
-            <div class="mermaid">
+            <div class="mermaid{sequential_class}">
             graph {mermaid_direction}
         """
         
@@ -137,6 +142,7 @@ def plot_workflow_topology(construction_metrics: List[Dict], output_dir: str = "
         
         mermaid_content += "</div></div>\n"
         html_content += mermaid_content
+
     
     # Close the HTML content
     html_content += """
