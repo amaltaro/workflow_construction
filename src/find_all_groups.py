@@ -12,6 +12,29 @@ import networkx as nx
 # Global configuration
 TARGET_WALLCLOCK_TIME_HOURS = 12.0  # Target wallclock time in hours
 
+
+def clamp_ratio(value: float, min_val: float = 0.0, max_val: float = 1.0) -> float:
+    """Clamp a value between min_val and max_val to ensure it's within valid bounds.
+
+    This is particularly useful for utilization ratios and occupancy values that should
+    theoretically be between 0 and 1, but may exceed these bounds due to floating-point
+    precision issues in calculations.
+
+    Args:
+        value: The value to clamp
+        min_val: Minimum allowed value (default: 0.0)
+        max_val: Maximum allowed value (default: 1.0)
+
+    Returns:
+        The clamped value between min_val and max_val
+
+    Note:
+        This function is used to protect against floating-point precision errors that can
+        cause utilization ratios and occupancy values to slightly exceed 1.0, which is
+        physically impossible for these metrics.
+    """
+    return max(min_val, min(max_val, value))
+
 # Add this after the imports
 logging.basicConfig(
     level=logging.INFO,
@@ -370,6 +393,10 @@ class TaskGrouper:
         max_possible_utilization = max_cores * total_duration
         cpu_utilization_ratio = weighted_cpu_utilization / max_possible_utilization
 
+        # Ensure CPU utilization ratio is bounded between 0 and 1
+        # This protects against floating-point precision errors that could cause values > 1.0
+        cpu_utilization_ratio = clamp_ratio(cpu_utilization_ratio)
+
         # Calculate memory metrics
         max_memory = max(t.resources.memory_mb for t in tasks)
         min_memory = min(t.resources.memory_mb for t in tasks)
@@ -378,6 +405,10 @@ class TaskGrouper:
         time_weighted_avg_memory = weighted_memory / total_duration
         # Memory occupancy is the ratio of time-weighted average memory to max memory
         memory_occupancy = time_weighted_avg_memory / max_memory
+
+        # Ensure memory occupancy is bounded between 0 and 1
+        # This protects against floating-point precision errors that could cause values > 1.0
+        memory_occupancy = clamp_ratio(memory_occupancy)
 
         # Calculate throughput metrics
         # Use events_per_job for consistency with workflow construction metrics
@@ -435,6 +466,10 @@ class TaskGrouper:
         # Calculate overall resource utilization
         # This is a weighted average of CPU and memory efficiency
         resource_utilization = (cpu_utilization_ratio + memory_occupancy) / 2.0
+
+        # Ensure resource utilization is bounded between 0 and 1
+        # This provides additional safety even though individual components are already clamped
+        resource_utilization = clamp_ratio(resource_utilization)
 
         # Calculate event throughput
         # This is the number of events processed per second (consistent with workflow construction)

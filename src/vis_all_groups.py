@@ -1081,13 +1081,14 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     ax7 = fig.add_subplot(gs[2, 0])
     network_transfer = []
     for metrics in construction_metrics:
-        # Calculate network transfer as sum of remote read and local write data
-        transfer = metrics["read_remote_per_event_mb"] + metrics["write_local_per_event_mb"]
+        # Network transfer = remote read + remote write (only remote operations)
+        # This uses the pre-calculated network_transfer_per_event_mb field
+        transfer = metrics["network_transfer_per_event_mb"]
         network_transfer.append(transfer)
 
     ax7.bar(range(len(construction_metrics)), network_transfer)
     ax7.set_xlabel("Workflow Construction")
-    ax7.set_ylabel("Network Transfer (MB)")
+    ax7.set_ylabel("Network Transfer per Event (MB)")
     ax7.set_title("Network Transfer Analysis")
     ax7.set_xticks(range(len(construction_metrics)))
     ax7.set_xticklabels(construction_labels, rotation=45)
@@ -1129,6 +1130,9 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
         if occupancies:
             avg_occupancy = sum(occupancies) / len(occupancies)
             std_occupancy = np.std(occupancies)
+            # Note: Standard deviation can cause upper error bars to exceed 1.0
+            # This is mathematically correct and shows true data variability
+            # Individual memory occupancy values remain bounded [0, 1]
             memory_utilization.append(avg_occupancy)
             memory_std.append(std_occupancy)
         else:
