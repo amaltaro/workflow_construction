@@ -9,7 +9,7 @@ Research for: Optimizing Heterogeneous Workflow Construction for Enhanced Event 
 
 The Workflow Task Grouper analyzes workflow tasks and their relationships to create optimal task groups while respecting both hard constraints (OS compatibility, architecture requirements) and soft constraints (resource utilization, performance characteristics). The system also generates all possible workflow constructions and provides comprehensive analysis and visualization capabilities.
 
-For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23wmLHEGS`, please see [this](https://cmsweb.cern.ch/reqmgr2/fetch?rid=cmsunified_task_HIG-Run3Summer23wmLHEGS-00565__v1_T_250718_210653_3406) workflow.
+For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23wmLHEGS`, please see [this](https://cmsweb.cern.ch/reqmgr2/fetch?rid=pdmvserv_task_HIG-Run3Summer23wmLHEGS-00565__v1_T_250718_170537_83) workflow.
 While a three-task real workflow under the campaign `Run3Summer22EEFSGenPremix` is available at [this](https://cmsweb.cern.ch/reqmgr2/data/request?name=pdmvserv_task_SUS-Run3Summer22EEFSGenPremix-00023__v1_T_250709_092301_5219) link.
 
 
@@ -219,6 +219,127 @@ python src/vis_all_groups.py tests/sequential/5tasks.json --toy-model
 The tool generates 10 different visualization types including resource utilization analysis, throughput analysis, dependency analysis, job scaling analysis, time analysis, and interactive workflow topology diagrams.
 
 📖 **[Detailed Visualization Documentation](docs/visualization_analysis.md)** - Complete guide to visualization capabilities and usage
+
+## 📊 Workflow Construction Statistics Analyzer
+
+The `const_stats.py` module provides comprehensive statistical analysis of workflow construction metrics from JSON files. This tool calculates detailed statistical measures for key performance parameters to help analyze and compare different workflow constructions.
+
+### Key Features
+
+- **Comprehensive Statistics**: Median, average, standard deviation, min, max, quartiles, coefficient of variation
+- **Default Metrics**: Analyzes `write_remote_per_event_mb`, `event_throughput`, `memory_per_event_mb`, and `network_transfer_per_event_mb`
+- **Flexible Output**: Console display, JSON file output, and summary comparison tables
+- **Command Line Interface**: Easy-to-use CLI with various options
+
+### Quick Start
+
+```bash
+# Basic analysis of all default metrics
+python src/const_stats.py output/others/5tasks_fullsim/construction_metrics.json
+
+# Show only summary comparison table
+python src/const_stats.py input.json --summary-only
+
+# Show only speedup analysis table
+python src/const_stats.py input.json --speedup-only
+
+# Show only values summary table
+python src/const_stats.py input.json --values-only
+
+# Analyze specific metrics only
+python src/const_stats.py input.json -m event_throughput memory_per_event_mb
+
+# Custom output file
+python src/const_stats.py input.json -o custom_stats.json
+```
+
+### Programmatic Usage
+
+```python
+from const_stats import analyze_workflow_metrics, generate_summary_table
+
+# Analyze metrics
+results = analyze_workflow_metrics('path/to/file.json')
+
+# Generate summary table
+summary = generate_summary_table(results)
+print(summary)
+
+# Access specific statistics
+if 'event_throughput' in results:
+    throughput_stats = results['event_throughput']
+    mean_throughput = throughput_stats['mean']
+    cv_throughput = throughput_stats['cv']
+```
+
+### Example Output
+
+The analyzer provides both detailed statistics and a summary comparison table:
+
+```
+SUMMARY COMPARISON TABLE
+====================================================================================================
+Metric                                    COUNT         MIN         MAX        MEAN      MEDIAN     STD_DEV         CV     SPEEDUP
+----------------------------------------------------------------------------------------------------
+write_remote_per_event_mb                    16    0.573242    1.681641    1.127441    1.127441    0.421991      0.374       2.934
+event_throughput                             16    0.015922    0.026258    0.022318    0.023130    0.004253      0.191       1.649
+memory_per_event_mb                          16    1.302000    1.458000    1.380000    1.380000    0.079024      0.057       1.120
+network_transfer_per_event_mb                16    0.573242    3.333984    1.953613    1.953613    0.871868      0.446       5.816
+----------------------------------------------------------------------------------------------------
+```
+
+### Statistical Measures
+
+- **Basic**: count, min, max, range, mean, median
+- **Variability**: standard deviation, variance, coefficient of variation (CV)
+- **Percentiles**: Q1 (25th), Q3 (75th), interquartile range (IQR)
+- **Speedup Analysis**: maximum speedup, mean/min ratio, max/mean ratio
+
+### Interpretation Guide
+
+- **CV < 0.15**: Low variability (consistent performance)
+- **CV 0.15-0.35**: Moderate variability
+- **CV > 0.35**: High variability (inconsistent performance)
+
+### Speedup Analysis
+
+The analyzer calculates **maximum achievable speedup** for each metric:
+
+- **Speedup Factor**: `max_value / min_value` - shows the potential improvement from worst to best case
+- **Mean/Min Ratio**: `mean_value / min_value` - shows improvement from current average to best case
+- **Max/Mean Ratio**: `max_value / mean_value` - shows how much better the best case is than average
+
+**Speedup Categories:**
+- **≥ 5x**: Very high potential for optimization
+- **2-5x**: High potential for optimization
+- **1.5-2x**: Moderate potential for optimization
+- **< 1.5x**: Low potential for optimization
+
+### Values Analysis
+
+The analyzer provides comprehensive access to all raw values for each metric:
+
+- **Detailed Statistics**: Each metric shows all values in ascending order for intermediate analysis
+- **Values Summary Table**: Compact table showing first 10 values for each metric (V1, V2, V3...)
+- **Intermediate Speedup Calculations**: Analyze speedup between any two values, not just min/max
+- **Distribution Analysis**: See the actual distribution of values to identify patterns
+
+**Example Values Output:**
+```
+All Values (Ascending Order):
+------------------------------
+      0.573242      0.573242      0.573242      0.573242      0.963867      0.963867
+      0.963867      0.963867      1.291016      1.291016      1.291016      1.291016
+      1.681641      1.681641      1.681641      1.681641
+
+Total: 16 values
+```
+
+This allows you to calculate speedup between intermediate values, such as:
+- Speedup from V1 to V5: `0.963867 / 0.573242 = 1.68x`
+- Speedup from V8 to V16: `1.681641 / 1.291016 = 1.30x`
+
+See `src/example_usage.py` for comprehensive usage examples and advanced analysis techniques.
 
 ## Contributing
 
