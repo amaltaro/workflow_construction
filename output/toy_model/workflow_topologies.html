@@ -26,6 +26,10 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     overflow: hidden;
 }
+.construction.sequential {
+    /* Sequential workflows get half the height */
+    max-height: 300px;
+}
 .mermaid {
     width: 100%;
     background: #fff;
@@ -36,6 +40,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.mermaid.sequential {
+    /* Sequential workflow Mermaid diagrams get half the height */
+    max-height: 300px;
+    min-height: 100px;
 }
 /* Ensure Mermaid SVG scales properly */
 .mermaid svg {
@@ -178,9 +187,9 @@
         <!-- Diagrams Container -->
         <div class="container">
     
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 1</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_14 [Group group_14]
         Taskset1["Taskset1"]:::groupnode
@@ -198,9 +207,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 2</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
