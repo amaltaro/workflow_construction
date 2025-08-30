@@ -26,6 +26,10 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     overflow: hidden;
 }
+.construction.sequential {
+    /* Sequential workflows get half the height */
+    max-height: 300px;
+}
 .mermaid {
     width: 100%;
     background: #fff;
@@ -36,6 +40,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.mermaid.sequential {
+    /* Sequential workflow Mermaid diagrams get half the height */
+    max-height: 300px;
+    min-height: 100px;
 }
 /* Ensure Mermaid SVG scales properly */
 .mermaid svg {
