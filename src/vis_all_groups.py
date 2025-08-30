@@ -1076,6 +1076,8 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
 
     # set x-axis to start at 0 and add 10% padding to the right
     ax1.set_xlim(left=0, right=np.max(event_throughputs) * 1.1)
+    # set y-axis to start at 0
+    ax1.set_ylim(bottom=0)
 
     # 5. Network Transfer Analysis
     ax7 = fig.add_subplot(gs[2, 0])
@@ -1097,6 +1099,7 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
     # 6. CPU Utilization Analysis
     ax4 = fig.add_subplot(gs[2, 1])
     cpu_utilization = []
+    cpu_std = []  # Store standard deviations
     for metrics in construction_metrics:
         # Get CPU utilization ratio for each group from the original groups data
         util = []
@@ -1105,13 +1108,25 @@ def plot_workflow_comparison(construction_metrics: List[Dict], output_dir: str =
             group_data = next((g for g in groups if g["group_id"] == group_id), None)
             if group_data:
                 util.append(group_data["resource_metrics"]["cpu"]["utilization_ratio"])
-        cpu_utilization.append(util)
+        # Calculate average and standard deviation of CPU utilization
+        if util:
+            avg_util = sum(util) / len(util)
+            std_util = np.std(util)
+            cpu_utilization.append(avg_util)
+            cpu_std.append(std_util)
+        else:
+            cpu_utilization.append(0)
+            cpu_std.append(0)
 
-    ax4.boxplot(cpu_utilization, tick_labels=construction_labels)
+    # Create bar plot with error bars
+    x = range(len(construction_metrics))
+    ax4.bar(x, cpu_utilization, yerr=cpu_std, capsize=5)
     ax4.set_xlabel("Workflow Construction")
     ax4.set_ylabel("CPU Utilization Ratio")
-    ax4.set_title("CPU Utilization Analysis\n(Actual CPU Usage / Allocated CPU)")
+    ax4.set_title("CPU Utilization Analysis\n(Average CPU Usage / Allocated CPU ± Std Dev)")
+    ax4.set_xticks(x)
     ax4.set_xticklabels(construction_labels, rotation=45)
+    ax4.set_ylim(bottom=0)  # Set Y-axis to start at 0
     ax4.grid(True)
 
     # 7. Memory Utilization Analysis
