@@ -26,6 +26,10 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     overflow: hidden;
 }
+.construction.sequential {
+    /* Sequential workflows get half the height */
+    max-height: 300px;
+}
 .mermaid {
     width: 100%;
     background: #fff;
@@ -36,6 +40,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.mermaid.sequential {
+    /* Sequential workflow Mermaid diagrams get half the height */
+    max-height: 300px;
+    min-height: 100px;
 }
 /* Ensure Mermaid SVG scales properly */
 .mermaid svg {
@@ -187,9 +196,9 @@
         <!-- Diagrams Container -->
         <div class="container">
     
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 1</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_14 [Group group_14]
         Taskset1["Taskset1"]:::groupnode
@@ -207,9 +216,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 2</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
@@ -229,9 +238,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 3</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_8 [Group group_8]
         Taskset4["Taskset4"]:::groupnode
@@ -251,9 +260,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 4</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
@@ -273,9 +282,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 5</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_5 [Group group_5]
         Taskset1["Taskset1"]:::groupnode
@@ -295,9 +304,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 6</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_3 [Group group_3]
         Taskset4["Taskset4"]:::groupnode
@@ -319,9 +328,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 7</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
@@ -343,9 +352,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 8</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
@@ -367,9 +376,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 9</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_2 [Group group_2]
         Taskset3["Taskset3"]:::groupnode
@@ -391,9 +400,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 10</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
@@ -415,9 +424,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 11</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
@@ -439,9 +448,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 12</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_2 [Group group_2]
         Taskset3["Taskset3"]:::groupnode
@@ -465,9 +474,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 13</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
@@ -491,9 +500,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 14</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
@@ -517,9 +526,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 15</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
@@ -543,9 +552,9 @@
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
 </div></div>
 
-        <div class="construction">
+        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 16</div>
-            <div class="mermaid">
+            <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
