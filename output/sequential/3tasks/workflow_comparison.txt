@@ -15,7 +15,7 @@ Construction 1:
     Local Write Data: 0.537 MB/event
     Remote Write Data: 0.342 MB/event
   Memory Utilization: 0.81
-  Network Transfer: 0.54 MB
+  Network Transfer: 0.34 MB
   Workflow Performance Metrics:
     Total CPU Time: 80000000.00 seconds
     Total Wallclock Time: 40000000.00 seconds
@@ -83,7 +83,7 @@ Construction 3:
     Local Write Data: 0.537 MB/event
     Remote Write Data: 0.342 MB/event
   Memory Utilization: 0.92
-  Network Transfer: 0.83 MB
+  Network Transfer: 0.63 MB
   Workflow Performance Metrics:
     Total CPU Time: 80000000.00 seconds
     Total Wallclock Time: 40000000.00 seconds
