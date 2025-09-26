@@ -1387,6 +1387,8 @@ if __name__ == "__main__":
                        help='Base output directory (default: output)')
     parser.add_argument('--toy-model', action='store_true',
                        help='Create toy model with only two extreme constructions (single group vs one group per task)')
+    parser.add_argument('--export-templates', action='store_true',
+                       help='Export workflow compositions as JSON templates for standalone simulation')
     args = parser.parse_args()
 
     # Convert template file path to Path object for easier manipulation
@@ -1404,3 +1406,29 @@ if __name__ == "__main__":
     else:
         print("Running in full mode - visualizing all constructions")
         visualize_groups(groups, construction_metrics, template_path, args.output_dir, dag)
+
+    # Export templates if requested
+    if args.export_templates:
+        print("\nExporting workflow compositions as JSON templates...")
+        from export_templates import export_all_compositions, export_composition_summary
+
+        # Extract template name from file path
+        template_name = template_path.stem
+
+        # Create templates subdirectory
+        templates_dir = os.path.join(args.output_dir, "templates")
+
+        # Export all compositions
+        export_all_compositions(
+            workflow_data,
+            construction_metrics,
+            template_name,
+            templates_dir
+        )
+
+        # Export summary
+        export_composition_summary(
+            construction_metrics,
+            template_name,
+            templates_dir
+        )
