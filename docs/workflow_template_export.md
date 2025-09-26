@@ -22,7 +22,7 @@ python src/vis_all_groups.py tests/fork/3tasks.json --export-templates --output-
 
 This will:
 1. Generate all visualizations and metrics as usual
-2. Export workflow composition templates to `output/my_analysis/templates/`
+2. Export workflow composition templates to `output/sequential/3tasks/templates/` (or equivalent path based on input file)
 
 ## Output Structure
 
@@ -159,16 +159,16 @@ for i in range(1, template['NumTasks'] + 1):
 
 ## File Organization
 
-The templates are organized in the output directory structure:
+The templates are organized in the same directory structure as the analysis data:
 
 ```
 output/
-├── templates/                    # Template files directory
-│   ├── 3tasks_composition_001.json
-│   ├── 3tasks_composition_002.json
-│   ├── 3tasks_composition_003.json
-│   └── 3tasks_compositions_summary.json
-└── fork/3tasks/                 # Regular analysis output
+└── sequential/3tasks/            # Analysis output directory
+    ├── templates/                # Template files directory
+    │   ├── 3tasks_composition_001.json
+    │   ├── 3tasks_composition_002.json
+    │   ├── 3tasks_composition_003.json
+    │   └── 3tasks_compositions_summary.json
     ├── construction_metrics.json
     ├── workflow_topologies.html
     └── ...

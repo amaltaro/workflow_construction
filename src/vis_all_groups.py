@@ -1415,8 +1415,12 @@ if __name__ == "__main__":
         # Extract template name from file path
         template_name = template_path.stem
 
-        # Create templates subdirectory
-        templates_dir = os.path.join(args.output_dir, "templates")
+        # Use the same directory structure as the analysis data
+        # Extract template directory name from the path (e.g., "sequential" or "fork")
+        tmpl_dir = template_path.parent.name
+        # Create output directory with template subdirectory, same as analysis data
+        analysis_output_path = os.path.join(args.output_dir, tmpl_dir, template_name)
+        templates_dir = os.path.join(analysis_output_path, "templates")
 
         # Export all compositions
         export_all_compositions(
