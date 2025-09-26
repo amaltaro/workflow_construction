@@ -457,10 +457,14 @@ class TaskGrouper:
 
         # Calculate dependency paths
         dependency_paths = []
-        for src in group:
-            for dst in group:
+        # Sort group to ensure deterministic iteration order
+        sorted_group = sorted(group)
+        for src in sorted_group:
+            for dst in sorted_group:
                 if src != dst and nx.has_path(self.dag, src, dst):
                     paths = list(nx.all_simple_paths(self.dag, src, dst))
+                    # Sort paths to ensure deterministic ordering
+                    paths.sort()
                     dependency_paths.extend(paths)
 
         # Calculate overall resource utilization
