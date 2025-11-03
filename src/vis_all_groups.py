@@ -5,6 +5,8 @@ from typing import List, Dict
 from collections import defaultdict
 from math import ceil
 
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend to avoid live rendering
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

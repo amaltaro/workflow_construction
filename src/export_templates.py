@@ -89,7 +89,7 @@ def export_all_compositions(
         )
         
         # Generate filename
-        filename = f"{template_name}_composition_{i:03d}.json"
+        filename = f"{template_name}_const_{i:03d}.json"
         filepath = os.path.join(output_dir, filename)
         
         # Write the template to file
