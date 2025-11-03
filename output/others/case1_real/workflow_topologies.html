@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Workflow Construction Topologies - tests/others/case1_real.json</title>
+        <style>
+/* Workflow Construction Visualization Styles */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 40px;
+    padding: 20px;
+    align-items: start;
+    max-width: 100%;
+}
+.construction {
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.construction.sequential {
+    /* Sequential workflows get half the height */
+    max-height: 300px;
+}
+.mermaid {
+    width: 100%;
+    background: #fff;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 600px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mermaid.sequential {
+    /* Sequential workflow Mermaid diagrams get half the height */
+    max-height: 300px;
+    min-height: 100px;
+}
+/* Ensure Mermaid SVG scales properly */
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+    min-width: 300px;
+}
+.construction-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    color: #333;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+.legend {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+.legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #333;
+}
+.group-composition {
+    margin: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 0.9em;
+    line-height: 1.4;
+    border: 1px solid #e9ecef;
+}
+.group-composition h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+.group-composition ul {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2 300px;
+    -webkit-columns: 2 300px;
+    -moz-columns: 2 300px;
+    column-gap: 40px;
+}
+.group-composition li {
+    margin: 4px 0;
+    break-inside: avoid;
+}
+@media (min-width: 900px) {
+    .group-composition ul { columns: 3 200px; }
+}
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 10px;
+    }
+    
+    .construction {
+        padding: 10px;
+    }
+    
+    .mermaid {
+        max-height: 400px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 50px;
+    }
+}
+/* Reduce font size for Mermaid SVG text (subgraph labels, etc.) */
+.mermaid text {
+    font-size: 12px !important;
+}
+/* Improve subgraph appearance */
+.mermaid .cluster rect {
+    fill: #f8f9fa !important;
+    stroke: #cacdd1 !important;
+    stroke-width: 1px !important;
+}
+.mermaid .cluster-label {
+    font-size: 11px !important;
+    font-weight: bold !important;
+}
+/* Additional Mermaid improvements */
+.mermaid .node rect {
+    stroke-width: 2px !important;
+}
+.mermaid .edgePath path {
+    stroke-width: 2px !important;
+}
+/* Ensure diagrams don't overflow their containers */
+.mermaid .flowchart {
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+/* Better spacing for complex diagrams */
+.mermaid .cluster {
+    margin: 10px !important;
+} 
+</style>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    </head>
+    <body>
+        <h1>Workflow Construction Topologies - tests/others/case1_real.json</h1>
+        
+        <!-- Group Composition -->
+        <div class="group-composition">
+            <h3>Group/Task Composition:</h3>
+            <ul>
+    <li>Group group_0: Taskset1</li>
+<li>Group group_1: Taskset2</li>
+<li>Group group_2: Taskset3</li>
+<li>Group group_3: Taskset4</li>
+<li>Group group_4: Taskset5</li>
+<li>Group group_5: Taskset1, Taskset2</li>
+<li>Group group_6: Taskset2, Taskset3</li>
+<li>Group group_7: Taskset3, Taskset4</li>
+<li>Group group_8: Taskset4, Taskset5</li>
+<li>Group group_9: Taskset1, Taskset2, Taskset3</li>
+<li>Group group_10: Taskset2, Taskset3, Taskset4</li>
+<li>Group group_11: Taskset3, Taskset4, Taskset5</li>
+<li>Group group_12: Taskset1, Taskset2, Taskset3, Taskset4</li>
+<li>Group group_13: Taskset2, Taskset3, Taskset4, Taskset5</li>
+<li>Group group_14: Taskset1, Taskset2, Taskset3, Taskset4, Taskset5</li>
+
+            </ul>
+        </div>
+        
+        <!-- Diagrams Container -->
+        <div class="container">
+    
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 1</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_14 [Group group_14]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 2</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_12 [Group group_12]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 3</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_8 [Group group_8]
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_9 [Group group_9]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 4</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_13 [Group group_13]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 5</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_5 [Group group_5]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_11 [Group group_11]
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 6</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_3 [Group group_3]
+        Taskset4["Taskset4"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_9 [Group group_9]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 7</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_10 [Group group_10]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 8</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_5 [Group group_5]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_7 [Group group_7]
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 9</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_6 [Group group_6]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 10</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_2 [Group group_2]
+        Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_5 [Group group_5]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 11</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_1 [Group group_1]
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_11 [Group group_11]
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 12</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_3 [Group group_3]
+        Taskset4["Taskset4"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_6 [Group group_6]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 13</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_2 [Group group_2]
+        Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_3 [Group group_3]
+        Taskset4["Taskset4"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_5 [Group group_5]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 14</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_1 [Group group_1]
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_7 [Group group_7]
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 15</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_1 [Group group_1]
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_2 [Group group_2]
+        Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 16</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_1 [Group group_1]
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_2 [Group group_2]
+        Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_3 [Group group_3]
+        Taskset4["Taskset4"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        </div>
+        <script>
+            mermaid.initialize({{
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {{
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis',
+                    nodeSpacing: 50,
+                    rankSpacing: 50,
+                    diagramPadding: 20
+                }}
+            }});
+        </script>
+    </body>
+    </html>
+    
