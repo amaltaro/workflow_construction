@@ -1,0 +1,838 @@
+[
+  {
+    "group_id": "group_0",
+    "task_ids": [
+      "Taskset1"
+    ],
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset1",
+    "input_task": null,
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 1,
+        "cpu_seconds": 43199.34082749691,
+        "utilization_ratio": 1.0
+      },
+      "memory": {
+        "max_mb": 2000,
+        "min_mb": 2000,
+        "occupancy": 0.9999999999999999
+      },
+      "throughput": {
+        "total_eps": 0.611676,
+        "max_eps": 0.611676,
+        "min_eps": 0.611676
+      },
+      "io": {
+        "read_remote_mb": 0.0,
+        "write_local_mb": 20825.201002816902,
+        "write_remote_mb": 20825.201002816902,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 0.7881169014084507,
+        "write_remote_per_event_mb": 0.7881169014084507
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 1.0,
+      "event_throughput": 0.611676
+    },
+    "dependency_paths": [],
+    "events_per_job": 26424
+  },
+  {
+    "group_id": "group_1",
+    "task_ids": [
+      "Taskset2"
+    ],
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset2",
+    "input_task": "Taskset1",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 2,
+        "cpu_seconds": 86400,
+        "utilization_ratio": 1.0
+      },
+      "memory": {
+        "max_mb": 4000,
+        "min_mb": 4000,
+        "occupancy": 1.0
+      },
+      "throughput": {
+        "total_eps": 0.016666666666666666,
+        "max_eps": 0.016666666666666666,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 1134.888338028169,
+        "write_local_mb": 1687.5,
+        "write_remote_mb": 1687.5,
+        "read_remote_per_event_mb": 0.7881169014084507,
+        "write_local_per_event_mb": 1.171875,
+        "write_remote_per_event_mb": 1.171875
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 1.0,
+      "event_throughput": 0.016666666666666666
+    },
+    "dependency_paths": [],
+    "events_per_job": 1440
+  },
+  {
+    "group_id": "group_10",
+    "task_ids": [
+      "Taskset2",
+      "Taskset3",
+      "Taskset4"
+    ],
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset4",
+    "input_task": "Taskset1",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 8,
+        "cpu_seconds": 345432,
+        "utilization_ratio": 0.3108108108108108
+      },
+      "memory": {
+        "max_mb": 16000,
+        "min_mb": 4000,
+        "occupancy": 0.31081081081081086
+      },
+      "throughput": {
+        "total_eps": 0.0033783783783783786,
+        "max_eps": 0.125,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 919.732423943662,
+        "write_local_mb": 2165.33203125,
+        "write_remote_mb": 797.75390625,
+        "read_remote_per_event_mb": 0.7881169014084507,
+        "write_local_per_event_mb": 1.85546875,
+        "write_remote_per_event_mb": 0.68359375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.31081081081081086,
+      "event_throughput": 0.0033783783783783786
+    },
+    "dependency_paths": [
+      [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset3",
+        "Taskset4"
+      ]
+    ],
+    "events_per_job": 1167
+  },
+  {
+    "group_id": "group_11",
+    "task_ids": [
+      "Taskset3",
+      "Taskset4",
+      "Taskset5"
+    ],
+    "entry_point_task": "Taskset3",
+    "exit_point_task": "Taskset5",
+    "input_task": "Taskset2",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 12,
+        "cpu_seconds": 518364.92400000006,
+        "utilization_ratio": 0.40964369726528793
+      },
+      "memory": {
+        "max_mb": 24000,
+        "min_mb": 8000,
+        "occupancy": 0.409643697265288
+      },
+      "throughput": {
+        "total_eps": 0.011353005821821385,
+        "max_eps": 0.24495394865765238,
+        "min_eps": 0.041666666666666664
+      },
+      "io": {
+        "read_remote_mb": 6896.484375,
+        "write_local_mb": 4199.855537109375,
+        "write_remote_mb": 4199.855537109375,
+        "read_remote_per_event_mb": 1.171875,
+        "write_local_per_event_mb": 0.713654296875,
+        "write_remote_per_event_mb": 0.713654296875
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.40964369726528793,
+      "event_throughput": 0.011353005821821385
+    },
+    "dependency_paths": [
+      [
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset4",
+        "Taskset5"
+      ]
+    ],
+    "events_per_job": 5885
+  },
+  {
+    "group_id": "group_12",
+    "task_ids": [
+      "Taskset1",
+      "Taskset2",
+      "Taskset3",
+      "Taskset4"
+    ],
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset4",
+    "input_task": null,
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 8,
+        "cpu_seconds": 345550.1202074301,
+        "utilization_ratio": 0.3029481366207837
+      },
+      "memory": {
+        "max_mb": 16000,
+        "min_mb": 2000,
+        "occupancy": 0.30294813662078374
+      },
+      "throughput": {
+        "total_eps": 0.003235420665832431,
+        "max_eps": 0.611676,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 0.0,
+        "write_local_mb": 2955.5287582746478,
+        "write_remote_mb": 764.2578125,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 2.6435856514084506,
+        "write_remote_per_event_mb": 0.68359375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.3029481366207837,
+      "event_throughput": 0.003235420665832431
+    },
+    "dependency_paths": [
+      [
+        "Taskset1",
+        "Taskset2"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset3",
+        "Taskset4"
+      ]
+    ],
+    "events_per_job": 1118
+  },
+  {
+    "group_id": "group_13",
+    "task_ids": [
+      "Taskset2",
+      "Taskset3",
+      "Taskset4",
+      "Taskset5"
+    ],
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset5",
+    "input_task": "Taskset1",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 12,
+        "cpu_seconds": 517983.25440000003,
+        "utilization_ratio": 0.21443020301623095
+      },
+      "memory": {
+        "max_mb": 24000,
+        "min_mb": 4000,
+        "occupancy": 0.21443020301623092
+      },
+      "throughput": {
+        "total_eps": 0.002231732377794798,
+        "max_eps": 0.24495394865765238,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 911.063138028169,
+        "write_local_mb": 2179.6718671875,
+        "write_remote_mb": 824.9843671875,
+        "read_remote_per_event_mb": 0.7881169014084507,
+        "write_local_per_event_mb": 1.8855292968750001,
+        "write_remote_per_event_mb": 0.7136542968749999
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.21443020301623095,
+      "event_throughput": 0.002231732377794798
+    },
+    "dependency_paths": [
+      [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset4",
+        "Taskset5"
+      ]
+    ],
+    "events_per_job": 1156
+  },
+  {
+    "group_id": "group_14",
+    "task_ids": [
+      "Taskset1",
+      "Taskset2",
+      "Taskset3",
+      "Taskset4",
+      "Taskset5"
+    ],
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset5",
+    "input_task": null,
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 12,
+        "cpu_seconds": 518212.2972185589,
+        "utilization_ratio": 0.20893119727701637
+      },
+      "memory": {
+        "max_mb": 24000,
+        "min_mb": 2000,
+        "occupancy": 0.20893119727701642
+      },
+      "throughput": {
+        "total_eps": 0.002138119851549364,
+        "max_eps": 0.611676,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 0.0,
+        "write_local_mb": 2962.399987698063,
+        "write_remote_mb": 790.7289609375,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 2.6736461982834503,
+        "write_remote_per_event_mb": 0.713654296875
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.2089311972770164,
+      "event_throughput": 0.002138119851549364
+    },
+    "dependency_paths": [
+      [
+        "Taskset1",
+        "Taskset2"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset2",
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset3",
+        "Taskset4"
+      ],
+      [
+        "Taskset3",
+        "Taskset4",
+        "Taskset5"
+      ],
+      [
+        "Taskset4",
+        "Taskset5"
+      ]
+    ],
+    "events_per_job": 1108
+  },
+  {
+    "group_id": "group_2",
+    "task_ids": [
+      "Taskset3"
+    ],
+    "entry_point_task": "Taskset3",
+    "exit_point_task": "Taskset3",
+    "input_task": "Taskset2",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 4,
+        "cpu_seconds": 172800,
+        "utilization_ratio": 1.0
+      },
+      "memory": {
+        "max_mb": 8000,
+        "min_mb": 8000,
+        "occupancy": 1.0
+      },
+      "throughput": {
+        "total_eps": 0.041666666666666664,
+        "max_eps": 0.041666666666666664,
+        "min_eps": 0.041666666666666664
+      },
+      "io": {
+        "read_remote_mb": 8437.5,
+        "write_local_mb": 3867.1875,
+        "write_remote_mb": 3867.1875,
+        "read_remote_per_event_mb": 1.171875,
+        "write_local_per_event_mb": 0.537109375,
+        "write_remote_per_event_mb": 0.537109375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 1.0,
+      "event_throughput": 0.041666666666666664
+    },
+    "dependency_paths": [],
+    "events_per_job": 7200
+  },
+  {
+    "group_id": "group_3",
+    "task_ids": [
+      "Taskset4"
+    ],
+    "entry_point_task": "Taskset4",
+    "exit_point_task": "Taskset4",
+    "input_task": "Taskset3",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 8,
+        "cpu_seconds": 345600,
+        "utilization_ratio": 1.0
+      },
+      "memory": {
+        "max_mb": 16000,
+        "min_mb": 16000,
+        "occupancy": 1.0
+      },
+      "throughput": {
+        "total_eps": 0.125,
+        "max_eps": 0.125,
+        "min_eps": 0.125
+      },
+      "io": {
+        "read_remote_mb": 23203.125,
+        "write_local_mb": 6328.125,
+        "write_remote_mb": 6328.125,
+        "read_remote_per_event_mb": 0.537109375,
+        "write_local_per_event_mb": 0.146484375,
+        "write_remote_per_event_mb": 0.146484375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 1.0,
+      "event_throughput": 0.125
+    },
+    "dependency_paths": [],
+    "events_per_job": 43200
+  },
+  {
+    "group_id": "group_4",
+    "task_ids": [
+      "Taskset5"
+    ],
+    "entry_point_task": "Taskset5",
+    "exit_point_task": "Taskset5",
+    "input_task": "Taskset4",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 12,
+        "cpu_seconds": 518399.4816,
+        "utilization_ratio": 1.0
+      },
+      "memory": {
+        "max_mb": 24000,
+        "min_mb": 24000,
+        "occupancy": 1.0
+      },
+      "throughput": {
+        "total_eps": 0.24495394865765235,
+        "max_eps": 0.24495394865765235,
+        "min_eps": 0.24495394865765235
+      },
+      "io": {
+        "read_remote_mb": 18601.171875,
+        "write_local_mb": 3817.208484375,
+        "write_remote_mb": 3817.208484375,
+        "read_remote_per_event_mb": 0.146484375,
+        "write_local_per_event_mb": 0.030060546875,
+        "write_remote_per_event_mb": 0.030060546875
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 1.0,
+      "event_throughput": 0.24495394865765235
+    },
+    "dependency_paths": [],
+    "events_per_job": 126984
+  },
+  {
+    "group_id": "group_5",
+    "task_ids": [
+      "Taskset1",
+      "Taskset2"
+    ],
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset2",
+    "input_task": null,
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 2,
+        "cpu_seconds": 86363.14715633767,
+        "utilization_ratio": 0.9741605806220893
+      },
+      "memory": {
+        "max_mb": 4000,
+        "min_mb": 2000,
+        "occupancy": 0.9741605806220892
+      },
+      "throughput": {
+        "total_eps": 0.015805352687402973,
+        "max_eps": 0.611676,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 0.0,
+        "write_local_mb": 2675.3889454225355,
+        "write_remote_mb": 1599.609375,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 1.9599919014084508,
+        "write_remote_per_event_mb": 1.171875
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.9741605806220892,
+      "event_throughput": 0.015805352687402973
+    },
+    "dependency_paths": [
+      [
+        "Taskset1",
+        "Taskset2"
+      ]
+    ],
+    "events_per_job": 1365
+  },
+  {
+    "group_id": "group_6",
+    "task_ids": [
+      "Taskset2",
+      "Taskset3"
+    ],
+    "entry_point_task": "Taskset2",
+    "exit_point_task": "Taskset3",
+    "input_task": "Taskset1",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 4,
+        "cpu_seconds": 172800,
+        "utilization_ratio": 0.5833333333333334
+      },
+      "memory": {
+        "max_mb": 8000,
+        "min_mb": 4000,
+        "occupancy": 0.5833333333333334
+      },
+      "throughput": {
+        "total_eps": 0.006944444444444444,
+        "max_eps": 0.041666666666666664,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 945.7402816901408,
+        "write_local_mb": 2050.78125,
+        "write_remote_mb": 644.53125,
+        "read_remote_per_event_mb": 0.7881169014084507,
+        "write_local_per_event_mb": 1.708984375,
+        "write_remote_per_event_mb": 0.537109375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.5833333333333334,
+      "event_throughput": 0.006944444444444444
+    },
+    "dependency_paths": [
+      [
+        "Taskset2",
+        "Taskset3"
+      ]
+    ],
+    "events_per_job": 1200
+  },
+  {
+    "group_id": "group_7",
+    "task_ids": [
+      "Taskset3",
+      "Taskset4"
+    ],
+    "entry_point_task": "Taskset3",
+    "exit_point_task": "Taskset4",
+    "input_task": "Taskset2",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 8,
+        "cpu_seconds": 345576,
+        "utilization_ratio": 0.5714285714285714
+      },
+      "memory": {
+        "max_mb": 16000,
+        "min_mb": 8000,
+        "occupancy": 0.5714285714285714
+      },
+      "throughput": {
+        "total_eps": 0.017857142857142856,
+        "max_eps": 0.125,
+        "min_eps": 0.041666666666666664
+      },
+      "io": {
+        "read_remote_mb": 7231.640625,
+        "write_local_mb": 4218.45703125,
+        "write_remote_mb": 4218.45703125,
+        "read_remote_per_event_mb": 1.171875,
+        "write_local_per_event_mb": 0.68359375,
+        "write_remote_per_event_mb": 0.68359375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.5714285714285714,
+      "event_throughput": 0.017857142857142856
+    },
+    "dependency_paths": [
+      [
+        "Taskset3",
+        "Taskset4"
+      ]
+    ],
+    "events_per_job": 6171
+  },
+  {
+    "group_id": "group_8",
+    "task_ids": [
+      "Taskset4",
+      "Taskset5"
+    ],
+    "entry_point_task": "Taskset4",
+    "exit_point_task": "Taskset5",
+    "input_task": "Taskset3",
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 12,
+        "cpu_seconds": 518383.9992000001,
+        "utilization_ratio": 0.7512809033477591
+      },
+      "memory": {
+        "max_mb": 24000,
+        "min_mb": 16000,
+        "occupancy": 0.7512809033477591
+      },
+      "throughput": {
+        "total_eps": 0.06217977416306023,
+        "max_eps": 0.24495394865765238,
+        "min_eps": 0.125
+      },
+      "io": {
+        "read_remote_mb": 17312.646484375,
+        "write_local_mb": 5690.572466796875,
+        "write_remote_mb": 5690.572466796875,
+        "read_remote_per_event_mb": 0.537109375,
+        "write_local_per_event_mb": 0.176544921875,
+        "write_remote_per_event_mb": 0.176544921875
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.7512809033477591,
+      "event_throughput": 0.06217977416306023
+    },
+    "dependency_paths": [
+      [
+        "Taskset4",
+        "Taskset5"
+      ]
+    ],
+    "events_per_job": 32233
+  },
+  {
+    "group_id": "group_9",
+    "task_ids": [
+      "Taskset1",
+      "Taskset2",
+      "Taskset3"
+    ],
+    "entry_point_task": "Taskset1",
+    "exit_point_task": "Taskset3",
+    "input_task": null,
+    "resource_metrics": {
+      "cpu": {
+        "max_cores": 4,
+        "cpu_seconds": 172668.70298654845,
+        "utilization_ratio": 0.5688533825049296
+      },
+      "memory": {
+        "max_mb": 8000,
+        "min_mb": 2000,
+        "occupancy": 0.5688533825049296
+      },
+      "throughput": {
+        "total_eps": 0.006642778802186031,
+        "max_eps": 0.611676,
+        "min_eps": 0.016666666666666666
+      },
+      "io": {
+        "read_remote_mb": 0.0,
+        "write_local_mb": 2864.1751640404927,
+        "write_remote_mb": 616.064453125,
+        "read_remote_per_event_mb": 0.0,
+        "write_local_per_event_mb": 2.4971012764084506,
+        "write_remote_per_event_mb": 0.537109375
+      },
+      "accelerator": {
+        "types": []
+      }
+    },
+    "utilization_metrics": {
+      "resource_utilization": 0.5688533825049296,
+      "event_throughput": 0.006642778802186031
+    },
+    "dependency_paths": [
+      [
+        "Taskset1",
+        "Taskset2"
+      ],
+      [
+        "Taskset1",
+        "Taskset2",
+        "Taskset3"
+      ],
+      [
+        "Taskset2",
+        "Taskset3"
+      ]
+    ],
+    "events_per_job": 1147
+  }
+]
