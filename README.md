@@ -12,6 +12,7 @@ The Workflow Task Grouper analyzes workflow tasks and their relationships to cre
 For a realistic 5 steps workflow configuration, under the campaign `Run3Summer23wmLHEGS`, please see [this](https://cmsweb.cern.ch/reqmgr2/fetch?rid=pdmvserv_task_HIG-Run3Summer23wmLHEGS-00565__v1_T_250718_170537_83) workflow.
 While a three-task real workflow under the campaign `Run3Summer22EEFSGenPremix` is available at [this](https://cmsweb.cern.ch/reqmgr2/data/request?name=pdmvserv_task_SUS-Run3Summer22EEFSGenPremix-00023__v1_T_250709_092301_5219) link.
 
+A new template based on another real workflow, but this time slightly more heterogeneous, has been created under the `tests/others/case1_real.json` file; then a variation of each with homogeneous and heterogeneous resource requirements (CPU and Memory RAM) has been created. The original workflow belongs to the campaign `Run3Summer22EEwmLHEGS` and can be found in [this](https://cmsweb.cern.ch/reqmgr2/fetch?rid=pdmvserv_task_GEN-Run3Summer22EEwmLHEGS-00469__v1_T_231023_115032_5911) link (updated on 3/Nov/2025)
 
 ## Features
 
