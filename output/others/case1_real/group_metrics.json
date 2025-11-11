@@ -102,9 +102,9 @@
         "utilization_ratio": 0.9864864864864865
       },
       "memory": {
-        "max_mb": 7000,
-        "min_mb": 2000,
-        "occupancy": 0.9806949806949807
+        "max_mb": 8000,
+        "min_mb": 3000,
+        "occupancy": 0.8817567567567568
       },
       "throughput": {
         "total_eps": 0.006756756756756757,
@@ -124,7 +124,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.9835907335907337,
+      "resource_utilization": 0.9341216216216217,
       "event_throughput": 0.006756756756756757
     },
     "dependency_paths": [
@@ -162,8 +162,8 @@
       },
       "memory": {
         "max_mb": 8000,
-        "min_mb": 2000,
-        "occupancy": 0.7956458952072151
+        "min_mb": 3000,
+        "occupancy": 0.8916787008528378
       },
       "throughput": {
         "total_eps": 0.03405901746546415,
@@ -183,7 +183,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.8637639301381435,
+      "resource_utilization": 0.9117803329609548,
       "event_throughput": 0.03405901746546415
     },
     "dependency_paths": [
@@ -221,9 +221,9 @@
         "utilization_ratio": 0.5146869001251353
       },
       "memory": {
-        "max_mb": 7000,
-        "min_mb": 2000,
-        "occupancy": 0.9573316059589001
+        "max_mb": 8000,
+        "min_mb": 3000,
+        "occupancy": 0.8603130998748645
       },
       "throughput": {
         "total_eps": 0.003235420665832431,
@@ -243,7 +243,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.7360092530420177,
+      "resource_utilization": 0.6874999999999999,
       "event_throughput": 0.003235420665832431
     },
     "dependency_paths": [
@@ -297,8 +297,8 @@
       },
       "memory": {
         "max_mb": 8000,
-        "min_mb": 2000,
-        "occupancy": 0.8594008601989277
+        "min_mb": 3000,
+        "occupancy": 0.8782786380362183
       },
       "throughput": {
         "total_eps": 0.006695197133384395,
@@ -318,7 +318,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.9230052329660794,
+      "resource_utilization": 0.9324441218847248,
       "event_throughput": 0.006695197133384395
     },
     "dependency_paths": [
@@ -373,8 +373,8 @@
       },
       "memory": {
         "max_mb": 8000,
-        "min_mb": 2000,
-        "occupancy": 0.8390821209585669
+        "min_mb": 3000,
+        "occupancy": 0.8571680491588527
       },
       "throughput": {
         "total_eps": 0.003207179777324046,
@@ -394,7 +394,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.6768204120594887,
+      "resource_utilization": 0.6858633761596316,
       "event_throughput": 0.003207179777324046
     },
     "dependency_paths": [
@@ -466,8 +466,8 @@
         "utilization_ratio": 1.0
       },
       "memory": {
-        "max_mb": 7000,
-        "min_mb": 7000,
+        "max_mb": 8000,
+        "min_mb": 8000,
         "occupancy": 1.0
       },
       "throughput": {
@@ -509,8 +509,8 @@
         "utilization_ratio": 1.0
       },
       "memory": {
-        "max_mb": 2000,
-        "min_mb": 2000,
+        "max_mb": 3000,
+        "min_mb": 3000,
         "occupancy": 1.0
       },
       "throughput": {
@@ -552,8 +552,8 @@
         "utilization_ratio": 1.0
       },
       "memory": {
-        "max_mb": 8000,
-        "min_mb": 8000,
+        "max_mb": 4000,
+        "min_mb": 4000,
         "occupancy": 0.9999999999999999
       },
       "throughput": {
@@ -645,9 +645,9 @@
         "utilization_ratio": 1.0
       },
       "memory": {
-        "max_mb": 7000,
+        "max_mb": 8000,
         "min_mb": 7000,
-        "occupancy": 1.0
+        "occupancy": 0.8958333333333334
       },
       "throughput": {
         "total_eps": 0.006944444444444444,
@@ -667,7 +667,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 1.0,
+      "resource_utilization": 0.9479166666666667,
       "event_throughput": 0.006944444444444444
     },
     "dependency_paths": [
@@ -694,9 +694,9 @@
         "utilization_ratio": 0.9285714285714286
       },
       "memory": {
-        "max_mb": 7000,
-        "min_mb": 2000,
-        "occupancy": 0.8979591836734694
+        "max_mb": 8000,
+        "min_mb": 3000,
+        "occupancy": 0.9107142857142857
       },
       "throughput": {
         "total_eps": 0.03571428571428571,
@@ -716,7 +716,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.9132653061224489,
+      "resource_utilization": 0.9196428571428572,
       "event_throughput": 0.03571428571428571
     },
     "dependency_paths": [
@@ -743,9 +743,9 @@
         "utilization_ratio": 0.6269213550216386
       },
       "memory": {
-        "max_mb": 8000,
-        "min_mb": 2000,
-        "occupancy": 0.4403820325324579
+        "max_mb": 4000,
+        "min_mb": 3000,
+        "occupancy": 0.8134606775108193
       },
       "throughput": {
         "total_eps": 0.1865393224891807,
@@ -765,7 +765,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.5336516937770482,
+      "resource_utilization": 0.720191016266229,
       "event_throughput": 0.1865393224891807
     },
     "dependency_paths": [
@@ -793,9 +793,9 @@
         "utilization_ratio": 0.5217199262426058
       },
       "memory": {
-        "max_mb": 7000,
+        "max_mb": 8000,
         "min_mb": 3000,
-        "occupancy": 0.9751772271513078
+        "occupancy": 0.8732084101639526
       },
       "throughput": {
         "total_eps": 0.0033213894010930157,
@@ -815,7 +815,7 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.7484485766969569,
+      "resource_utilization": 0.6974641682032792,
       "event_throughput": 0.0033213894010930157
     },
     "dependency_paths": [
