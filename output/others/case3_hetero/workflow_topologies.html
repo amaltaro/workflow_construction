@@ -220,14 +220,14 @@
             <div class="construction-title">Workflow Construction 2</div>
             <div class="mermaid sequential">
             graph LR
-            subgraph group_0 [Group group_0]
-        Taskset1["Taskset1"]:::groupnode
+            subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
     end
-    subgraph group_13 [Group group_13]
+    subgraph group_12 [Group group_12]
+        Taskset1["Taskset1"]:::groupnode
         Taskset2["Taskset2"]:::groupnode
         Taskset3["Taskset3"]:::groupnode
         Taskset4["Taskset4"]:::groupnode
-        Taskset5["Taskset5"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset2 --> Taskset3
@@ -242,14 +242,14 @@
             <div class="construction-title">Workflow Construction 3</div>
             <div class="mermaid sequential">
             graph LR
-            subgraph group_4 [Group group_4]
-        Taskset5["Taskset5"]:::groupnode
-    end
-    subgraph group_12 [Group group_12]
+            subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_13 [Group group_13]
         Taskset2["Taskset2"]:::groupnode
         Taskset3["Taskset3"]:::groupnode
         Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset2 --> Taskset3
@@ -332,16 +332,16 @@
             <div class="construction-title">Workflow Construction 7</div>
             <div class="mermaid sequential">
             graph LR
-            subgraph group_0 [Group group_0]
-        Taskset1["Taskset1"]:::groupnode
+            subgraph group_3 [Group group_3]
+        Taskset4["Taskset4"]:::groupnode
     end
-    subgraph group_6 [Group group_6]
+    subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_9 [Group group_9]
+        Taskset1["Taskset1"]:::groupnode
         Taskset2["Taskset2"]:::groupnode
         Taskset3["Taskset3"]:::groupnode
-    end
-    subgraph group_8 [Group group_8]
-        Taskset4["Taskset4"]:::groupnode
-        Taskset5["Taskset5"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset2 --> Taskset3
@@ -354,6 +354,30 @@
 
         <div class="construction sequential">
             <div class="construction-title">Workflow Construction 8</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_4 [Group group_4]
+        Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_5 [Group group_5]
+        Taskset1["Taskset1"]:::groupnode
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_7 [Group group_7]
+        Taskset3["Taskset3"]:::groupnode
+        Taskset4["Taskset4"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 9</div>
             <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
@@ -377,43 +401,19 @@
 </div></div>
 
         <div class="construction sequential">
-            <div class="construction-title">Workflow Construction 9</div>
-            <div class="mermaid sequential">
-            graph LR
-            subgraph group_3 [Group group_3]
-        Taskset4["Taskset4"]:::groupnode
-    end
-    subgraph group_4 [Group group_4]
-        Taskset5["Taskset5"]:::groupnode
-    end
-    subgraph group_9 [Group group_9]
-        Taskset1["Taskset1"]:::groupnode
-        Taskset2["Taskset2"]:::groupnode
-        Taskset3["Taskset3"]:::groupnode
-    end
-    Taskset1 --> Taskset2
-    Taskset2 --> Taskset3
-    Taskset3 --> Taskset4
-    Taskset4 --> Taskset5
-
-    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-</div></div>
-
-        <div class="construction sequential">
             <div class="construction-title">Workflow Construction 10</div>
             <div class="mermaid sequential">
             graph LR
-            subgraph group_4 [Group group_4]
-        Taskset5["Taskset5"]:::groupnode
-    end
-    subgraph group_5 [Group group_5]
+            subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
-        Taskset2["Taskset2"]:::groupnode
     end
-    subgraph group_7 [Group group_7]
+    subgraph group_6 [Group group_6]
+        Taskset2["Taskset2"]:::groupnode
         Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
         Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset2 --> Taskset3
@@ -455,32 +455,6 @@
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
     end
-    subgraph group_3 [Group group_3]
-        Taskset4["Taskset4"]:::groupnode
-    end
-    subgraph group_4 [Group group_4]
-        Taskset5["Taskset5"]:::groupnode
-    end
-    subgraph group_6 [Group group_6]
-        Taskset2["Taskset2"]:::groupnode
-        Taskset3["Taskset3"]:::groupnode
-    end
-    Taskset1 --> Taskset2
-    Taskset2 --> Taskset3
-    Taskset3 --> Taskset4
-    Taskset4 --> Taskset5
-
-    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-</div></div>
-
-        <div class="construction sequential">
-            <div class="construction-title">Workflow Construction 13</div>
-            <div class="mermaid sequential">
-            graph LR
-            subgraph group_0 [Group group_0]
-        Taskset1["Taskset1"]:::groupnode
-    end
     subgraph group_1 [Group group_1]
         Taskset2["Taskset2"]:::groupnode
     end
@@ -501,21 +475,21 @@
 </div></div>
 
         <div class="construction sequential">
-            <div class="construction-title">Workflow Construction 14</div>
+            <div class="construction-title">Workflow Construction 13</div>
             <div class="mermaid sequential">
             graph LR
             subgraph group_0 [Group group_0]
         Taskset1["Taskset1"]:::groupnode
     end
-    subgraph group_1 [Group group_1]
-        Taskset2["Taskset2"]:::groupnode
-    end
-    subgraph group_2 [Group group_2]
-        Taskset3["Taskset3"]:::groupnode
-    end
-    subgraph group_8 [Group group_8]
+    subgraph group_3 [Group group_3]
         Taskset4["Taskset4"]:::groupnode
+    end
+    subgraph group_4 [Group group_4]
         Taskset5["Taskset5"]:::groupnode
+    end
+    subgraph group_6 [Group group_6]
+        Taskset2["Taskset2"]:::groupnode
+        Taskset3["Taskset3"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset2 --> Taskset3
@@ -527,7 +501,7 @@
 </div></div>
 
         <div class="construction sequential">
-            <div class="construction-title">Workflow Construction 15</div>
+            <div class="construction-title">Workflow Construction 14</div>
             <div class="mermaid sequential">
             graph LR
             subgraph group_2 [Group group_2]
@@ -542,6 +516,32 @@
     subgraph group_5 [Group group_5]
         Taskset1["Taskset1"]:::groupnode
         Taskset2["Taskset2"]:::groupnode
+    end
+    Taskset1 --> Taskset2
+    Taskset2 --> Taskset3
+    Taskset3 --> Taskset4
+    Taskset4 --> Taskset5
+
+    classDef groupnode fill:#34495E ,stroke:#333,stroke-width:2px,color:white;
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+</div></div>
+
+        <div class="construction sequential">
+            <div class="construction-title">Workflow Construction 15</div>
+            <div class="mermaid sequential">
+            graph LR
+            subgraph group_0 [Group group_0]
+        Taskset1["Taskset1"]:::groupnode
+    end
+    subgraph group_1 [Group group_1]
+        Taskset2["Taskset2"]:::groupnode
+    end
+    subgraph group_2 [Group group_2]
+        Taskset3["Taskset3"]:::groupnode
+    end
+    subgraph group_8 [Group group_8]
+        Taskset4["Taskset4"]:::groupnode
+        Taskset5["Taskset5"]:::groupnode
     end
     Taskset1 --> Taskset2
     Taskset2 --> Taskset3

@@ -5,145 +5,145 @@ Requested Events: 1,155,000
 
 Const 1:
   Groups: ['group_14']
-  Total Jobs: 1042
-  CPU Time per Event: 467.7006 seconds/event
+  Total Jobs: 390
+  CPU Time per Event: 175.2000 seconds/event
   Jobs per Group:
-    group_14: 1042.4 jobs
+    group_14: 390.5 jobs
 
 Const 2:
-  Groups: ['group_0', 'group_13']
-  Total Jobs: 1043
-  CPU Time per Event: 449.7173 seconds/event
+  Groups: ['group_12', 'group_4']
+  Total Jobs: 390
+  CPU Time per Event: 117.2000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_13: 999.1 jobs
+    group_12: 387.7 jobs
+    group_4: 2.7 jobs
 
 Const 3:
-  Groups: ['group_12', 'group_4']
-  Total Jobs: 1042
-  CPU Time per Event: 313.1612 seconds/event
+  Groups: ['group_0', 'group_13']
+  Total Jobs: 390
+  CPU Time per Event: 103.7000 seconds/event
   Jobs per Group:
-    group_12: 1033.1 jobs
-    group_4: 9.1 jobs
+    group_0: 173.8 jobs
+    group_13: 216.6 jobs
 
 Const 4:
   Groups: ['group_9', 'group_8']
-  Total Jobs: 1043
-  CPU Time per Event: 166.6218 seconds/event
+  Total Jobs: 390
+  CPU Time per Event: 67.2000 seconds/event
   Jobs per Group:
-    group_9: 1007.0 jobs
-    group_8: 35.8 jobs
+    group_9: 360.9 jobs
+    group_8: 29.4 jobs
 
 Const 5:
   Groups: ['group_5', 'group_11']
-  Total Jobs: 1042
-  CPU Time per Event: 151.3521 seconds/event
+  Total Jobs: 390
+  CPU Time per Event: 80.2000 seconds/event
   Jobs per Group:
-    group_5: 846.2 jobs
-    group_11: 196.3 jobs
+    group_5: 254.0 jobs
+    group_11: 136.4 jobs
 
 Const 6:
   Groups: ['group_0', 'group_10', 'group_4']
-  Total Jobs: 1043
-  CPU Time per Event: 301.7173 seconds/event
+  Total Jobs: 390
+  CPU Time per Event: 71.7000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_10: 989.7 jobs
-    group_4: 9.1 jobs
+    group_0: 173.8 jobs
+    group_10: 213.9 jobs
+    group_4: 2.7 jobs
 
 Const 7:
-  Groups: ['group_0', 'group_6', 'group_8']
-  Total Jobs: 1042
-  CPU Time per Event: 161.7173 seconds/event
+  Groups: ['group_9', 'group_3', 'group_4']
+  Total Jobs: 390
+  CPU Time per Event: 63.2000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_6: 962.5 jobs
-    group_8: 35.8 jobs
+    group_9: 360.9 jobs
+    group_3: 26.7 jobs
+    group_4: 2.7 jobs
 
 Const 8:
-  Groups: ['group_0', 'group_1', 'group_11']
-  Total Jobs: 1042
-  CPU Time per Event: 149.7173 seconds/event
+  Groups: ['group_5', 'group_7', 'group_4']
+  Total Jobs: 390
+  CPU Time per Event: 60.2000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_1: 802.1 jobs
-    group_11: 196.3 jobs
+    group_5: 254.0 jobs
+    group_7: 133.7 jobs
+    group_4: 2.7 jobs
 
 Const 9:
-  Groups: ['group_9', 'group_3', 'group_4']
-  Total Jobs: 1043
-  CPU Time per Event: 162.6218 seconds/event
+  Groups: ['group_0', 'group_1', 'group_11']
+  Total Jobs: 390
+  CPU Time per Event: 73.7000 seconds/event
   Jobs per Group:
-    group_9: 1007.0 jobs
-    group_3: 26.7 jobs
-    group_4: 9.1 jobs
+    group_0: 173.8 jobs
+    group_1: 80.2 jobs
+    group_11: 136.4 jobs
 
 Const 10:
-  Groups: ['group_5', 'group_7', 'group_4']
-  Total Jobs: 1042
-  CPU Time per Event: 123.3521 seconds/event
+  Groups: ['group_0', 'group_6', 'group_8']
+  Total Jobs: 390
+  CPU Time per Event: 47.7000 seconds/event
   Jobs per Group:
-    group_5: 846.2 jobs
-    group_7: 187.2 jobs
-    group_4: 9.1 jobs
+    group_0: 173.8 jobs
+    group_6: 187.2 jobs
+    group_8: 29.4 jobs
 
 Const 11:
   Groups: ['group_5', 'group_2', 'group_8']
-  Total Jobs: 1042
-  CPU Time per Event: 103.3521 seconds/event
+  Total Jobs: 390
+  CPU Time per Event: 48.2000 seconds/event
   Jobs per Group:
-    group_5: 846.2 jobs
-    group_2: 160.4 jobs
-    group_8: 35.8 jobs
+    group_5: 254.0 jobs
+    group_2: 106.9 jobs
+    group_8: 29.4 jobs
 
 Const 12:
-  Groups: ['group_0', 'group_6', 'group_3', 'group_4']
-  Total Jobs: 1042
-  CPU Time per Event: 157.7173 seconds/event
+  Groups: ['group_0', 'group_1', 'group_7', 'group_4']
+  Total Jobs: 390
+  CPU Time per Event: 53.7000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_6: 962.5 jobs
-    group_3: 26.7 jobs
-    group_4: 9.1 jobs
+    group_0: 173.8 jobs
+    group_1: 80.2 jobs
+    group_7: 133.7 jobs
+    group_4: 2.7 jobs
 
 Const 13:
-  Groups: ['group_0', 'group_1', 'group_7', 'group_4']
-  Total Jobs: 1042
-  CPU Time per Event: 121.7173 seconds/event
+  Groups: ['group_0', 'group_6', 'group_3', 'group_4']
+  Total Jobs: 390
+  CPU Time per Event: 43.7000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_1: 802.1 jobs
-    group_7: 187.2 jobs
-    group_4: 9.1 jobs
+    group_0: 173.8 jobs
+    group_6: 187.2 jobs
+    group_3: 26.7 jobs
+    group_4: 2.7 jobs
 
 Const 14:
-  Groups: ['group_0', 'group_1', 'group_2', 'group_8']
-  Total Jobs: 1042
-  CPU Time per Event: 101.7173 seconds/event
+  Groups: ['group_5', 'group_2', 'group_3', 'group_4']
+  Total Jobs: 390
+  CPU Time per Event: 44.2000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_1: 802.1 jobs
-    group_2: 160.4 jobs
-    group_8: 35.8 jobs
+    group_5: 254.0 jobs
+    group_2: 106.9 jobs
+    group_3: 26.7 jobs
+    group_4: 2.7 jobs
 
 Const 15:
-  Groups: ['group_5', 'group_2', 'group_3', 'group_4']
-  Total Jobs: 1042
-  CPU Time per Event: 99.3521 seconds/event
+  Groups: ['group_0', 'group_1', 'group_2', 'group_8']
+  Total Jobs: 390
+  CPU Time per Event: 41.7000 seconds/event
   Jobs per Group:
-    group_5: 846.2 jobs
-    group_2: 160.4 jobs
-    group_3: 26.7 jobs
-    group_4: 9.1 jobs
+    group_0: 173.8 jobs
+    group_1: 80.2 jobs
+    group_2: 106.9 jobs
+    group_8: 29.4 jobs
 
 Const 16:
   Groups: ['group_0', 'group_1', 'group_2', 'group_3', 'group_4']
-  Total Jobs: 1042
-  CPU Time per Event: 97.7173 seconds/event
+  Total Jobs: 390
+  CPU Time per Event: 37.7000 seconds/event
   Jobs per Group:
-    group_0: 43.7 jobs
-    group_1: 802.1 jobs
-    group_2: 160.4 jobs
+    group_0: 173.8 jobs
+    group_1: 80.2 jobs
+    group_2: 106.9 jobs
     group_3: 26.7 jobs
-    group_4: 9.1 jobs
+    group_4: 2.7 jobs
 
