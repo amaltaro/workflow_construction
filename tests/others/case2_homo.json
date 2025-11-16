@@ -1,7 +1,7 @@
 {
     "Comments": "",
     "NumTasks": 5,
-    "RequestNumEvents": 1155000,
+    "RequestNumEvents": 1000000,
     "Taskset1": {
         "KeepOutput": false,
         "Memory": 8000,
@@ -22,7 +22,7 @@
             "el8_amd64_gcc10"
         ],
         "SizePerEvent": 2185,
-        "TimePerEvent": 3,
+        "TimePerEvent": 5,
         "InputTaskset": "Taskset1"
     },
     "Taskset3": {
@@ -33,8 +33,8 @@
         "ScramArch": [
             "el8_amd64_gcc10"
         ],
-        "SizePerEvent": 407.5,
-        "TimePerEvent": 4,
+        "SizePerEvent": 400.5,
+        "TimePerEvent": 6.7,
         "InputTaskset": "Taskset2"
     },
     "Taskset4": {
@@ -45,8 +45,8 @@
         "ScramArch": [
             "el8_amd64_gcc10"
         ],
-        "SizePerEvent": 76,
-        "TimePerEvent": 1,
+        "SizePerEvent": 75.5,
+        "TimePerEvent": 0.65,
         "InputTaskset": "Taskset3"
     },
     "Taskset5": {
@@ -58,7 +58,7 @@
             "el8_amd64_gcc10"
         ],
         "SizePerEvent": 1.65,
-        "TimePerEvent": 0.1,
+        "TimePerEvent": 0.12,
         "InputTaskset": "Taskset4"
     }
 }
