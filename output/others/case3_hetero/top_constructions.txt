@@ -3,40 +3,40 @@ Top 5 Workflow Constructions by Event Throughput:
 Construction 1:
   Groups: ['group_0', 'group_1', 'group_2', 'group_3', 'group_4']
   Number of Groups: 5
-  Total Events: 1155000
-  Total CPU Time: 43543500.00 seconds
-  Event Throughput: 0.0265 events/second
-  Remote Write Data per Event: 3.390 MB/event
+  Total Events: 1000000
+  Total CPU Time: 49940000.00 seconds
+  Event Throughput: 0.0200 events/second
+  Remote Write Data per Event: 3.382 MB/event
 
 Construction 2:
   Groups: ['group_0', 'group_1', 'group_2', 'group_8']
   Number of Groups: 4
-  Total Events: 1155000
-  Total CPU Time: 48163500.00 seconds
-  Event Throughput: 0.0240 events/second
-  Remote Write Data per Event: 3.390 MB/event
+  Total Events: 1000000
+  Total CPU Time: 52540000.00 seconds
+  Event Throughput: 0.0190 events/second
+  Remote Write Data per Event: 3.382 MB/event
 
 Construction 3:
-  Groups: ['group_0', 'group_6', 'group_3', 'group_4']
-  Number of Groups: 4
-  Total Events: 1155000
-  Total CPU Time: 50473500.00 seconds
-  Event Throughput: 0.0229 events/second
-  Remote Write Data per Event: 1.256 MB/event
-
-Construction 4:
   Groups: ['group_5', 'group_2', 'group_3', 'group_4']
   Number of Groups: 4
-  Total Events: 1155000
-  Total CPU Time: 51051000.00 seconds
-  Event Throughput: 0.0226 events/second
-  Remote Write Data per Event: 2.608 MB/event
+  Total Events: 1000000
+  Total CPU Time: 56440000.00 seconds
+  Event Throughput: 0.0177 events/second
+  Remote Write Data per Event: 2.600 MB/event
+
+Construction 4:
+  Groups: ['group_5', 'group_2', 'group_8']
+  Number of Groups: 3
+  Total Events: 1000000
+  Total CPU Time: 59040000.00 seconds
+  Event Throughput: 0.0169 events/second
+  Remote Write Data per Event: 2.600 MB/event
 
 Construction 5:
-  Groups: ['group_0', 'group_6', 'group_8']
-  Number of Groups: 3
-  Total Events: 1155000
-  Total CPU Time: 55093500.00 seconds
-  Event Throughput: 0.0210 events/second
-  Remote Write Data per Event: 1.256 MB/event
+  Groups: ['group_0', 'group_6', 'group_3', 'group_4']
+  Number of Groups: 4
+  Total Events: 1000000
+  Total CPU Time: 59940000.00 seconds
+  Event Throughput: 0.0167 events/second
+  Remote Write Data per Event: 1.249 MB/event
 

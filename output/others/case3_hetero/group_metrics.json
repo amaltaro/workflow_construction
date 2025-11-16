@@ -62,14 +62,14 @@
         "occupancy": 1.0
       },
       "throughput": {
-        "total_eps": 0.16666666666666666,
-        "max_eps": 0.16666666666666666,
-        "min_eps": 0.16666666666666666
+        "total_eps": 0.1,
+        "max_eps": 0.1,
+        "min_eps": 0.1
       },
       "io": {
-        "read_remote_mb": 11264.0625,
-        "write_local_mb": 30726.5625,
-        "write_remote_mb": 30726.5625,
+        "read_remote_mb": 6758.4375,
+        "write_local_mb": 18435.9375,
+        "write_remote_mb": 18435.9375,
         "read_remote_per_event_mb": 0.7822265625,
         "write_local_per_event_mb": 2.1337890625,
         "write_remote_per_event_mb": 2.1337890625
@@ -80,10 +80,10 @@
     },
     "utilization_metrics": {
       "resource_utilization": 1.0,
-      "event_throughput": 0.16666666666666666
+      "event_throughput": 0.1
     },
     "dependency_paths": [],
-    "events_per_job": 14400
+    "events_per_job": 8640
   },
   {
     "group_id": "group_10",
@@ -98,34 +98,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 8,
-        "cpu_seconds": 345600,
-        "utilization_ratio": 0.46875
+        "cpu_seconds": 345503.6,
+        "utilization_ratio": 0.42510121457489874
       },
       "memory": {
         "max_mb": 16000,
         "min_mb": 4000,
-        "occupancy": 0.46875
+        "occupancy": 0.42510121457489874
       },
       "throughput": {
-        "total_eps": 0.015625,
-        "max_eps": 0.16666666666666666,
-        "min_eps": 0.0625
+        "total_eps": 0.010121457489878543,
+        "max_eps": 0.1923076923076923,
+        "min_eps": 0.03731343283582089
       },
       "io": {
-        "read_remote_mb": 4224.0234375,
-        "write_local_mb": 14072.16796875,
-        "write_remote_mb": 2549.70703125,
+        "read_remote_mb": 2735.4462890625,
+        "write_local_mb": 9087.4189453125,
+        "write_remote_mb": 1625.55859375,
         "read_remote_per_event_mb": 0.7822265625,
-        "write_local_per_event_mb": 2.60595703125,
-        "write_remote_per_event_mb": 0.47216796875
+        "write_local_per_event_mb": 2.5986328125,
+        "write_remote_per_event_mb": 0.46484375
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.46875,
-      "event_throughput": 0.015625
+      "resource_utilization": 0.42510121457489874,
+      "event_throughput": 0.010121457489878543
     },
     "dependency_paths": [
       [
@@ -142,7 +142,7 @@
         "Taskset4"
       ]
     ],
-    "events_per_job": 5400
+    "events_per_job": 3497
   },
   {
     "group_id": "group_11",
@@ -157,34 +157,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 12,
-        "cpu_seconds": 518364.0,
-        "utilization_ratio": 0.4117647058823529
+        "cpu_seconds": 518388.12,
+        "utilization_ratio": 0.37304774654172246
       },
       "memory": {
         "max_mb": 24000,
         "min_mb": 8000,
-        "occupancy": 0.4117647058823529
+        "occupancy": 0.3730477465417225
       },
       "throughput": {
-        "total_eps": 0.016339869281045753,
-        "max_eps": 0.8333333333333331,
-        "min_eps": 0.0625
+        "total_eps": 0.011155734047300312,
+        "max_eps": 0.6944444444444444,
+        "min_eps": 0.0373134328358209
       },
       "io": {
-        "read_remote_mb": 18073.193359375,
-        "write_local_mb": 4012.91064453125,
-        "write_remote_mb": 4012.91064453125,
+        "read_remote_mb": 12339.7021484375,
+        "write_local_mb": 2697.509716796875,
+        "write_remote_mb": 2697.509716796875,
         "read_remote_per_event_mb": 2.1337890625,
-        "write_local_per_event_mb": 0.473779296875,
-        "write_remote_per_event_mb": 0.473779296875
+        "write_local_per_event_mb": 0.46645507812500003,
+        "write_remote_per_event_mb": 0.46645507812500003
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.4117647058823529,
-      "event_throughput": 0.016339869281045753
+      "resource_utilization": 0.37304774654172246,
+      "event_throughput": 0.011155734047300312
     },
     "dependency_paths": [
       [
@@ -201,7 +201,7 @@
         "Taskset5"
       ]
     ],
-    "events_per_job": 8470
+    "events_per_job": 5783
   },
   {
     "group_id": "group_12",
@@ -217,34 +217,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 8,
-        "cpu_seconds": 345564.0,
-        "utilization_ratio": 0.3146551724137931
+        "cpu_seconds": 345482.80000000005,
+        "utilization_ratio": 0.32161803713527853
       },
       "memory": {
         "max_mb": 16000,
         "min_mb": 2000,
-        "occupancy": 0.3146551724137931
+        "occupancy": 0.32161803713527853
       },
       "throughput": {
-        "total_eps": 0.008620689655172414,
-        "max_eps": 0.16666666666666666,
-        "min_eps": 0.0625
+        "total_eps": 0.00663129973474801,
+        "max_eps": 0.1923076923076923,
+        "min_eps": 0.03731343283582089
       },
       "io": {
         "read_remote_mb": 0.0,
-        "write_local_mb": 10093.39892578125,
-        "write_remote_mb": 1406.58837890625,
+        "write_local_mb": 7745.548828125,
+        "write_remote_mb": 1064.95703125,
         "read_remote_per_event_mb": 0.0,
-        "write_local_per_event_mb": 3.38818359375,
-        "write_remote_per_event_mb": 0.47216796875
+        "write_local_per_event_mb": 3.380859375,
+        "write_remote_per_event_mb": 0.46484375
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.3146551724137931,
-      "event_throughput": 0.008620689655172414
+      "resource_utilization": 0.32161803713527853,
+      "event_throughput": 0.00663129973474801
     },
     "dependency_paths": [
       [
@@ -276,7 +276,7 @@
         "Taskset4"
       ]
     ],
-    "events_per_job": 2979
+    "events_per_job": 2291
   },
   {
     "group_id": "group_13",
@@ -292,34 +292,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 12,
-        "cpu_seconds": 518367.6,
-        "utilization_ratio": 0.32098765432098764
+        "cpu_seconds": 518352.95999999996,
+        "utilization_ratio": 0.2902967121090617
       },
       "memory": {
         "max_mb": 24000,
         "min_mb": 4000,
-        "occupancy": 0.32098765432098764
+        "occupancy": 0.29029671210906177
       },
       "throughput": {
-        "total_eps": 0.0102880658436214,
-        "max_eps": 0.8333333333333331,
-        "min_eps": 0.0625
+        "total_eps": 0.0066827051590483836,
+        "max_eps": 0.6944444444444444,
+        "min_eps": 0.0373134328358209
       },
       "io": {
-        "read_remote_mb": 4171.6142578125,
-        "write_local_mb": 13906.162060546874,
-        "write_remote_mb": 2526.664990234375,
+        "read_remote_mb": 2709.6328125,
+        "write_local_mb": 9007.245703125,
+        "write_remote_mb": 1615.800390625,
         "read_remote_per_event_mb": 0.7822265625,
-        "write_local_per_event_mb": 2.6075683593749996,
-        "write_remote_per_event_mb": 0.47377929687500003
+        "write_local_per_event_mb": 2.600244140625,
+        "write_remote_per_event_mb": 0.46645507812500003
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.32098765432098764,
-      "event_throughput": 0.0102880658436214
+      "resource_utilization": 0.2902967121090617,
+      "event_throughput": 0.0066827051590483836
     },
     "dependency_paths": [
       [
@@ -351,7 +351,7 @@
         "Taskset5"
       ]
     ],
-    "events_per_job": 5333
+    "events_per_job": 3464
   },
   {
     "group_id": "group_14",
@@ -368,34 +368,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 12,
-        "cpu_seconds": 518241.6,
-        "utilization_ratio": 0.2151826484018265
+        "cpu_seconds": 518336.2799999999,
+        "utilization_ratio": 0.219381479529081
       },
       "memory": {
         "max_mb": 24000,
         "min_mb": 2000,
-        "occupancy": 0.21518264840182647
+        "occupancy": 0.21938147952908102
       },
       "throughput": {
-        "total_eps": 0.005707762557077626,
-        "max_eps": 0.8333333333333333,
-        "min_eps": 0.0625
+        "total_eps": 0.004392901071867863,
+        "max_eps": 0.6944444444444445,
+        "min_eps": 0.0373134328358209
       },
       "io": {
         "read_remote_mb": 0.0,
-        "write_local_mb": 10027.01337890625,
-        "write_remote_mb": 1401.43916015625,
+        "write_local_mb": 7701.885791015625,
+        "write_remote_mb": 1062.118212890625,
         "read_remote_per_event_mb": 0.0,
-        "write_local_per_event_mb": 3.3897949218749996,
-        "write_remote_per_event_mb": 0.473779296875
+        "write_local_per_event_mb": 3.382470703125,
+        "write_remote_per_event_mb": 0.46645507812500003
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.2151826484018265,
-      "event_throughput": 0.005707762557077626
+      "resource_utilization": 0.219381479529081,
+      "event_throughput": 0.004392901071867863
     },
     "dependency_paths": [
       [
@@ -449,7 +449,7 @@
         "Taskset5"
       ]
     ],
-    "events_per_job": 2958
+    "events_per_job": 2277
   },
   {
     "group_id": "group_2",
@@ -462,7 +462,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
-        "cpu_seconds": 172800,
+        "cpu_seconds": 172779.6,
         "utilization_ratio": 1.0
       },
       "memory": {
@@ -471,17 +471,17 @@
         "occupancy": 1.0
       },
       "throughput": {
-        "total_eps": 0.0625,
-        "max_eps": 0.0625,
-        "min_eps": 0.0625
+        "total_eps": 0.03731343283582089,
+        "max_eps": 0.03731343283582089,
+        "min_eps": 0.03731343283582089
       },
       "io": {
-        "read_remote_mb": 23044.921875,
-        "write_local_mb": 4297.8515625,
-        "write_remote_mb": 4297.8515625,
+        "read_remote_mb": 13756.5380859375,
+        "write_local_mb": 2521.50732421875,
+        "write_remote_mb": 2521.50732421875,
         "read_remote_per_event_mb": 2.1337890625,
-        "write_local_per_event_mb": 0.39794921875,
-        "write_remote_per_event_mb": 0.39794921875
+        "write_local_per_event_mb": 0.39111328125,
+        "write_remote_per_event_mb": 0.39111328125
       },
       "accelerator": {
         "types": []
@@ -489,10 +489,10 @@
     },
     "utilization_metrics": {
       "resource_utilization": 1.0,
-      "event_throughput": 0.0625
+      "event_throughput": 0.03731343283582089
     },
     "dependency_paths": [],
-    "events_per_job": 10800
+    "events_per_job": 6447
   },
   {
     "group_id": "group_3",
@@ -505,7 +505,7 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 8,
-        "cpu_seconds": 345600,
+        "cpu_seconds": 345597.2,
         "utilization_ratio": 1.0
       },
       "memory": {
@@ -514,17 +514,17 @@
         "occupancy": 1.0
       },
       "throughput": {
-        "total_eps": 0.125,
-        "max_eps": 0.125,
-        "min_eps": 0.125
+        "total_eps": 0.1923076923076923,
+        "max_eps": 0.1923076923076923,
+        "min_eps": 0.1923076923076923
       },
       "io": {
-        "read_remote_mb": 17191.40625,
-        "write_local_mb": 3206.25,
-        "write_remote_mb": 3206.25,
-        "read_remote_per_event_mb": 0.39794921875,
-        "write_local_per_event_mb": 0.07421875,
-        "write_remote_per_event_mb": 0.07421875
+        "read_remote_mb": 25993.77978515625,
+        "write_local_mb": 4900.20068359375,
+        "write_remote_mb": 4900.20068359375,
+        "read_remote_per_event_mb": 0.39111328125,
+        "write_local_per_event_mb": 0.07373046875,
+        "write_remote_per_event_mb": 0.07373046875
       },
       "accelerator": {
         "types": []
@@ -532,10 +532,10 @@
     },
     "utilization_metrics": {
       "resource_utilization": 1.0,
-      "event_throughput": 0.125
+      "event_throughput": 0.1923076923076923
     },
     "dependency_paths": [],
-    "events_per_job": 43200
+    "events_per_job": 66461
   },
   {
     "group_id": "group_4",
@@ -557,15 +557,15 @@
         "occupancy": 1.0
       },
       "throughput": {
-        "total_eps": 0.8333333333333334,
-        "max_eps": 0.8333333333333333,
-        "min_eps": 0.8333333333333333
+        "total_eps": 0.6944444444444444,
+        "max_eps": 0.6944444444444444,
+        "min_eps": 0.6944444444444444
       },
       "io": {
-        "read_remote_mb": 32062.5,
-        "write_local_mb": 696.09375,
-        "write_remote_mb": 696.09375,
-        "read_remote_per_event_mb": 0.07421875,
+        "read_remote_mb": 26542.96875,
+        "write_local_mb": 580.078125,
+        "write_remote_mb": 580.078125,
+        "read_remote_per_event_mb": 0.07373046875,
         "write_local_per_event_mb": 0.001611328125,
         "write_remote_per_event_mb": 0.001611328125
       },
@@ -575,10 +575,10 @@
     },
     "utilization_metrics": {
       "resource_utilization": 1.0,
-      "event_throughput": 0.8333333333333334
+      "event_throughput": 0.6944444444444444
     },
     "dependency_paths": [],
-    "events_per_job": 432000
+    "events_per_job": 360000
   },
   {
     "group_id": "group_5",
@@ -592,23 +592,23 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 2,
-        "cpu_seconds": 86393.0,
-        "utilization_ratio": 0.6578947368421053
+        "cpu_seconds": 86388.0,
+        "utilization_ratio": 0.717391304347826
       },
       "memory": {
         "max_mb": 4000,
         "min_mb": 2000,
-        "occupancy": 0.6578947368421053
+        "occupancy": 0.7173913043478262
       },
       "throughput": {
-        "total_eps": 0.05263157894736842,
-        "max_eps": 0.16666666666666666,
-        "min_eps": 0.15384615384615385
+        "total_eps": 0.043478260869565216,
+        "max_eps": 0.15384615384615385,
+        "min_eps": 0.1
       },
       "io": {
         "read_remote_mb": 0.0,
-        "write_local_mb": 13259.123046875,
-        "write_remote_mb": 9702.3388671875,
+        "write_local_mb": 10952.5546875,
+        "write_remote_mb": 8014.51171875,
         "read_remote_per_event_mb": 0.0,
         "write_local_per_event_mb": 2.916015625,
         "write_remote_per_event_mb": 2.1337890625
@@ -618,8 +618,8 @@
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.6578947368421053,
-      "event_throughput": 0.05263157894736842
+      "resource_utilization": 0.7173913043478262,
+      "event_throughput": 0.043478260869565216
     },
     "dependency_paths": [
       [
@@ -627,7 +627,7 @@
         "Taskset2"
       ]
     ],
-    "events_per_job": 4547
+    "events_per_job": 3756
   },
   {
     "group_id": "group_6",
@@ -641,34 +641,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
-        "cpu_seconds": 172788,
-        "utilization_ratio": 0.7857142857142857
+        "cpu_seconds": 172785.59999999998,
+        "utilization_ratio": 0.7863247863247863
       },
       "memory": {
         "max_mb": 8000,
         "min_mb": 4000,
-        "occupancy": 0.7857142857142857
+        "occupancy": 0.7863247863247863
       },
       "throughput": {
-        "total_eps": 0.03571428571428571,
-        "max_eps": 0.16666666666666666,
-        "min_eps": 0.0625
+        "total_eps": 0.02136752136752137,
+        "max_eps": 0.1,
+        "min_eps": 0.03731343283582089
       },
       "io": {
-        "read_remote_mb": 4827.1201171875,
-        "write_local_mb": 15623.35693359375,
-        "write_remote_mb": 2455.74462890625,
+        "read_remote_mb": 2887.98046875,
+        "write_local_mb": 9321.939453125,
+        "write_remote_mb": 1443.990234375,
         "read_remote_per_event_mb": 0.7822265625,
-        "write_local_per_event_mb": 2.53173828125,
-        "write_remote_per_event_mb": 0.39794921875
+        "write_local_per_event_mb": 2.52490234375,
+        "write_remote_per_event_mb": 0.39111328125
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.7857142857142857,
-      "event_throughput": 0.03571428571428571
+      "resource_utilization": 0.7863247863247863,
+      "event_throughput": 0.02136752136752137
     },
     "dependency_paths": [
       [
@@ -676,7 +676,7 @@
         "Taskset3"
       ]
     ],
-    "events_per_job": 6171
+    "events_per_job": 3692
   },
   {
     "group_id": "group_7",
@@ -690,34 +690,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 8,
-        "cpu_seconds": 345600,
-        "utilization_ratio": 0.6
+        "cpu_seconds": 345567.60000000003,
+        "utilization_ratio": 0.5442176870748299
       },
       "memory": {
         "max_mb": 16000,
         "min_mb": 8000,
-        "occupancy": 0.6
+        "occupancy": 0.5442176870748299
       },
       "throughput": {
-        "total_eps": 0.025,
-        "max_eps": 0.125,
-        "min_eps": 0.0625
+        "total_eps": 0.017006802721088433,
+        "max_eps": 0.1923076923076923,
+        "min_eps": 0.03731343283582089
       },
       "io": {
-        "read_remote_mb": 18435.9375,
-        "write_local_mb": 4079.53125,
-        "write_remote_mb": 4079.53125,
+        "read_remote_mb": 12540.2783203125,
+        "write_local_mb": 2731.88671875,
+        "write_remote_mb": 2731.88671875,
         "read_remote_per_event_mb": 2.1337890625,
-        "write_local_per_event_mb": 0.47216796875,
-        "write_remote_per_event_mb": 0.47216796875
+        "write_local_per_event_mb": 0.46484375,
+        "write_remote_per_event_mb": 0.46484375
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.6,
-      "event_throughput": 0.025
+      "resource_utilization": 0.5442176870748299,
+      "event_throughput": 0.017006802721088433
     },
     "dependency_paths": [
       [
@@ -725,7 +725,7 @@
         "Taskset4"
       ]
     ],
-    "events_per_job": 8640
+    "events_per_job": 5877
   },
   {
     "group_id": "group_8",
@@ -739,34 +739,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 12,
-        "cpu_seconds": 518390.4,
-        "utilization_ratio": 0.696969696969697
+        "cpu_seconds": 518391.72,
+        "utilization_ratio": 0.7186147186147186
       },
       "memory": {
         "max_mb": 24000,
         "min_mb": 16000,
-        "occupancy": 0.696969696969697
+        "occupancy": 0.7186147186147186
       },
       "throughput": {
-        "total_eps": 0.07575757575757576,
-        "max_eps": 0.8333333333333331,
-        "min_eps": 0.125
+        "total_eps": 0.10822510822510822,
+        "max_eps": 0.6944444444444445,
+        "min_eps": 0.1923076923076923
       },
       "io": {
-        "read_remote_mb": 15628.26171875,
-        "write_local_mb": 2977.998828125,
-        "write_remote_mb": 2977.998828125,
-        "read_remote_per_event_mb": 0.39794921875,
-        "write_local_per_event_mb": 0.07583007812499999,
-        "write_remote_per_event_mb": 0.07583007812499999
+        "read_remote_mb": 21942.62841796875,
+        "write_local_mb": 4226.900830078125,
+        "write_remote_mb": 4226.900830078125,
+        "read_remote_per_event_mb": 0.39111328125,
+        "write_local_per_event_mb": 0.075341796875,
+        "write_remote_per_event_mb": 0.075341796875
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.696969696969697,
-      "event_throughput": 0.07575757575757576
+      "resource_utilization": 0.7186147186147186,
+      "event_throughput": 0.10822510822510822
     },
     "dependency_paths": [
       [
@@ -774,7 +774,7 @@
         "Taskset5"
       ]
     ],
-    "events_per_job": 39272
+    "events_per_job": 56103
   },
   {
     "group_id": "group_9",
@@ -789,34 +789,34 @@
     "resource_metrics": {
       "cpu": {
         "max_cores": 4,
-        "cpu_seconds": 172800.0,
-        "utilization_ratio": 0.5277777777777778
+        "cpu_seconds": 172754.4,
+        "utilization_ratio": 0.5947802197802198
       },
       "memory": {
         "max_mb": 8000,
         "min_mb": 2000,
-        "occupancy": 0.5277777777777778
+        "occupancy": 0.5947802197802198
       },
       "throughput": {
-        "total_eps": 0.018518518518518517,
-        "max_eps": 0.16666666666666666,
-        "min_eps": 0.0625
+        "total_eps": 0.013736263736263736,
+        "max_eps": 0.15384615384615385,
+        "min_eps": 0.03731343283582089
       },
       "io": {
         "read_remote_mb": 0.0,
-        "write_local_mb": 10604.6875,
-        "write_remote_mb": 1273.4375,
+        "write_local_mb": 7847.81689453125,
+        "write_remote_mb": 928.11181640625,
         "read_remote_per_event_mb": 0.0,
-        "write_local_per_event_mb": 3.31396484375,
-        "write_remote_per_event_mb": 0.39794921875
+        "write_local_per_event_mb": 3.30712890625,
+        "write_remote_per_event_mb": 0.39111328125
       },
       "accelerator": {
         "types": []
       }
     },
     "utilization_metrics": {
-      "resource_utilization": 0.5277777777777778,
-      "event_throughput": 0.018518518518518517
+      "resource_utilization": 0.5947802197802198,
+      "event_throughput": 0.013736263736263736
     },
     "dependency_paths": [
       [
@@ -833,6 +833,6 @@
         "Taskset3"
       ]
     ],
-    "events_per_job": 3200
+    "events_per_job": 2373
   }
 ]

@@ -3,40 +3,40 @@ Top 5 Workflow Constructions by Event Throughput:
 Construction 1:
   Groups: ['group_14']
   Number of Groups: 1
-  Total Events: 1155000
-  Total CPU Time: 134904000.00 seconds
-  Event Throughput: 0.0086 events/second
-  Remote Write Data per Event: 0.474 MB/event
+  Total Events: 1000000
+  Total CPU Time: 151760000.00 seconds
+  Event Throughput: 0.0066 events/second
+  Remote Write Data per Event: 0.466 MB/event
 
 Construction 2:
-  Groups: ['group_12', 'group_4']
-  Number of Groups: 2
-  Total Events: 1155000
-  Total CPU Time: 134904000.00 seconds
-  Event Throughput: 0.0086 events/second
-  Remote Write Data per Event: 0.474 MB/event
-
-Construction 3:
   Groups: ['group_9', 'group_8']
   Number of Groups: 2
-  Total Events: 1155000
-  Total CPU Time: 134904000.00 seconds
-  Event Throughput: 0.0086 events/second
-  Remote Write Data per Event: 0.474 MB/event
+  Total Events: 1000000
+  Total CPU Time: 151760000.00 seconds
+  Event Throughput: 0.0066 events/second
+  Remote Write Data per Event: 0.466 MB/event
+
+Construction 3:
+  Groups: ['group_0', 'group_13']
+  Number of Groups: 2
+  Total Events: 1000000
+  Total CPU Time: 151760000.00 seconds
+  Event Throughput: 0.0066 events/second
+  Remote Write Data per Event: 1.249 MB/event
 
 Construction 4:
   Groups: ['group_5', 'group_11']
   Number of Groups: 2
-  Total Events: 1155000
-  Total CPU Time: 134904000.00 seconds
-  Event Throughput: 0.0086 events/second
-  Remote Write Data per Event: 2.608 MB/event
+  Total Events: 1000000
+  Total CPU Time: 151760000.00 seconds
+  Event Throughput: 0.0066 events/second
+  Remote Write Data per Event: 2.600 MB/event
 
 Construction 5:
-  Groups: ['group_0', 'group_13']
-  Number of Groups: 2
-  Total Events: 1155000
-  Total CPU Time: 134904000.00 seconds
-  Event Throughput: 0.0086 events/second
-  Remote Write Data per Event: 1.256 MB/event
+  Groups: ['group_9', 'group_3', 'group_4']
+  Number of Groups: 3
+  Total Events: 1000000
+  Total CPU Time: 151760000.00 seconds
+  Event Throughput: 0.0066 events/second
+  Remote Write Data per Event: 0.466 MB/event
 
