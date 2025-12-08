@@ -15,8 +15,8 @@
     },
     "Taskset2": {
         "KeepOutput": false,
-        "Memory": 4000,
-        "Multicore": 2,
+        "Memory": 16000,
+        "Multicore": 8,
         "RequiresGPU": "forbidden",
         "ScramArch": [
             "el8_amd64_gcc10"
@@ -27,8 +27,8 @@
     },
     "Taskset3": {
         "KeepOutput": true,
-        "Memory": 8000,
-        "Multicore": 4,
+        "Memory": 64000,
+        "Multicore": 64,
         "RequiresGPU": "forbidden",
         "ScramArch": [
             "el8_amd64_gcc10"
@@ -39,8 +39,8 @@
     },
     "Taskset4": {
         "KeepOutput": true,
-        "Memory": 16000,
-        "Multicore": 8,
+        "Memory": 10000,
+        "Multicore": 4,
         "RequiresGPU": "forbidden",
         "ScramArch": [
             "el8_amd64_gcc11"
@@ -51,8 +51,8 @@
     },
     "Taskset5": {
         "KeepOutput": true,
-        "Memory": 24000,
-        "Multicore": 12,
+        "Memory": 8000,
+        "Multicore": 4,
         "RequiresGPU": "forbidden",
         "ScramArch": [
             "el8_amd64_gcc11"
