@@ -4,39 +4,39 @@ Construction 1:
   Groups: ['group_0', 'group_6', 'group_3', 'group_4']
   Number of Groups: 4
   Total Events: 1000000
-  Total CPU Time: 100580000.00 seconds
-  Event Throughput: 0.0099 events/second
-  Remote Write Data per Event: 1.249 MB/event
+  Total CPU Time: 42100000.00 seconds
+  Event Throughput: 0.0238 events/second
+  Remote Write Data per Event: 1.230 MB/event
 
 Construction 2:
   Groups: ['group_0', 'group_1', 'group_2', 'group_3', 'group_4']
   Number of Groups: 5
   Total Events: 1000000
-  Total CPU Time: 100580000.00 seconds
-  Event Throughput: 0.0099 events/second
-  Remote Write Data per Event: 3.382 MB/event
+  Total CPU Time: 42100000.00 seconds
+  Event Throughput: 0.0238 events/second
+  Remote Write Data per Event: 3.320 MB/event
 
 Construction 3:
   Groups: ['group_0', 'group_13']
   Number of Groups: 2
   Total Events: 1000000
-  Total CPU Time: 101880000.00 seconds
-  Event Throughput: 0.0098 events/second
-  Remote Write Data per Event: 1.249 MB/event
+  Total CPU Time: 42800000.00 seconds
+  Event Throughput: 0.0234 events/second
+  Remote Write Data per Event: 1.230 MB/event
 
 Construction 4:
   Groups: ['group_0', 'group_10', 'group_4']
   Number of Groups: 3
   Total Events: 1000000
-  Total CPU Time: 101880000.00 seconds
-  Event Throughput: 0.0098 events/second
-  Remote Write Data per Event: 1.249 MB/event
+  Total CPU Time: 42800000.00 seconds
+  Event Throughput: 0.0234 events/second
+  Remote Write Data per Event: 1.230 MB/event
 
 Construction 5:
   Groups: ['group_0', 'group_6', 'group_8']
   Number of Groups: 3
   Total Events: 1000000
-  Total CPU Time: 101880000.00 seconds
-  Event Throughput: 0.0098 events/second
-  Remote Write Data per Event: 1.249 MB/event
+  Total CPU Time: 42800000.00 seconds
+  Event Throughput: 0.0234 events/second
+  Remote Write Data per Event: 1.230 MB/event
 
