@@ -10,8 +10,8 @@
         "ScramArch": [
             "el8_amd64_gcc10"
         ],
-        "SizePerEvent": 801,
-        "TimePerEvent": 6.5
+        "SizePerEvent": 800.0,
+        "TimePerEvent": 3.8
     },
     "Taskset2": {
         "KeepOutput": false,
@@ -21,8 +21,8 @@
         "ScramArch": [
             "el8_amd64_gcc10"
         ],
-        "SizePerEvent": 2185,
-        "TimePerEvent": 5,
+        "SizePerEvent": 2140,
+        "TimePerEvent": 1.1,
         "InputTaskset": "Taskset1"
     },
     "Taskset3": {
@@ -33,8 +33,8 @@
         "ScramArch": [
             "el8_amd64_gcc10"
         ],
-        "SizePerEvent": 400.5,
-        "TimePerEvent": 6.7,
+        "SizePerEvent": 385,
+        "TimePerEvent": 1.6,
         "InputTaskset": "Taskset2"
     },
     "Taskset4": {
@@ -45,8 +45,8 @@
         "ScramArch": [
             "el8_amd64_gcc11"
         ],
-        "SizePerEvent": 75.5,
-        "TimePerEvent": 0.65,
+        "SizePerEvent": 65,
+        "TimePerEvent": 0.35,
         "InputTaskset": "Taskset3"
     },
     "Taskset5": {
@@ -57,8 +57,8 @@
         "ScramArch": [
             "el8_amd64_gcc11"
         ],
-        "SizePerEvent": 1.65,
-        "TimePerEvent": 0.12,
+        "SizePerEvent": 10.0,
+        "TimePerEvent": 0.05,
         "InputTaskset": "Taskset4"
     }
 }
