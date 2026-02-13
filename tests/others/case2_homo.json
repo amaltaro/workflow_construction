@@ -1,7 +1,7 @@
 {
     "Comments": "",
     "NumTasks": 5,
-    "RequestNumEvents": 1000000,
+    "RequestNumEvents": 10000000,
     "Taskset1": {
         "KeepOutput": false,
         "Memory": 8000,
